@@ -1,0 +1,26 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "core/*": ["core/*"],
+      "exceptions/*": ["core/exception/*"]
+   },
+    "module": "commonjs",
+    "sourceMap": true,
+    "target": "es6",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strictNullChecks": false
+  },
+  "exclude": [
+    "../../node_modules",
+    "../../test"
+  ]
+}
