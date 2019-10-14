@@ -14,3 +14,4 @@ const activePlayersTableModuleFactory: ActivePlayersTableModuleFactory = new Act
    promiseBooleanFactory, activePlayersLoader,
 )
 const keyboardManager: KeyboardManager = new KeyboardManager(activePlayersTableModuleFactory)
+mp.gui.chat.colors = true
