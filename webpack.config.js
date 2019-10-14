@@ -21,7 +21,7 @@ const configServer = {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name]',
    },
-    externals: ['pg-native', 'aws-sdk', 'oracle', 'pg', 'pg-query-stream', 'sqlite3', 'oracledb'],
+   externals: ['pg-native', 'aws-sdk', 'oracle', 'pg', 'tedious', 'pg-query-stream', 'sqlite3', 'mssql', 'mssql/lib/base', 'mssql/package.json', 'mysql', 'oracledb'],
    resolve: {
       extensions: [".ts", ".tsx", ".js"],
       plugins: [new TsconfigPathsPlugin({
