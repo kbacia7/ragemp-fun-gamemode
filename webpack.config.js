@@ -78,7 +78,8 @@ const configClient = {
    mode: 'development',
    entry: {
       'client_packages/index.js': './src/client/main.ts',
-      'client_packages/ui/active-players/index.js': './src/client/ui/active-players/main.ts'
+      'client_packages/ui/active-players/index.js': './src/client/ui/active-players/main.ts',
+      'client_packages/ui/notifications/index.js': './src/client/ui/notifications/main.ts'
    },
    optimization: {
       minimize: false,
