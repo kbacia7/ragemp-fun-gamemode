@@ -1,5 +1,5 @@
 {
-  "name": "zebra",
+  "name": "4fun-project",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -10,11 +10,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kbacia7/i-dont-know-what-im-doing"
+    "url": "https://github.com/round-lonely-pixel/4fun-project"
   },
   "author": "Kamil",
   "license": "ISC",
-  "homepage": "https://github.com/kbacia7/i-dont-know-what-im-doing",
+  "homepage": "https://github.com/round-lonely-pixel/4fun-project",
   "dependencies": {
     "bootstrap": "^4.3.1",
     "fs": "0.0.1-security",
@@ -22,6 +22,7 @@
     "knex": "^0.19.5",
     "lodash": "^4.17.15",
     "luxon": "^1.19.3",
+    "mysql": "^2.17.1",
     "mysql2": "^1.7.0",
     "net": "^1.0.2",
     "objection": "^1.6.11"
