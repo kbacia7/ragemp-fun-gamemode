@@ -67,7 +67,8 @@ const configServer = {
    },
    plugins: [
       new CopyPlugin([
-         {from: './src/server/migrations', to: './src/migrations'}
+         {from: './src/server/migrations', to: './migrations'},
+         {from: './src/server/seeds', to: './seeds'}
       ]),
    ]
 
