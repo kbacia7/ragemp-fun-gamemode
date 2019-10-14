@@ -3,8 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "core/*": ["src/core/*"],
-      "exceptions/*": ["src/core/exception/*"]
+      "core/*": ["core/*"],
+      "server/core/*": ["server/core/*"],
+      "client/core/*": ["client/core/*"],
+      "exceptions/*": ["core/exception/*"]
    },
     "module": "commonjs",
     "noImplicitAny": true,
