@@ -1,5 +1,4 @@
 import { IActivePlayersLoader } from "client/core/ActivePlayersLoader/IActivePlayersLoader"
-import { Keys } from "client/core/KeyboardManager/Keys"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { Module } from "./../Module"
