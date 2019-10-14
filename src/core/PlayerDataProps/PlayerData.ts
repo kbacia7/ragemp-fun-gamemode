@@ -37,6 +37,11 @@ export class PlayerData implements IPlayerData {
         return this._name
     }
 
+    private _nameColor: string
+    public get nameColor() {
+        return this._nameColor
+    }
+
     public initialize(player: PlayerMp) {
         this._rank = "Gracz"
         this._kills = 0
@@ -45,6 +50,7 @@ export class PlayerData implements IPlayerData {
         this._status = "Aktywny"
         this._ping = player.ping
         this._name = player.name
+        this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
         player.setVariable(PlayerDataProps.KILLS, this._kills)
@@ -52,6 +58,7 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.STATUS, this._status)
         player.setVariable(PlayerDataProps.PING, this.ping)
         player.setVariable(PlayerDataProps.NAME, this._name)
+        player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
 
     }
@@ -68,6 +75,7 @@ export class PlayerData implements IPlayerData {
         this._status = player.getVariable(PlayerDataProps.STATUS)
         this._ping = player.ping
         this._name = player.getVariable(PlayerDataProps.NAME)
+        this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
         this._id = player.id
     }
 
@@ -80,6 +88,16 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.PING] = this._ping
         obj[PlayerDataProps.NAME] = this._name
         obj[PlayerDataProps.ID] = this._id
+        obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         return obj
+    }
+
+    private _getRandomColor() {
+        const letters = "0123456789ABCDEF"
+        let color = "#"
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)]
+        }
+        return color
     }
 }

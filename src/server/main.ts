@@ -7,10 +7,12 @@ import Knex from "knex"
 import _ from "lodash"
 import dbConfig from "./knexfile"
 
+import { Chat } from "./modules/Chat/Chat"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 const playerDataFactory = new PlayerDataFactory()
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(playerDataFactory)
+const chat: Chat = new Chat()
 
 const knex = Knex({
    client: dbConfig.development.client,
