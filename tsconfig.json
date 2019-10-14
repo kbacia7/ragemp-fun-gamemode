@@ -15,12 +15,15 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "es6"
     ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
   },
   "exclude": [
     "../../node_modules",
