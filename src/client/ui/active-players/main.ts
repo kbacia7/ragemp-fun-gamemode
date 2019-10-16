@@ -34,6 +34,7 @@ _global.loadPlayers = (playersDataInJson: string) => {
         const tdStatus: HTMLElement = $("<td>").get()[0]
         thID.innerText = playerData.id.toString()
         tdName.innerText = playerData.name
+        tdName.style.color = playerData.nameColor
         tdRank.innerText =  playerData.rank
         tdKills.innerText = playerData.kills.toString()
         tdDeaths.innerText = playerData.deaths.toString()
