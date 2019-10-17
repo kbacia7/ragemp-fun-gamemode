@@ -9,6 +9,7 @@ import { KeyboardManager } from "./core/KeyboardManager/KeyboardManager"
 import { ActivePlayersTableModuleFactory } from "./modules/ActivePlayersTableModule/ActivePlayersTableModuleFactory"
 import { CommandListenerModule } from "./modules/CommandListener/CommandListenerModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
+import { PlayerRegisterAndLoginModule } from "./modules/PlayerRegisterAndLoginModule/PlayerRegisterAndLoginModule"
 const promisePlayersDataFactory: PromiseFactory<IPlayerData[]> = new PromiseFactory<IPlayerData[]>()
 const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const activePlayersLoader: ActivePlayersLoader = new ActivePlayersLoader(promisePlayersDataFactory)
@@ -17,6 +18,7 @@ const activePlayersTableModuleFactory: ActivePlayersTableModuleFactory = new Act
 )
 const keyboardManager: KeyboardManager = new KeyboardManager(activePlayersTableModuleFactory)
 const notificationsModule = new NotificationModule(promiseBooleanFactory)
+const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBooleanFactory)
 const commandListenerModule = new CommandListenerModule(promiseBooleanFactory, activePlayersTableModuleFactory)
 notificationsModule.loadUI()
 mp.gui.chat.colors = true

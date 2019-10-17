@@ -21,7 +21,7 @@ const configServer = {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name]',
    },
-   externals: ['pg-native', 'aws-sdk', 'oracle', 'pg', 'tedious', 'pg-query-stream', 'sqlite3', 'mssql', 'mssql/lib/base', 'mssql/package.json', 'oracledb'],
+   externals: ['pg-native', 'aws-sdk', 'oracle', 'pg', 'tedious', 'pg-query-stream', 'sqlite3', 'mssql', 'mssql/lib/base', 'mssql/package.json', 'oracledb', 'mysql2'],
    resolve: {
       extensions: [".ts", ".tsx", ".js"],
       plugins: [new TsconfigPathsPlugin({
@@ -79,6 +79,7 @@ const configClient = {
    entry: {
       'client_packages/index.js': './src/client/main.ts',
       'client_packages/ui/active-players/index.js': './src/client/ui/active-players/main.ts',
+      'client_packages/ui/player-register-and-login/index.js': './src/client/ui/player-register-and-login/main.ts',
       'client_packages/ui/notifications/index.js': './src/client/ui/notifications/main.ts'
    },
    optimization: {
@@ -89,7 +90,6 @@ const configClient = {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name]',
    },
-    externals: [],
    resolve: {
       extensions: [".ts", ".tsx", ".js"],
       plugins: [new TsconfigPathsPlugin({

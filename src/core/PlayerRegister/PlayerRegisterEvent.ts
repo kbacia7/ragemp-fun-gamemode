@@ -1,0 +1,16 @@
+export enum PlayerRegisterEvent {
+    REGISTER = "player-register",
+    DISPLAY_GUI = "player-register-start",
+    CREATED = "player-register-complete",
+    LOGIN_INVALID = "player-register-login-invalid",
+    EMAIL_INVALID = "player-register-email-invalid",
+    LOGIN_TAKEN = "player-register-login-taken",
+    EMAIL_TAKEN = "player-register-email-taken",
+    UNKNOWN_ERROR = "player-register-unknown-error",
+    LOGIN = "player-register-login",
+    LOGGED_INTO_ACCOUNT = "player-logged-into-account",
+    LOGIN_INCORRECT_DATA = "player-cant-login",
+    PLAY_AS_GUEST = "player-play-as-guest",
+    LOGIN_TAKEN_FOR_GUEST = "player-play-as-guest-login-taken",
+    PLAY_AS_GUEST_SUCCESS = "player-play-as-guest-all-ok",
+}
