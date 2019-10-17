@@ -37,6 +37,16 @@ export class PlayerData implements IPlayerData {
         return this._name
     }
 
+    private _isLogged: boolean
+    public get isLogged() {
+        return this._isLogged
+    }
+
+    private _playAsGuest: boolean
+    public get playAsGuest() {
+        return this._playAsGuest
+    }
+
     private _nameColor: string
     public get nameColor() {
         return this._nameColor
@@ -50,6 +60,8 @@ export class PlayerData implements IPlayerData {
         this._status = "Aktywny"
         this._ping = player.ping
         this._name = player.name
+        this._isLogged = false
+        this._playAsGuest = false
         this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
@@ -58,6 +70,8 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.STATUS, this._status)
         player.setVariable(PlayerDataProps.PING, this.ping)
         player.setVariable(PlayerDataProps.NAME, this._name)
+        player.setVariable(PlayerDataProps.ISLOGGED, this._isLogged)
+        player.setVariable(PlayerDataProps.PLAY_AS_GUEST, this._playAsGuest)
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
 
@@ -75,6 +89,8 @@ export class PlayerData implements IPlayerData {
         this._status = player.getVariable(PlayerDataProps.STATUS)
         this._ping = player.ping
         this._name = player.getVariable(PlayerDataProps.NAME)
+        this._isLogged = player.getVariable(PlayerDataProps.ISLOGGED)
+        this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
         this._id = player.id
     }
@@ -88,6 +104,8 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.PING] = this._ping
         obj[PlayerDataProps.NAME] = this._name
         obj[PlayerDataProps.ID] = this._id
+        obj[PlayerDataProps.ISLOGGED] = this._isLogged
+        obj[PlayerDataProps.PLAY_AS_GUEST] = this._playAsGuest
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         return obj
     }

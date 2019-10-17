@@ -1,16 +1,24 @@
+import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
+import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { ICommand } from "./ICommand"
 
 export class CommandExecutor {
+    private _playerDataFactory: IPlayerDataFactory = null
+    constructor(playerDataFactory: IPlayerDataFactory) {
+        this._playerDataFactory = playerDataFactory
+    }
+
     public addCommands(commands: ICommand[]) {
         commands.forEach((command) => {
-            console.log("o")
             command.alias.forEach((commandAlias) => {
-                console.log("a")
                 mp.events.addCommand(commandAlias, (player: PlayerMp, text: string) => {
-                    if (!text) {
-                        text = ""
+                    const playerData: IPlayerData = this._playerDataFactory.create().load(player)
+                    if (playerData.isLogged) {
+                        if (!text) {
+                            text = ""
+                        }
+                        command.execute(player, text.split(" "))
                     }
-                    command.execute(player, text.split(" "))
                 })
             })
         })

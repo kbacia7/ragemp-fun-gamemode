@@ -1,0 +1,37 @@
+{
+    "REGISTER_WINDOW_TITLE": "Rejestracja",
+    "REGISTER_LOGIN": "Login",
+    "REGISTER_PASSWORD": "Hasło",
+    "REGISTER_REPEAT_PASSWORD": "Powtórz hasło",
+    "REGISTER_BUTTON_SUBMIT": "Załóż konto",
+    "REGISTER_REPEAT_PASSWORD_NOT_EQUAL": "Podane hasła nie są jednakowe",
+    "REGISTER_EMAIL": "Email",
+    "REGISTER_EMAIL_HELP": "Użyjemy go abyś mógł zresetować hasło gdybyś go zapomniał, nie wyślemy żadnych newsletterów",
+    "REGISTER_INVALID_EMAIL": "Podany email posiada niewłaściwy format",
+    "REGISTER_INVALID_LOGIN": "Podany login jest niepoprawny (bez znaków specjalnych, maks. 15 znaków, min. 3 znaki)",
+    "REGISTER_INVALID_PASSWORD": "Podane hasło jest niepoprawne (maks. 32 znaków, min. 5 znaków)",
+    "REGISTER_LOGIN_TAKEN": "Podany login jest zajęty",
+    "REGISTER_EMAIL_TAKEN": "Podany email jest zajęty",
+    "REGISTER_CANT_BE_EMPTY": "Wszystkie pola muszą zostać uzupełnione",
+    "REGISTER_UNKNOWN_ERROR": "Upsss... Coś ewidentnie poszło nie tak. Spróbuj ponownie, a jeśli to nie pomoże spróbuj ponownie urochomić grę",
+
+    "LOGIN_WINDOW_TITLE": "Logowanie",
+    "LOGIN_INVALID_LOGIN": "Podany login jest niepoprawny (bez znaków specjalnych, maks. 15 znaków, min. 3 znaki)",
+    "LOGIN_INVALID_PASSWORD": "Podane hasło jest niepoprawne (maks. 32 znaków, min. 5 znaków)",
+    "LOGIN_INCORRECT_DATA": "Nie znaleziono konta z takim loginem i hasłem",
+    "LOGIN_CANT_BE_EMPTY": "Musisz podać login i hasło do konta na które chcesz się zalogować",
+    "LOGIN_LOGIN": "Login",
+    "LOGIN_BUTTON_SUBMIT": "Zaloguj",
+    "LOGIN_PASSWORD": "Hasło",
+    "PLAY_AS_GUEST_SUBMIT": "Graj bez konta",
+    "PLAY_AS_GUEST_EMPTY_LOGIN": "Aby grać jako gość musisz uzupełnić login pod którym będziesz grał",
+    "PLAY_AS_GUEST_LOGIN_TAKEN": "Wybrany login jest już zarejestrowany. Musisz wybrać inny",
+    "REGISTER_LOGIN_PLACEHOLDER": "Login",
+    "REGISTER_EMAIL_PLACEHOLDER": "Email",
+    "REGISTER_PASSWORD_PLACEHOLDER": "Hasło",
+    "REGISTER_REPEAT_PASSWORD_PLACEHOLDER": "Powtórz hasło",
+    "LOGIN_LOGIN_PLACEHOLDER": "Login",
+    "LOGIN_PASSWORD_PLACEHOLDER": "Hasło"    
+
+
+}

@@ -1,0 +1,120 @@
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cyborg/bootstrap.min.css"
+    crossorigin="anonymous">
+  <script src="index.js"></script>
+</head>
+
+<body style="background: none !important">
+  <div id="register-or-login-modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content register-or-login-width register-or-login-modal-fix-center">
+        <div class="modal-body register-or-login-width">
+          <div class="container">
+            <div class="row">
+              <div class="col-5">
+                <h5 class="modal-title" data-i18n-translate="REGISTER_WINDOW_TITLE"></h5>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_REPEAT_PASSWORD_NOT_EQUAL"
+                  id="alertRegisterModalWhenRepeatPasswordNotEqualPassword" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_INVALID_EMAIL"
+                  id="alertRegisterModalWhenEmailIsInvalid" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_INVALID_LOGIN"
+                  id="alertRegisterModalWhenLoginIsInvalid" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_INVALID_PASSWORD"
+                  id="alertRegisterModalWhenPasswordIsInvalid" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_LOGIN_TAKEN"
+                  id="alertRegisterModalWhenLoginIsTaken" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_EMAIL_TAKEN"
+                  id="alertRegisterModalWhenEmailIsTaken" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_UNKNOWN_ERROR"
+                  id="alertRegisterModalUnknownError" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="REGISTER_CANT_BE_EMPTY"
+                  id="alertRegisterModalWhenAnyFieldIsEmpty" role="alert"></div>
+                <form>
+                  <div class="form-group">
+                    <label for="inputRegisterModalLogin" data-i18n-translate="REGISTER_LOGIN"></label>
+                    <input type="text" class="form-control" id="inputRegisterModalLogin" data-i18n-translate-placeholder="REGISTER_LOGIN_PLACEHOLDER" placeholder="Login">
+                  </div>
+                  <div class="form-group">
+                    <label for="inputRegisterModalEmail" data-i18n-translate="REGISTER_EMAIL"></label>
+                    <input type="email" class="form-control" id="inputRegisterModalEmail" data-i18n-translate-placeholder="REGISTER_EMAIL_PLACEHOLDER"
+                    placeholder="Email">
+                    <small id="emailHelp" class="form-text text-muted"
+                      data-i18n-translate="REGISTER_EMAIL_HELP"></small>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputRegisterModalPassword" data-i18n-translate="REGISTER_PASSWORD"></label>
+                    <input type="password" class="form-control" id="inputRegisterModalPassword" data-i18n-translate-placeholder="REGISTER_PASSWORD_PLACEHOLDER" placeholder="Password">
+                  </div>
+                  <div class="form-group">
+                    <label for="inputRegisterModalPasswordRepeat"
+                      data-i18n-translate="REGISTER_REPEAT_PASSWORD"></label>
+                    <input type="password" class="form-control" id="inputRegisterModalPasswordRepeat"
+                      data-i18n-translate-placeholder="REGISTER_REPEAT_PASSWORD_PLACEHOLDER"
+                      placeholder="Repeat password">
+                  </div>
+                  <div class="float-right">
+                      <button type="button" id="registerButton" data-i18n-translate="REGISTER_BUTTON_SUBMIT"
+                      class="btn btn-primary"></button>
+                  </div>
+
+                </form>
+              </div>
+              <div class="col-2">
+
+              </div>
+              <div class="col-5">
+                <h5 class="modal-title" data-i18n-translate="LOGIN_WINDOW_TITLE"></h5>
+                <div class="alert alert-info d-none" data-i18n-translate="PLAY_AS_GUEST_EMPTY_LOGIN"
+                  id="alertLoginModalWhenLoginIsEmptyAndPlayAsGuest" role="alert"></div>
+                  <div class="alert alert-danger d-none" data-i18n-translate="PLAY_AS_GUEST_LOGIN_TAKEN"
+                  id="alertLoginModalWhenLoginIsTakenAndPlayAsGuest" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="LOGIN_INVALID_LOGIN"
+                  id="alertLoginModalWhenLoginIsInvalid" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="LOGIN_INCORRECT_DATA"
+                  id="alertLoginModalWhenDataIsInvalid" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="LOGIN_INVALID_PASSWORD"
+                  id="alertLoginModalWhenPasswordIsInvalid" role="alert"></div>
+                <div class="alert alert-danger d-none" data-i18n-translate="LOGIN_CANT_BE_EMPTY"
+                  id="alertLoginModalWhenAnyFieldIsEmpty" role="alert"></div>
+                <form>
+                  <div class="form-group">
+                    <label for="inputLoginModalLogin" data-i18n-translate="LOGIN_LOGIN"></label>
+                    <input type="text" class="form-control" id="inputLoginModalLogin" data-i18n-translate-placeholder="LOGIN_LOGIN_PLACEHOLDER" placeholder="Login">
+                  </div>
+                  <div class="form-group">
+                    <label for="inputLoginModalPassword" data-i18n-translate="LOGIN_PASSWORD"></label>
+                    <input type="password" class="form-control" id="inputLoginModalPassword" data-i18n-translate-placeholder="LOGIN_PASSWORD_PLACEHOLDER" placeholder="Password">
+                  </div>
+                  <div class="float-right">
+                      <button type="button" id="playAsGuestButton" data-i18n-translate="PLAY_AS_GUEST_SUBMIT"
+                      class="btn btn-secondary"></button>
+                    <button type="button" id="loginButton" data-i18n-translate="LOGIN_BUTTON_SUBMIT"
+                      class="btn btn-primary"></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+
+</body>
+
+</html>

@@ -1,3 +1,7 @@
 {
-    "NOTIFICATION_CHAT_INCORRECT_VALUE": "Wpisałeś niepoprawny tekst w wiadomość - nie możesz używać własnego kolorowania"
+    "NOTIFICATION_CHAT_INCORRECT_VALUE": "Wpisałeś niepoprawny tekst w wiadomość - nie możesz używać własnego kolorowania",
+    "ACCOUNT_CREATED": "Konto zostało założone!",
+    "SUCCESS_LOGIN": "Pomyślnie zalogowano na konto!",
+    "EMAIL_SENDED": "Na podany adres e-mail wysłaliśmy link z prośbą o aktywację",
+    "PLAY_AS_GUEST": "Grasz jako gość! Twoje dane nie zostaną nigdzie zapisane!"
 }
