@@ -16,10 +16,12 @@ export class ActivePlayers implements IActivePlayers {
     public sendPlayers(player: PlayerMp) {
         const playersData: IPlayerData[] = []
         mp.players.forEach((_player) => {
-            playersData.push(this._playerDataFactory.create().load(_player))
+            const playerData: IPlayerData = this._playerDataFactory.create().load(_player)
+            console.log(JSON.stringify(playerData))
+            if (playerData.isLogged) {
+                playersData.push(playerData)
+            }
         })
-        // tslint:disable-next-line: no-console
-        console.log(JSON.stringify(playersData))
         player.call(ActivePlayersEvents.LOAD_PLAYERS_TO_TABLE, [JSON.stringify(playersData)])
     }
 }
