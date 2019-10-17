@@ -6,5 +6,7 @@ export enum PlayerDataProps {
     PING = "ping",
     NAME = "name",
     ID = "id",
-    NAMECOLOR = "namecolor",
+    NAMECOLOR = "nameColor",
+    ISLOGGED = "isLogged",
+    PLAY_AS_GUEST = "playAsGuest",
 }
