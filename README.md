@@ -29,6 +29,7 @@ Repozytorium zawiera skrypt do gry pisany w TypeScript, issues'y to rozpisane zm
 * seeds
 
 (o dwóch pierwszych [tutaj](https://wiki.rage.mp/index.php?title=Getting_Started_with_Development#Starting_the_server))
+
 6. Przy każdej kolejnej kompilacji wystarczy wpisać `npm run-script build` będąc w katalogu ze skryptem
 
 ### Konfiguracja
