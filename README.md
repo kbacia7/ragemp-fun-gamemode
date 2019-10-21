@@ -7,6 +7,17 @@ Project San Andreas to projekt utworzenia serwera DM/4Fun na platformę [RAGE:MP
 Repozytorium zawiera skrypt do gry pisany w TypeScript, issues'y to rozpisane zmiany które należy nanieść. README który czytasz opisuje sposób konfiguracji, uruchomienia i w jaki sposób wykonywać issues'y
 
 ## Instalacja
+### Linux (Testowane na Debian 10)
+#### Wymagania
+* NPM ([Kompatybilny z NodeJS 10](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions))
+* Git
+
+#### Kompilacja 
+1. `apt install git npm`
+1. W terminalu wchodzimy do jakiegoś katalogu gdzie sklonujemy repozytorium (np.)
+`cd /home/kamil/Projects`
+A potem identycznie jak dla Windowsa...
+
 ### Windows
 ####  Wymagania
 * NodeJS w wersji [LTS](https://nodejs.org/en/download/)
