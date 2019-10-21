@@ -17,7 +17,6 @@ export class ActivePlayers implements IActivePlayers {
         const playersData: IPlayerData[] = []
         mp.players.forEach((_player) => {
             const playerData: IPlayerData = this._playerDataFactory.create().load(_player)
-            console.log(JSON.stringify(playerData))
             if (playerData.isLogged) {
                 playersData.push(playerData)
             }
