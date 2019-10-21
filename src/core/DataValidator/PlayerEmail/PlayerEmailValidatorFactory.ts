@@ -1,4 +1,4 @@
-import { IRegExpFactory } from "core/RegeXpFactory/IRegeXpFactory"
+import { IRegExpFactory } from "core/RegExpFactory/IRegExpFactory"
 import { PlayerEmailValidator } from "./PlayerEmailValidator"
 
 export class PlayerEmailValidatorFactory {
