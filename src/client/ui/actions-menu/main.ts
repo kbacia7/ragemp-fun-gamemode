@@ -38,3 +38,10 @@ $(document).ready(() => {
     })
     $("#modal").modal("show")
 })
+
+const _global: any = (window || global) as any
+_global.setListPosition = (x, y) => {
+    $("#actionsMenu").css({top: y})
+    $("#actionsMenu").css({left: x})
+    $("#actionsMenu").removeClass("hide")
+}
