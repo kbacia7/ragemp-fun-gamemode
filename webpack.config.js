@@ -29,7 +29,7 @@ const configServer = {
       'packages/FunGamemode/index.js': './src/server/main.ts',
    },
    optimization: {
-      minimize: false,
+      minimize: true,
     },
    devtool: 'source-map',
    output: {
@@ -93,7 +93,7 @@ const configClient = {
    mode: 'development',
    entry: getEntries,
    optimization: {
-      minimize: false,
+      minimize: true,
     },
    devtool: 'source-map',
    output: {
