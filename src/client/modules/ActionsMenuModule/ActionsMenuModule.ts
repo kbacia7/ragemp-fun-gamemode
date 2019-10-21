@@ -23,6 +23,7 @@ export class ActionsMenuModule extends Module {
 
     public loadUI() {
         return this._promiseFactory.create((resolve) => {
+            mp.gui.cursor.show(true, true)
             resolve(false)
         })
 
@@ -30,6 +31,7 @@ export class ActionsMenuModule extends Module {
 
     public destroyUI() {
         return this._promiseFactory.create((resolve) => {
+            mp.gui.cursor.show(false, false)
             resolve(false)
         })
     }
