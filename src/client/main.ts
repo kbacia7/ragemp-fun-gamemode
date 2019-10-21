@@ -6,6 +6,8 @@ import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import $ from "jquery"
 import { ActivePlayersLoader } from "./core/ActivePlayersLoader/ActivePlayersLoader"
 import { KeyboardManager } from "./core/KeyboardManager/KeyboardManager"
+import { ActionsMenuModuleFactory } from "./modules/ActionsMenuModule/ActionsMenuModuleFactory"
+import { IActionsMenuModuleFactory } from "./modules/ActionsMenuModule/IActionsMenuModuleFactory"
 import { ActivePlayersTableModuleFactory } from "./modules/ActivePlayersTableModule/ActivePlayersTableModuleFactory"
 import { CommandListenerModule } from "./modules/CommandListener/CommandListenerModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
@@ -16,7 +18,8 @@ const activePlayersLoader: ActivePlayersLoader = new ActivePlayersLoader(promise
 const activePlayersTableModuleFactory: ActivePlayersTableModuleFactory = new ActivePlayersTableModuleFactory(
    promiseBooleanFactory, activePlayersLoader,
 )
-const keyboardManager: KeyboardManager = new KeyboardManager(activePlayersTableModuleFactory)
+const actionsMenuModuleFactory: IActionsMenuModuleFactory = new ActionsMenuModuleFactory(promiseBooleanFactory)
+const keyboardManager: KeyboardManager = new KeyboardManager(activePlayersTableModuleFactory, actionsMenuModuleFactory)
 const notificationsModule = new NotificationModule(promiseBooleanFactory)
 const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBooleanFactory)
 const commandListenerModule = new CommandListenerModule(promiseBooleanFactory, activePlayersTableModuleFactory)

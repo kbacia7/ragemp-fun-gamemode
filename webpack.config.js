@@ -80,7 +80,8 @@ const configClient = {
       'client_packages/index.js': './src/client/main.ts',
       'client_packages/ui/active-players/index.js': './src/client/ui/active-players/main.ts',
       'client_packages/ui/player-register-and-login/index.js': './src/client/ui/player-register-and-login/main.ts',
-      'client_packages/ui/notifications/index.js': './src/client/ui/notifications/main.ts'
+      'client_packages/ui/notifications/index.js': './src/client/ui/notifications/main.ts',
+      'client_packages/ui/actions-menu/index.js': './src/client/ui/actions-menu/main.ts'
    },
    optimization: {
       minimize: false,
