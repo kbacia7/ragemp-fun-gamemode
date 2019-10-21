@@ -16,6 +16,7 @@ export class ActionsMenuModule extends Module {
         promiseFactory: IPromiseFactory<boolean>,
     ) {
         super(promiseFactory)
+        this._name = "actions-menu"
         mp.events.add(ActionsMenuModuleEvents.TRIGGER_EVENT, (eventName: string) => {
             mp.events.callRemote(ActionsMenu.PREFIX + eventName)
         })
@@ -24,15 +25,21 @@ export class ActionsMenuModule extends Module {
     public loadUI() {
         return this._promiseFactory.create((resolve) => {
             mp.gui.cursor.show(true, true)
-            resolve(false)
+            super.loadUI().then((loaded) => {
+                this._currentWindow.execute(
+                    `setListPosition(${mp.gui.cursor.position[0]}, ${mp.gui.cursor.position[1]})`,
+                )
+                resolve(loaded)
+            })
         })
-
     }
 
     public destroyUI() {
         return this._promiseFactory.create((resolve) => {
             mp.gui.cursor.show(false, false)
-            resolve(false)
+            super.destroyUI().then((loaded) => {
+                resolve(loaded)
+            })
         })
     }
 }
