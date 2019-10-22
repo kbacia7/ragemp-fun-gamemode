@@ -29,7 +29,7 @@ const configServer = {
       'packages/FunGamemode/index.js': './src/server/main.ts',
    },
    optimization: {
-      minimize: true,
+      minimize: false,
     },
    devtool: 'source-map',
    output: {
