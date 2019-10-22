@@ -23,6 +23,7 @@ import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
 import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
+import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
@@ -44,6 +45,7 @@ Player.knex(knex)
 
 const playerDataFactory = new PlayerDataFactory()
 const notificationSender = new NotificationSender()
+const playerDataLoader = new PlayerDataLoader(playerDataFactory)
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(knex, playerDataFactory)
 const chat: Chat = new Chat(playerDataFactory, notificationSender)
