@@ -4,7 +4,7 @@
   "private": true,
   "description": "",
   "scripts": {
-    "build": "node_modules/.bin/tslint -c src/core/tslint.json 'src/core/**/*.ts' --fix && \"./node_modules/.bin/tslint\" -c src/client/tslint.json 'src/client/**/*.ts' --fix  && \"./node_modules/.bin/tslint\" -c src/server/tslint.json 'src/server/**/*.ts' --fix",
+    "build": "node_modules/.bin/tslint -c src/core/tslint.json 'src/core/**/*.ts' --fix && \"./node_modules/.bin/tslint\" -c src/client/tslint.json 'src/client/**/*.ts' --fix  && \"./node_modules/.bin/tslint\" -c src/server/tslint.json 'src/server/**/*.ts' --fix && \"./node_modules/.bin/webpack\"",
     "start": "npm run-script build && node_modules/.bin/http-server 'dist/' -o &",
     "test": "node_modules/mocha/bin/mocha -r ts-node/register -r tsconfig-paths/register test/**/*.ts "
   },
