@@ -14,6 +14,7 @@ export class PlayerSave {
                 .patch({
                     deaths: playerData.deaths,
                     kills: playerData.kills,
+                    ped: playerData.ped,
                 })
                 .where("login", "LIKE", playerData.name)
                 .execute()

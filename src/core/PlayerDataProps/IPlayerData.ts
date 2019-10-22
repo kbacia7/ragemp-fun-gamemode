@@ -8,7 +8,8 @@ export interface IPlayerData {
     name: string,
     isLogged: boolean,
     playAsGuest: boolean,
-    nameColor: string
+    nameColor: string,
+    ped: number,
     initialize: (player: PlayerMp) => void
     load: (player: PlayerMp) => IPlayerData
     sync: (player: PlayerMp) => void
