@@ -1,0 +1,58 @@
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cyborg/bootstrap.min.css"
+    crossorigin="anonymous">
+  <script src="index.js"></script>
+</head>
+
+<body style="background: none !important">
+  <div id="player-profile" class="card float-right">
+    <div class="card-body">
+      <h5 class="card-title text-center" id="player-profile-username"></h5>
+      <h6 class="card-subtitle mb-2 text-muted text-center" id="player-profile-rank"></h6>
+      <div class="row">
+        <div class="col-4">
+          <img class="img-fluid" src="img/0x76284640.png"/>
+        </div>
+        <div class="col-8">
+            <ul style="list-style: none;">
+              <li class="card-text">
+                <span data-i18n-translate="PLAYER_PROFILE_LEVEL"></span>: <span id="player-profile-level"></span>
+              </li>
+              <li class="card-text">
+                <span data-i18n-translate="PLAYER_PROFILE_MONEY"></span>: <span id="player-profile-money"></span>
+              </li>
+              <li class="card-text">
+                <span data-i18n-translate="PLAYER_PROFILE_DIAMONDS"></span>: <span id="player-profile-diamonds"></span>
+              </li>
+              <li class="card-text">
+                  <span data-i18n-translate="PLAYER_PROFILE_ONLINE_TIME"></span>: <span id="player-profile-online-time"></span>
+              </li>
+              <li class="card-text">
+                <span data-i18n-translate="PLAYER_PROFILE_KILLS"></span>: <span id="player-profile-kills"></span>
+              </li>
+              <li class="card-text">
+                <span data-i18n-translate="PLAYER_PROFILE_DEATHS"></span>: <span id="player-profile-deaths"></span>
+              </li>
+              <li class="card-text">
+                <span data-i18n-translate="PLAYER_PROFILE_PING"></span>: <span id="player-profile-ping"></span>
+              </li>
+            </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>

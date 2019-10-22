@@ -9,4 +9,5 @@ export class Player extends Model {
   public rank: string
   public kills: number
   public deaths: number
+  public ped: number
 }

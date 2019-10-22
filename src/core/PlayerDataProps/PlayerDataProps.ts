@@ -9,4 +9,5 @@ export enum PlayerDataProps {
     NAMECOLOR = "nameColor",
     ISLOGGED = "isLogged",
     PLAY_AS_GUEST = "playAsGuest",
+    PED = "ped",
 }

@@ -1,0 +1,9 @@
+{
+    "PLAYER_PROFILE_LEVEL": "Level",
+    "PLAYER_PROFILE_MONEY": "Pieniędzy",
+    "PLAYER_PROFILE_DIAMONDS": "Diamentów",
+    "PLAYER_PROFILE_ONLINE_TIME": "Czas gry",
+    "PLAYER_PROFILE_KILLS": "Killi",
+    "PLAYER_PROFILE_DEATHS": "Deadów",
+    "PLAYER_PROFILE_PING": "Ping"
+}
