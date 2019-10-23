@@ -9,6 +9,7 @@ import { KeyboardManager } from "./core/KeyboardManager/KeyboardManager"
 import { ActionsMenuModuleFactory } from "./modules/ActionsMenuModule/ActionsMenuModuleFactory"
 import { IActionsMenuModuleFactory } from "./modules/ActionsMenuModule/IActionsMenuModuleFactory"
 import { ActivePlayersTableModuleFactory } from "./modules/ActivePlayersTableModule/ActivePlayersTableModuleFactory"
+import { AutomaticEventsTableModule } from "./modules/AutomaticEventsTableModule/AutomaticEventsTableModule"
 import { CommandListenerModule } from "./modules/CommandListener/CommandListenerModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
 import { IPlayerProfileModuleFactory } from "./modules/PlayerProfileModule/IPlayerProfileModuleFactory"
@@ -25,6 +26,7 @@ const actionsMenuModuleFactory: IActionsMenuModuleFactory = new ActionsMenuModul
 const keyboardManager: KeyboardManager = new KeyboardManager(activePlayersTableModuleFactory, actionsMenuModuleFactory)
 const notificationsModule = new NotificationModule(promiseBooleanFactory)
 const playerProfileModule: PlayerProfileModule = new PlayerProfileModule(promiseBooleanFactory)
+const automaticEventsTableModule: AutomaticEventsTableModule = new AutomaticEventsTableModule(promiseBooleanFactory)
 const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBooleanFactory)
 const commandListenerModule = new CommandListenerModule(promiseBooleanFactory, activePlayersTableModuleFactory)
 notificationsModule.loadUI()
