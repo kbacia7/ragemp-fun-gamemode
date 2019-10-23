@@ -1,5 +1,7 @@
 export interface IRegisterAutomaticEventData {
     name: string,
     actualPlayers: number,
-    maxPlayers: number
+    maxPlayers: number,
+    minPlayers: number
+
 }

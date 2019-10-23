@@ -1,4 +1,5 @@
 export enum RegisterAutomaticEvents {
     GET_AUTOMATIC_EVENTS = "register-automatic-events-get-events",
-    PROVIDE_AUTOMATIC_EVENTS =  "register-automatic-events-provide-events",
+    PROVIDE_AUTOMATIC_EVENTS = "register-automatic-events-provide-events",
+    UPDATE_EVENT_MAX_PLAYERS = "UPDATE_EVENT_MAX_PLAYERS",
 }
