@@ -5,11 +5,11 @@ import { INotificationSender } from "./INotificationSender"
 
 export class NotificationSender implements INotificationSender {
     public send(
-        toPlayer: PlayerMp, 
-        label: string, 
-        type: NotificationType, 
-        timeout: NotificationTimeout, 
-        extraParams?: string[]
+        toPlayer: PlayerMp,
+        label: string,
+        type: NotificationType,
+        timeout: NotificationTimeout,
+        extraParams: string[] = [],
     ) {
         toPlayer.call(NotificationEvent.SEND, [label, type, timeout, JSON.stringify(extraParams)])
     }
