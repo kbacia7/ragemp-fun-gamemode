@@ -17,9 +17,9 @@ import { RegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/
 import { Model } from "objection"
 import { emitKeypressEvents } from "readline"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
+import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
 import { Player } from "./entity/Player"
-import { AutomaticEventsDataProvider } from "./modules/AutomaticEvents/AutomaticEventsDataProvider"
 import { Chat } from "./modules/Chat/Chat"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
@@ -32,7 +32,6 @@ import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
-import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
 
 const knex = Knex({
    client: dbConfig.development.client,
@@ -78,7 +77,6 @@ const allCommands: ICommand[] = [
    new SetCommand(playerDataFactory),
 ]
 const commandExecutor = new CommandExecutor(playerDataFactory)
-const automaticEventsDataProvider = new AutomaticEventsDataProvider(registerAutomaticEventDataFactory)
 commandExecutor.addCommands(allCommands)
 
 mp.events.add("debug", (player: PlayerMp, text: string) => {
