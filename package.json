@@ -25,7 +25,8 @@
     "luxon": "^1.19.3",
     "mysql": "^2.17.1",
     "net": "^1.0.2",
-    "objection": "^1.6.11"
+    "objection": "^1.6.11",
+    "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -40,6 +41,7 @@
     "@types/ragemp-c": "github:CocaColaBear/types-ragemp-c#master",
     "@types/ragemp-cef": "git+https://github.com/eisengrind/types-ragemp-cef.git",
     "@types/ragemp-s": "github:CocaColaBear/types-ragemp-s#master",
+    "@types/sprintf-js": "^1.1.2",
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^3.0.0",
