@@ -32,6 +32,7 @@ import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
+import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
 
 const knex = Knex({
    client: dbConfig.development.client,
@@ -47,11 +48,11 @@ Model.knex(knex)
 Player.knex(knex)
 
 const playerDataFactory = new PlayerDataFactory()
-const notificationSender = new NotificationSender()
+const notificationSenderFactory = new NotificationSenderFactory()
 const playerDataLoader = new PlayerDataLoader(playerDataFactory)
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(knex, playerDataFactory)
-const chat: Chat = new Chat(playerDataFactory, notificationSender)
+const chat: Chat = new Chat(playerDataFactory, notificationSenderFactory)
 const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const regExpFactory = new RegExpFactory()
 const playerEmailValidatorFactory = new PlayerEmailValidatorFactory(regExpFactory)
