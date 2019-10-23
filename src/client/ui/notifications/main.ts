@@ -8,6 +8,7 @@ import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import "./style.less"
 import { NotificationType } from "core/Notification/NotificationType"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
+import { vsprintf } from "sprintf-js"
 
 const promiseFactory = new PromiseFactory<string>()
 const xmlFileRequest = new XMLFileRequest(promiseFactory)
@@ -18,12 +19,20 @@ $(document).ready(() => {
 })
 
 const _global: any = (window || global) as any
-_global.sendNotification = (i18nLabel: string, type: NotificationType, timeout: NotificationTimeout) => {
+_global.sendNotification = (i18nLabel: string, type: NotificationType, timeout: NotificationTimeout, args: string) => {
+    let arrayOfArgs: string[] = []
+    if (args.length > 2) {
+        arrayOfArgs = JSON.parse(args)
+    }
     const notificationElement: JQuery<HTMLElement> = $("#notification-alert-sample").clone()
     const randomId: string = makeId(32)
+    let translatedLabel: string = i18nTranslator.translate(i18nLabel)
+    if (arrayOfArgs.length > 0)  {
+        translatedLabel = vsprintf(translatedLabel, arrayOfArgs)
+    }
     notificationElement.attr("id", `notification-${randomId}`)
     notificationElement.addClass(`alert-${type}`)
-    notificationElement.text(i18nTranslator.translate(i18nLabel))
+    notificationElement.text()
     notificationElement.removeClass("d-none")
     notificationElement.appendTo("body")
     setTimeout(() => {
