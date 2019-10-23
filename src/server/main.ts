@@ -12,11 +12,14 @@ import { PlayerLoginValidatorFactory } from "core/DataValidator/PlayerLogin/Play
 import { PlayerDataFactory } from "core/PlayerDataProps/PlayerDataFactory"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
+import { IRegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/IRegisterAutomaticEventDataFactory"
+import { RegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/RegisterAutomaticEventDataFactory"
 import { Model } from "objection"
 import { emitKeypressEvents } from "readline"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
 import { Player } from "./entity/Player"
+import { AutomaticEventsDataProvider } from "./modules/AutomaticEvents/AutomaticEventsDataProvider"
 import { Chat } from "./modules/Chat/Chat"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
@@ -67,12 +70,14 @@ const playerPlayAsGuest: PlayerPlayAsGuest = new PlayerPlayAsGuest(
 const playerSave: PlayerSave = new PlayerSave(
    knex, playerDataFactory,
 )
+const registerAutomaticEventDataFactory: IRegisterAutomaticEventDataFactory = new RegisterAutomaticEventDataFactory()
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
 ]
 const commandExecutor = new CommandExecutor(playerDataFactory)
+const automaticEventsDataProvider = new AutomaticEventsDataProvider(registerAutomaticEventDataFactory)
 commandExecutor.addCommands(allCommands)
 
 mp.events.add("debug", (player: PlayerMp, text: string) => {
