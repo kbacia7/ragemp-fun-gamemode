@@ -8,11 +8,11 @@ import { FileSystemRequest } from "core/FileRequest/FileSystemRequest"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import "./style.less"
+const promiseFactory = new PromiseFactory<string>()
+const xmlFileRequest = new XMLFileRequest(promiseFactory)
+const internationalizationSettings = new InternationalizationSettings("pl_PL")
+const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
 $(document).ready(() => {
-    const promiseFactory = new PromiseFactory<string>()
-    const xmlFileRequest = new XMLFileRequest(promiseFactory)
-    const internationalizationSettings = new InternationalizationSettings("pl_PL")
-    const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
     i18nTranslator.loadTranslations("translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
       element.innerText =   i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
@@ -39,7 +39,7 @@ _global.loadPlayers = (playersDataInJson: string) => {
         tdKills.innerText = playerData.kills.toString()
         tdDeaths.innerText = playerData.deaths.toString()
         tdPing.innerText = playerData.ping.toString()
-        tdStatus.innerText = playerData.status
+        tdStatus.innerText = i18nTranslator.translate("TABLE_PLAYER_STATUS_" + playerData.status)
         trRow.appendChild(thID)
         trRow.appendChild(tdName)
         trRow.appendChild(tdRank)
