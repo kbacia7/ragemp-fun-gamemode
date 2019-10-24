@@ -10,7 +10,10 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import "./style.less"
 import { ActionsMenu } from "server/core/ActionsMenu/ActionsMenu"
 import { ActionsMenuModuleEvents } from "client/modules/ActionsMenuModule/ActionsMenuModuleEvents"
-import { IRegisterAutomaticEventData } from "core/RegisterAutomaticEvents/IRegisterAutomaticEventData"
+import {
+    AutomaticEventsTableModuleEvents,
+} from "client/modules/AutomaticEventsTableModule/AutomaticEventsTableModuleEvents"
+import { IAutomaticEvent } from "server/modules/AutomaticEvents/IAutomaticEvent"
 
 $(document).ready(() => {
     const promiseFactory = new PromiseFactory<string>()
@@ -24,14 +27,25 @@ $(document).ready(() => {
 })
 
 const _global: any = (window || global) as any
-_global.setEventsInTable = (automaticEventsDatas: string) => {
-    const registeredAutomaticEventsDatas: IRegisterAutomaticEventData[] = JSON.parse(automaticEventsDatas)
-    registeredAutomaticEventsDatas.forEach((automaticEventData: IRegisterAutomaticEventData) => {
+_global.setEventsInTable = (automaticEventsDatasStr: string) => {
+    const automaticEventsDatas: IAutomaticEvent[] = JSON.parse(automaticEventsDatasStr)
+    automaticEventsDatas.forEach((automaticEventData: IAutomaticEvent) => {
         const el: JQuery<HTMLElement> = $("#automatic-events-table-sample-row").clone()
+        el.get(0).setAttribute("id", `automatic-events-table-${automaticEventData.name}-row`)
         el.find(".automatic-events-table-row-title").text(
-            `${automaticEventData.name} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
+            `${automaticEventData.displayName} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
         )
+        el.find(".automatic-events-table-row-save-button").on("click", () => {
+            mp.trigger(AutomaticEventsTableModuleEvents.PLAYER_SAVE_ON_EVENT, automaticEventData.name)
+        })
         el.removeClass("d-none")
         el.prependTo("#automatic-events-table-main")
     })
+}
+
+_global.updateRow = (eventName: string, automaticEventDataStr: string) => {
+    const automaticEventData: IAutomaticEvent = JSON.parse(automaticEventDataStr)
+    $(`#automatic-events-table-${eventName}-row`).find(".automatic-events-table-row-title").text(
+        `${automaticEventData.displayName} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
+    )
 }
