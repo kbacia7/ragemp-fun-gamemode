@@ -12,14 +12,15 @@ import { PlayerLoginValidatorFactory } from "core/DataValidator/PlayerLogin/Play
 import { PlayerDataFactory } from "core/PlayerDataProps/PlayerDataFactory"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
-import { IRegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/IRegisterAutomaticEventDataFactory"
-import { RegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/RegisterAutomaticEventDataFactory"
 import { Model } from "objection"
-import { emitKeypressEvents } from "readline"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
 import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
 import { Player } from "./entity/Player"
+import { Setting } from "./entity/Setting"
+import { AutomaticEvent } from "./modules/AutomaticEvents/AutomaticEvent"
+import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
+import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
 import { Chat } from "./modules/Chat/Chat"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
@@ -42,9 +43,13 @@ const knex = Knex({
 knex.select().table("players").then(() => {
    console.log("")
 })
+knex.select().table("settings").then(() => {
+   console.log("")
+})
 
 Model.knex(knex)
 Player.knex(knex)
+Setting.knex(knex)
 
 const playerDataFactory = new PlayerDataFactory()
 const notificationSenderFactory = new NotificationSenderFactory()
@@ -70,13 +75,56 @@ const playerPlayAsGuest: PlayerPlayAsGuest = new PlayerPlayAsGuest(
 const playerSave: PlayerSave = new PlayerSave(
    knex, playerDataFactory,
 )
-const registerAutomaticEventDataFactory: IRegisterAutomaticEventDataFactory = new RegisterAutomaticEventDataFactory()
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
 ]
 const commandExecutor = new CommandExecutor(playerDataFactory)
+
+// TODO: Usunąć to trzeba wraz z dodawaniem kolejnych eventów
+const tmpRaceAutomaticEvent = new AutomaticEvent()
+tmpRaceAutomaticEvent.name = "race"
+tmpRaceAutomaticEvent.displayName = "Race"
+tmpRaceAutomaticEvent.actualPlayers = 0
+tmpRaceAutomaticEvent.maxPlayers = 0
+tmpRaceAutomaticEvent.minPlayers = 1
+tmpRaceAutomaticEvent.type = AutomaticEventType.RACE
+
+const tmpTdmAutomaticEvent = new AutomaticEvent()
+tmpTdmAutomaticEvent.name = "tdm"
+tmpTdmAutomaticEvent.displayName = "TDM"
+tmpTdmAutomaticEvent.actualPlayers = 0
+tmpTdmAutomaticEvent.maxPlayers = 0
+tmpTdmAutomaticEvent.minPlayers = 1
+tmpTdmAutomaticEvent.type = AutomaticEventType.TDM
+
+const tmpDerbyAutomaticEvent = new AutomaticEvent()
+tmpDerbyAutomaticEvent.name = "derby"
+tmpDerbyAutomaticEvent.displayName = "Derby"
+tmpDerbyAutomaticEvent.actualPlayers = 0
+tmpDerbyAutomaticEvent.maxPlayers = 0
+tmpDerbyAutomaticEvent.minPlayers = 1
+tmpDerbyAutomaticEvent.type = AutomaticEventType.DERBY
+
+const tmpHideAndSeekAutomaticEvent = new AutomaticEvent()
+tmpHideAndSeekAutomaticEvent.name = "hideandseek"
+tmpHideAndSeekAutomaticEvent.displayName = "Hide&Seek"
+tmpHideAndSeekAutomaticEvent.actualPlayers = 0
+tmpHideAndSeekAutomaticEvent.maxPlayers = 0
+tmpHideAndSeekAutomaticEvent.minPlayers = 1
+tmpHideAndSeekAutomaticEvent.type = AutomaticEventType.HIDEANDSEEK
+
+const automaticEventManager = new AutomaticEventManager(
+   knex, notificationSenderFactory,
+   {
+      "tdm": tmpTdmAutomaticEvent,
+      // tslint:disable-next-line: object-literal-sort-keys
+      "race": tmpRaceAutomaticEvent,
+      "derby": tmpDerbyAutomaticEvent,
+      "hide&seek": tmpHideAndSeekAutomaticEvent,
+   }, playerDataFactory,
+)
 commandExecutor.addCommands(allCommands)
 
 mp.events.add("debug", (player: PlayerMp, text: string) => {
