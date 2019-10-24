@@ -30,9 +30,10 @@ _global.sendNotification = (i18nLabel: string, type: NotificationType, timeout: 
     if (arrayOfArgs.length > 0)  {
         translatedLabel = vsprintf(translatedLabel, arrayOfArgs)
     }
+
     notificationElement.attr("id", `notification-${randomId}`)
     notificationElement.addClass(`alert-${type}`)
-    notificationElement.text()
+    notificationElement.text(translatedLabel)
     notificationElement.removeClass("d-none")
     notificationElement.appendTo("body")
     setTimeout(() => {
