@@ -3,5 +3,10 @@
     "ACCOUNT_CREATED": "Konto zostało założone!",
     "SUCCESS_LOGIN": "Pomyślnie zalogowano na konto!",
     "EMAIL_SENDED": "Na podany adres e-mail wysłaliśmy link z prośbą o aktywację",
-    "PLAY_AS_GUEST": "Grasz jako gość! Twoje dane nie zostaną nigdzie zapisane!"
+    "PLAY_AS_GUEST": "Grasz jako gość! Twoje dane nie zostaną nigdzie zapisane!",
+    "AUTOMATIC_EVENT_START": "Zabawa %s właśnie się rozpoczęła! Można już się zapisywac na następną kolejkę!",
+    "AUTOMATIC_EVENT_CANT_PREPARE": "Upsss! Nie zostałeś zabrany na %s ponieważ jesteś nieosiągalny",
+    "AUTOMATIC_EVENT_END": "Zabawa %s została zakończona! Zwyciężył %s!",
+    "AUTOMATIC_EVENT_SAVED_SUCCESS": "Zapisałeś się na zabawę %s!",
+    "AUTOMATIC_EVENT_SOON_START": "Zabawa %s zacznie się za 30 sekund!"
 }
