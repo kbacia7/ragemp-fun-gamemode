@@ -86,7 +86,7 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.NAME, this._name)
         player.setVariable(PlayerDataProps.ISLOGGED, this._isLogged)
         player.setVariable(PlayerDataProps.PLAY_AS_GUEST, this._playAsGuest)
-        player.setVariable(PlayerDataProps.SAVED_ON_EVENTS, this._playAsGuest)
+        player.setVariable(PlayerDataProps.SAVED_ON_EVENTS, this._savedOnEvents)
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.PED, this._ped)
@@ -108,6 +108,7 @@ export class PlayerData implements IPlayerData {
         this._isLogged = player.getVariable(PlayerDataProps.ISLOGGED)
         this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
+        this._savedOnEvents = player.getVariable(PlayerDataProps.SAVED_ON_EVENTS)
         this._id = player.id
         this._ped = player.getVariable(PlayerDataProps.PED)
     }
@@ -123,6 +124,7 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.ID] = this._id
         obj[PlayerDataProps.ISLOGGED] = this._isLogged
         obj[PlayerDataProps.PLAY_AS_GUEST] = this._playAsGuest
+        obj[PlayerDataProps.SAVED_ON_EVENTS] = this._savedOnEvents
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         obj[PlayerDataProps.PED] = this._ped
         return obj
