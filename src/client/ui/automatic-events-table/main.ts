@@ -13,7 +13,7 @@ import { ActionsMenuModuleEvents } from "client/modules/ActionsMenuModule/Action
 import {
     AutomaticEventsTableModuleEvents,
 } from "client/modules/AutomaticEventsTableModule/AutomaticEventsTableModuleEvents"
-import { IAutomaticEvent } from "server/modules/AutomaticEvents/IAutomaticEvent"
+import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 
 $(document).ready(() => {
     const promiseFactory = new PromiseFactory<string>()
@@ -28,8 +28,8 @@ $(document).ready(() => {
 
 const _global: any = (window || global) as any
 _global.setEventsInTable = (automaticEventsDatasStr: string) => {
-    const automaticEventsDatas: IAutomaticEvent[] = JSON.parse(automaticEventsDatasStr)
-    automaticEventsDatas.forEach((automaticEventData: IAutomaticEvent) => {
+    const automaticEventsDatas: IAutomaticEventData[] = JSON.parse(automaticEventsDatasStr)
+    automaticEventsDatas.forEach((automaticEventData: IAutomaticEventData) => {
         const el: JQuery<HTMLElement> = $("#automatic-events-table-sample-row").clone()
         el.get(0).setAttribute("id", `automatic-events-table-${automaticEventData.name}-row`)
         el.find(".automatic-events-table-row-title").text(
@@ -44,7 +44,7 @@ _global.setEventsInTable = (automaticEventsDatasStr: string) => {
 }
 
 _global.updateRow = (eventName: string, automaticEventDataStr: string) => {
-    const automaticEventData: IAutomaticEvent = JSON.parse(automaticEventDataStr)
+    const automaticEventData: IAutomaticEventData = JSON.parse(automaticEventDataStr)
     $(`#automatic-events-table-${eventName}-row`).find(".automatic-events-table-row-title").text(
         `${automaticEventData.displayName} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
     )

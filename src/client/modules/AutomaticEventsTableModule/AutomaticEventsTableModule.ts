@@ -3,13 +3,13 @@ import { PlayerDataLoaderEvents } from "core/PlayerDataLoader/PlayerDataLoaderEv
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { AutomaticEventManagerEvents } from "server/modules/AutomaticEvents/AutomaticEventManagerEvents"
-import { IAutomaticEvent } from "server/modules/AutomaticEvents/IAutomaticEvent"
+import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 import { Module } from "./../Module"
 import { AutomaticEventsTableModuleEvents } from "./AutomaticEventsTableModuleEvents"
 
 export class AutomaticEventsTableModule extends Module {
 
-    private _automaticEventsDatas: IAutomaticEvent[] = null
+    private _automaticEventsDatas: IAutomaticEventData[] = null
     constructor(promiseFactory: IPromiseFactory<boolean>) {
         super(promiseFactory)
         this._name = "automatic-events-table"
