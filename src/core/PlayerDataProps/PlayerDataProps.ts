@@ -11,4 +11,5 @@ export enum PlayerDataProps {
     PLAY_AS_GUEST = "playAsGuest",
     PED = "ped",
     SAVED_ON_EVENTS = "savedOnEvents",
+    ON_EVENT = "onEvent",
 }

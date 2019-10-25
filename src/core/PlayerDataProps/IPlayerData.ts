@@ -12,7 +12,8 @@ export interface IPlayerData {
     isLogged: boolean,
     playAsGuest: boolean,
     nameColor: string,
-    savedOnEvents: AutomaticEventType[]
+    savedOnEvents: AutomaticEventType[],
+    onEvent: AutomaticEventType,
     ped: number,
     initialize: (player: PlayerMp) => void
     load: (player: PlayerMp) => IPlayerData

@@ -54,6 +54,11 @@ export class PlayerData implements IPlayerData {
         return this._savedOnEvents
     }
 
+    private _onEvent: AutomaticEventType
+    public get onEvent() {
+        return this._onEvent
+    }
+
     private _nameColor: string
     public get nameColor() {
         return this._nameColor
@@ -76,6 +81,7 @@ export class PlayerData implements IPlayerData {
         this._playAsGuest = false
         this._savedOnEvents = []
         this._ped = 0
+        this._onEvent = 0
         this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
@@ -87,6 +93,7 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.ISLOGGED, this._isLogged)
         player.setVariable(PlayerDataProps.PLAY_AS_GUEST, this._playAsGuest)
         player.setVariable(PlayerDataProps.SAVED_ON_EVENTS, this._savedOnEvents)
+        player.setVariable(PlayerDataProps.ON_EVENT, this._onEvent)
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.PED, this._ped)
@@ -108,6 +115,7 @@ export class PlayerData implements IPlayerData {
         this._isLogged = player.getVariable(PlayerDataProps.ISLOGGED)
         this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
+        this._onEvent = player.getVariable(PlayerDataProps.ON_EVENT)
         this._savedOnEvents = player.getVariable(PlayerDataProps.SAVED_ON_EVENTS)
         this._id = player.id
         this._ped = player.getVariable(PlayerDataProps.PED)
@@ -125,6 +133,7 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.ISLOGGED] = this._isLogged
         obj[PlayerDataProps.PLAY_AS_GUEST] = this._playAsGuest
         obj[PlayerDataProps.SAVED_ON_EVENTS] = this._savedOnEvents
+        obj[PlayerDataProps.ON_EVENT] = this._onEvent
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         obj[PlayerDataProps.PED] = this._ped
         return obj
