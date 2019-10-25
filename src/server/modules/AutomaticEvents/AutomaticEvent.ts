@@ -1,15 +1,29 @@
-import { Player } from "server/entity/Player"
-import { AutomaticEventType } from "./AutomaticEventType"
+import {
+    AutomaticEventLoadArenaNotImplemented,
+} from "core/exception/AutomaticEvent/AutomaticEventLoadArenaNotImplemented"
+import {
+    AutomaticEventPreparePlayerNotImplemented,
+} from "core/exception/AutomaticEvent/AutomaticEventPreparePlayerNotImplemented"
+import { Dimension } from "server/core/Dimension/Dimension"
+import { IAutomaticEvent } from "./IAutomaticEvent"
+import { IAutomaticEventData } from "./IAutomaticEventData"
 
-export class AutomaticEvent {
-    public name: string
-    public displayName: string
-    public type: AutomaticEventType
-    public minPlayers: number
-    public actualPlayers: number
-    public maxPlayers: number
+export class AutomaticEvent implements IAutomaticEvent {
+    protected _automaticEventData: IAutomaticEventData
+    protected _eventDimension: number = Dimension.EVENTS + this._automaticEventData.type
+    public get automaticEventData() {
+        return this._automaticEventData
+    }
 
-    public preparePlayer(playerMp: PlayerMp) {
-        playerMp.health = 50
+    constructor(automaticEventData: IAutomaticEventData) {
+        this._automaticEventData = automaticEventData
+    }
+
+    public preparePlayer(playerMp) {
+        throw new AutomaticEventPreparePlayerNotImplemented()
+    }
+
+    public loadArena() {
+        throw new AutomaticEventLoadArenaNotImplemented()
     }
 }

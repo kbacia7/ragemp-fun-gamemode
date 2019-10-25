@@ -1,11 +1,7 @@
-import { AutomaticEventType } from "./AutomaticEventType"
+import { IAutomaticEventData } from "./IAutomaticEventData"
 
 export interface IAutomaticEvent {
-    minPlayers: number
-    actualPlayers: number
-    maxPlayers: number
-    name: string
-    displayName: string
-    type: AutomaticEventType
-    preparePlayer: (player: PlayerMp) => void
+    automaticEventData: IAutomaticEventData
+    preparePlayer: (playerMp) => void
+    loadArena: ()  => void
 }
