@@ -9,53 +9,87 @@ import Knex = require("knex")
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { Setting } from "server/entity/Setting"
+import { PlayerSpawnManager } from "../PlayerSpawnManager/PlayerSpawnManager"
+import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
 import { AutomaticEventManagerEvents } from "./AutomaticEventManagerEvents"
+import { AutomaticEventType } from "./AutomaticEventType"
 import { IAutomaticEvent } from "./IAutomaticEvent"
+import { IAutomaticEventData } from "./IAutomaticEventData"
+import { IAutomaticEventDataFactory } from "./IAutomaticEventDataFactory"
+import { IAutomaticEventFactory } from "./IAutomaticEventFactory"
 
 export class AutomaticEventManager {
     private _knex: Knex = null
     private _notificationSender: INotificationSender = null
-    private _automaticEvents: {[name: string]: IAutomaticEvent} = null
+    private _automaticEvents: {[name: string]: IAutomaticEvent} = {}
     private _playersOnEvent: {[name: string]: PlayerMp[]} = {}
     private _playerDataFactory: IPlayerDataFactory = null
 
     constructor(
         knex: Knex,
         notifiactionSenderFactory: INotificationSenderFactory,
-        automaticEvents: {[name: string]: IAutomaticEvent},
-        playerDataFactory: IPlayerDataFactory) {
+        automaticEventsList: string[],
+        playerDataFactory: IPlayerDataFactory,
+        automaticEventDataFactory: IAutomaticEventDataFactory,
+        mappedNamesToTypes: {[name: string]: AutomaticEventType},
+        mappedNamesToFactories: {[name: string]: IAutomaticEventFactory}) {
         this._knex = knex
         this._notificationSender = notifiactionSenderFactory.create()
-        this._automaticEvents = automaticEvents
         this._playerDataFactory =  playerDataFactory
 
-        console.log(JSON.stringify(automaticEvents))
-        Object.values(this._automaticEvents).forEach((automaticEvent: IAutomaticEvent) => {
-            console.log(JSON.stringify(automaticEvent))
-            const evName = automaticEvent.name
+        automaticEventsList.forEach((automaticEventName: string) => {
+            console.log(JSON.stringify(automaticEventName))
+            const evName = automaticEventName
             this._playersOnEvent[evName] = []
 
             Setting.query()
             .select("name", "value")
-            .where("name", "LIKE", `${evName}_max_players`)
-            .then((settingsMaxPlayers: Setting[]) => {
-                settingsMaxPlayers.forEach((setting: Setting) => {
-                    automaticEvent.maxPlayers = parseInt(setting.value, 10)
-                })
-                Setting.query()
-                    .select("name, value")
-                    .where("name", "LIKE", `${evName}_min_players`)
-                    .then((settingsMinPlayers: Setting[]) => {
-                        settingsMinPlayers.forEach((setting: Setting) => {
-                            automaticEvent.minPlayers = parseInt(setting.value, 10)
-                        })
-                    })
+            .where("name", "LIKE", `${evName}_%`)
+            .then((settingsFromDb: Setting[]) => {
+                if (settingsFromDb.length > 0) {
+                    const mappedSettingsByName: {[name: string]: string} = Object.assign(
+                        {},
+                        ...(settingsFromDb.map((item) => ({ [item.name]: item.value }) )),
+                    )
+                    const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
+                        evName,
+                        mappedSettingsByName[`${evName}_display_name`],
+                        mappedNamesToTypes[evName],
+                        parseInt(mappedSettingsByName[`${evName}_min_players`], 10),
+                        0,
+                        parseInt(mappedSettingsByName[`${evName}_max_players`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_min_exp`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_max_exp`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_min_money`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_max_money`], 10),
+                    )
+                    this._automaticEvents[evName] = mappedNamesToFactories[evName].create(automaticEventData)
+                } else {
+                    // TODO: Usuwać wraz z dodawaniem nowych zabaw
+                    const tmpMapped = {
+                        derby: "Derby",
+                        hideandseek: "Hide&Seek",
+                        tdm: "TDM",
+                    }
+
+                    const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
+                        evName,
+                        tmpMapped[evName],
+                        AutomaticEventType.TDM,
+                        1,
+                        0,
+                        10,
+                        0, 0, 0, 0,
+                    )
+                    this._automaticEvents[evName] = mappedNamesToFactories.race.create(automaticEventData)
+
+                }
             })
         })
 
         mp.events.add(AutomaticEventManagerEvents.GET_AUTOMATIC_EVENTS, (playerMp: PlayerMp) => {
             playerMp.call(AutomaticEventManagerEvents.PROVIDE_AUTOMATIC_EVENTS, [
-                JSON.stringify(Object.values(this._automaticEvents)),
+                JSON.stringify(Object.values(this._automaticEvents).map((ev) => ev.automaticEventData)),
             ])
         })
 
@@ -63,10 +97,11 @@ export class AutomaticEventManager {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
             console.log(eventName)
             Object.values(this._automaticEvents).forEach((automaticEvent: IAutomaticEvent) => {
-                if (automaticEvent.name === eventName) {
+                const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
+                if (automaticEventData.name === eventName) {
                     console.log("here " + JSON.stringify(playerData.savedOnEvents) + " im!")
                     console.log(JSON.stringify(playerData))
-                    playerData.savedOnEvents.push(automaticEvent.type)
+                    playerData.savedOnEvents.push(automaticEventData.type)
 
                     playerMp.setVariable(
                         PlayerDataProps.SAVED_ON_EVENTS,
@@ -75,22 +110,25 @@ export class AutomaticEventManager {
                     this._notificationSender.send(
                         playerMp, "AUTOMATIC_EVENT_SAVED_SUCCESS",
                         NotificationType.INFO, NotificationTimeout.NORMAL,
-                        [automaticEvent.displayName],
+                        [automaticEventData.displayName],
                     )
-                    this._automaticEvents[eventName].actualPlayers++
+                    automaticEventData.actualPlayers++
                     playerMp.call(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE, [
                         eventName, JSON.stringify(this._automaticEvents[eventName]),
                     ])
 
-                    if (automaticEvent.actualPlayers >= automaticEvent.minPlayers) {
+                    if (automaticEventData.actualPlayers >= automaticEventData.minPlayers) {
                         mp.players.forEach((playerMpForNotification: PlayerMp) => {
                             this._notificationSender.send(
                                 playerMpForNotification, "AUTOMATIC_EVENT_SOON_START",
                                 NotificationType.INFO, NotificationTimeout.LONG,
-                                [automaticEvent.displayName],
+                                [automaticEventData.displayName],
                             )
                         })
-                        mp.events.call(AutomaticEventManagerEvents.EVENT_START, eventName)
+                        this._automaticEvents[eventName].loadArena()
+                        setTimeout(() => {
+                            mp.events.call(AutomaticEventManagerEvents.EVENT_START, eventName)
+                        }, 30000)
                     }
                 }
             })
@@ -107,14 +145,15 @@ export class AutomaticEventManager {
 
     private _start(name: string) {
         const automaticEvent: IAutomaticEvent = this._automaticEvents[name]
+        const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
         mp.players.forEach((playerMp: PlayerMp) => {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-            if (playerData.savedOnEvents.includes(this._automaticEvents[name].type)) {
+            if (playerData.savedOnEvents.includes(automaticEventData.type)) {
                 if (playerData.status !== PlayerDataStatus.ACTIVE) {
                     this._notificationSender.send(
                         playerMp, "AUTOMATIC_EVENT_CANT_PREPARE",
                         NotificationType.ERROR, NotificationTimeout.LONG,
-                        [automaticEvent.displayName],
+                        [automaticEventData.displayName],
                     )
                 } else {
                     this._automaticEvents[name].preparePlayer(playerMp)
@@ -124,19 +163,25 @@ export class AutomaticEventManager {
             this._notificationSender.send(
                 playerMp, "AUTOMATIC_EVENT_START",
                 NotificationType.INFO, NotificationTimeout.NORMAL,
-                [automaticEvent.displayName],
+                [automaticEventData.displayName],
             )
         })
     }
 
     private _end(name: string, winner: string) {
         const automaticEvent: IAutomaticEvent = this._automaticEvents[name]
-        mp.players.forEach((playerMp: PlayerMp) => {
-            this._notificationSender.send(
-                playerMp, "AUTOMATIC_EVENT_END",
-                NotificationType.INFO, NotificationTimeout.NORMAL,
-                [automaticEvent.displayName, winner],
-            )
+        const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
+        if (winner) {
+            mp.players.forEach((playerMp: PlayerMp) => {
+                this._notificationSender.send(
+                    playerMp, "AUTOMATIC_EVENT_END",
+                    NotificationType.INFO, NotificationTimeout.NORMAL,
+                    [automaticEventData.displayName, winner],
+                )
+            })
+        }
+        this._playersOnEvent[name].forEach((playerMp: PlayerMp) => {
+            mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
         })
     }
 }
