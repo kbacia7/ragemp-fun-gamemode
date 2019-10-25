@@ -8,5 +8,8 @@
     "AUTOMATIC_EVENT_CANT_PREPARE": "Upsss! Nie zostałeś zabrany na %s ponieważ jesteś nieosiągalny",
     "AUTOMATIC_EVENT_END": "Zabawa %s została zakończona! Zwyciężył %s!",
     "AUTOMATIC_EVENT_SAVED_SUCCESS": "Zapisałeś się na zabawę %s!",
-    "AUTOMATIC_EVENT_SOON_START": "Zabawa %s zacznie się za 30 sekund!"
+    "AUTOMATIC_EVENT_SOON_START": "Zabawa %s zacznie się za 30 sekund!",
+    "RACE_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
+    "RACE_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
+    "RACE_EVENT_YOU_WIN": "Zająłeś %s miejsce na wyścigu i wygrałeś %s$ i %s expa!"
 }
