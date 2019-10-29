@@ -81,7 +81,7 @@ export class PlayerData implements IPlayerData {
         this._playAsGuest = false
         this._savedOnEvents = []
         this._ped = 0
-        this._onEvent = 0
+        this._onEvent = AutomaticEventType.NOTHING
         this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
