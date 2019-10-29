@@ -15,11 +15,11 @@ import {
 } from "client/modules/AutomaticEventsTableModule/AutomaticEventsTableModuleEvents"
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 
+const promiseFactory = new PromiseFactory<string>()
+const xmlFileRequest = new XMLFileRequest(promiseFactory)
+const internationalizationSettings = new InternationalizationSettings("pl_PL")
+const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
 $(document).ready(() => {
-    const promiseFactory = new PromiseFactory<string>()
-    const xmlFileRequest = new XMLFileRequest(promiseFactory)
-    const internationalizationSettings = new InternationalizationSettings("pl_PL")
-    const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
     i18nTranslator.loadTranslations("translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
         element.innerText = i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
@@ -35,8 +35,22 @@ _global.setEventsInTable = (automaticEventsDatasStr: string) => {
         el.find(".automatic-events-table-row-title").text(
             `${automaticEventData.displayName} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
         )
-        el.find(".automatic-events-table-row-save-button").on("click", () => {
-            mp.trigger(AutomaticEventsTableModuleEvents.PLAYER_SAVE_ON_EVENT, automaticEventData.name)
+        const clickedButton = el.find(".automatic-events-table-row-save-button")
+        clickedButton.on("click", () => {
+            if (clickedButton.hasClass("automatic-event-saved")) {
+                mp.trigger(AutomaticEventsTableModuleEvents.PLAYER_SIGNED_OFF_EVENT, automaticEventData.name)
+                clickedButton.removeClass("automatic-event-saved")
+                clickedButton.removeClass("btn-info")
+                clickedButton.addClass("btn-primary")
+                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
+            } else {
+                mp.trigger(AutomaticEventsTableModuleEvents.PLAYER_SAVE_ON_EVENT, automaticEventData.name)
+                clickedButton.removeClass("btn-primary")
+                clickedButton.addClass("btn-info")
+                clickedButton.addClass("automatic-event-saved")
+                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVED"))
+            }
+
         })
         el.removeClass("d-none")
         el.prependTo("#automatic-events-table-main")
@@ -48,4 +62,12 @@ _global.updateRow = (eventName: string, automaticEventDataStr: string) => {
     $(`#automatic-events-table-${eventName}-row`).find(".automatic-events-table-row-title").text(
         `${automaticEventData.displayName} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
     )
+}
+
+_global.updateButton = (eventName: string) => {
+    const button = $(`#automatic-events-table-${eventName}-row`).find(".automatic-events-table-row-save-button")
+    button.removeClass("automatic-event-saved")
+    button.removeClass("btn-info")
+    button.addClass("btn-primary")
+    button.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
 }

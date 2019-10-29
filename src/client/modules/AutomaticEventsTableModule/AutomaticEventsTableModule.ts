@@ -26,10 +26,18 @@ export class AutomaticEventsTableModule extends Module {
             mp.events.callRemote(AutomaticEventManagerEvents.PLAYER_SAVE_TO_EVENT, eventName)
         })
 
+        mp.events.add(AutomaticEventsTableModuleEvents.PLAYER_SIGNED_OFF_EVENT, (eventName: string) => {
+            mp.events.callRemote(AutomaticEventManagerEvents.PLAYER_SIGNED_OFF_EVENT, eventName)
+        })
+
         mp.events.add(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE,
             (eventName: string, automaticEventDataStr: string) => {
                 this._updateTableRow(eventName, automaticEventDataStr)
-            })
+        })
+
+        mp.events.add(AutomaticEventManagerEvents.UPDATE_EVENTS_BUTTON_TABLE, (eventName: string) => {
+            this._updateButton(eventName)
+        })
     }
 
     public loadUI() {
@@ -55,6 +63,12 @@ export class AutomaticEventsTableModule extends Module {
     private _updateTableRow(eventName: string, automaticEventData: string) {
         this._currentWindow.execute(
             `updateRow('${eventName}', '${automaticEventData}')`,
+        )
+    }
+
+    private _updateButton(eventName: string) {
+        this._currentWindow.execute(
+            `updateButton('${eventName}')`,
         )
     }
 }
