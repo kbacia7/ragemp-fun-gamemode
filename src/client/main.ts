@@ -11,6 +11,7 @@ import { IActionsMenuModuleFactory } from "./modules/ActionsMenuModule/IActionsM
 import { ActivePlayersTableModuleFactory } from "./modules/ActivePlayersTableModule/ActivePlayersTableModuleFactory"
 import { AutomaticEventsTableModule } from "./modules/AutomaticEventsTableModule/AutomaticEventsTableModule"
 import { CommandListenerModule } from "./modules/CommandListener/CommandListenerModule"
+import { FreezePlayerModule } from "./modules/FreezePlayerModule/FreezePlayerModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
 import { IPlayerProfileModuleFactory } from "./modules/PlayerProfileModule/IPlayerProfileModuleFactory"
 import { PlayerProfileModule } from "./modules/PlayerProfileModule/PlayerProfileModule"
@@ -28,6 +29,7 @@ const notificationsModule = new NotificationModule(promiseBooleanFactory)
 const playerProfileModule: PlayerProfileModule = new PlayerProfileModule(promiseBooleanFactory)
 const automaticEventsTableModule: AutomaticEventsTableModule = new AutomaticEventsTableModule(promiseBooleanFactory)
 const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBooleanFactory)
+const freezePlayerModule = new FreezePlayerModule(promiseBooleanFactory)
 const commandListenerModule = new CommandListenerModule(promiseBooleanFactory, activePlayersTableModuleFactory)
 notificationsModule.loadUI()
 mp.gui.chat.colors = true
