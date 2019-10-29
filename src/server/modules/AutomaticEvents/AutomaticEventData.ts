@@ -19,9 +19,6 @@ export class AutomaticEventData implements IAutomaticEventData {
     public get minPlayers() {
         return this._minPlayers
     }
-    public get actualPlayers() {
-        return this._actualPlayers
-    }
     public get maxPlayers() {
         return this._maxPlayers
     }
@@ -38,7 +35,8 @@ export class AutomaticEventData implements IAutomaticEventData {
         return this._maxMoney
     }
 
-    protected _eventDimension: number = Dimension.EVENTS + this.type
+    public actualPlayers: number
+
     private _name: string
 
     private _displayName: string
@@ -46,8 +44,6 @@ export class AutomaticEventData implements IAutomaticEventData {
     private _type: AutomaticEventType
 
     private _minPlayers: number
-
-    private _actualPlayers: number
 
     private _maxPlayers: number
 
@@ -75,11 +71,26 @@ export class AutomaticEventData implements IAutomaticEventData {
         this._displayName = displayName
         this._type = type
         this._minPlayers = minPlayers
-        this._actualPlayers = actualPlayers
         this._maxPlayers = maxPlayers
         this._minExp = minExp
         this._maxExp = maxExp
         this._minMoney  = minMoney
         this._maxMoney = maxMoney
+        this.actualPlayers = actualPlayers
+    }
+
+    public toJSON() {
+        const obj: any = {}
+        obj.name = this._name
+        obj.displayName = this._displayName
+        obj.type = this._type
+        obj.minPlayers = this._minPlayers
+        obj.actualPlayers = this.actualPlayers
+        obj.maxPlayers = this._maxPlayers
+        obj.minExp = this._minExp
+        obj.maxExp = this._maxExp
+        obj.minMoney = this._minMoney
+        obj.maxMoney = this._maxMoney
+        return obj
     }
 }
