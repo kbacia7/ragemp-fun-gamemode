@@ -3,6 +3,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import Knex = require("knex")
 import { knexSnakeCaseMappers } from "objection"
@@ -25,7 +26,6 @@ import { IAutomaticEventData } from "../IAutomaticEventData"
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
     private _raceArena: RaceArena = null
-    private _raceArenaCheckpoints: RaceArenaCheckpoint[] = []
     private _raceArenaSpawns: RaceArenaSpawnPoint[] = []
     private _checkpoints: CheckpointMp[]  = []
     private _vehicles: VehicleMp[] = []
@@ -71,6 +71,12 @@ export class RaceAutomaticEvent extends AutomaticEvent {
 
     public loadArena() {
         this._eventDimension++
+        this._checkpoints = []
+        this._vehicles = []
+        this._raceArenaSpawns = []
+        this._loadedPlayers = 0
+        this._players = []
+        this._winners = RaceAutomaticEvent.MAX_WINNERS
         console.log("Load arena " + this._id)
         RaceArena.query()
             .select()
@@ -91,7 +97,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                                 255,
                             ]
                             console.log("Loaded checkpoints: " + raceArenaCheckpoints.length)
-                            this._raceArenaCheckpoints = raceArenaCheckpoints
                             let index = 0
                             raceArenaCheckpoints.forEach((raceArenaCheckpoint: RaceArenaCheckpoint) => {
                                 let nextPosition: Vector3Mp = null
@@ -200,6 +205,8 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             }
         })
         this._winners--
+        playerMp.setVariable(PlayerDataProps.STATUS, PlayerDataStatus.ACTIVE)
+        playerMp.setVariable(PlayerDataProps.ON_EVENT, AutomaticEventType.NOTHING)
         mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
         if (this._winners === 0 || this._players.length === 0) {
             this._endRace()
