@@ -15,5 +15,6 @@
     "RACE_EVENT_MAP_START": "Zabawa rozpoczęta!",
     "RACE_EVENT_WINNER": "%s ukończył race zajmując %s miejsce z czasem %s!",
     "AUTOMATIC_EVENT_SIGNED_OFF_SUCCESS": "Wypisałeś się z %s!",
-    "AUTOMATIC_EVENT_CANT_START": "%s nie może wystartować z powodu niewystarczającej ilości graczy, zapisy zostały rozpoczęte od nowa"
+    "AUTOMATIC_EVENT_CANT_START": "%s nie może wystartować z powodu niewystarczającej ilości graczy, zapisy zostały rozpoczęte od nowa",
+    "AUTOMATIC_EVENT_SOON_SOON": "Odliczanie do startu zabawy %s rozpocznie się gdy aktualna zakończy się"
 }

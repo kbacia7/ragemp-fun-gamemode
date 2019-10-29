@@ -25,6 +25,8 @@ export class AutomaticEventManager {
     private _automaticEvents: { [name: string]: IAutomaticEvent } = {}
     private _playersOnEvent: { [name: string]: PlayerMp[] } = {}
     private _playerDataFactory: IPlayerDataFactory = null
+    private _activeEvents: { [name: string]: boolean} = {}
+    private _waitForEnd: { [name: string]: boolean} = {}
 
     constructor(
         knex: Knex,
@@ -43,6 +45,8 @@ export class AutomaticEventManager {
             console.log(JSON.stringify(automaticEventName))
             const evName = automaticEventName
             this._playersOnEvent[evName] = []
+            this._activeEvents[evName] = false
+            this._waitForEnd[evName] = false
             Setting.query()
                 .select()
                 .where("name", "LIKE", `${evName}_%`)
@@ -145,15 +149,28 @@ export class AutomaticEventManager {
                 ])
 
                 if (automaticEventData.actualPlayers >= automaticEventData.minPlayers) {
-                    mp.players.forEach((playerMpForNotification: PlayerMp) => {
-                        this._notificationSender.send(
-                            playerMpForNotification, "AUTOMATIC_EVENT_SOON_START",
-                            NotificationType.INFO, NotificationTimeout.LONG,
-                            [automaticEventData.displayName],
-                        )
-                    })
-                    this._automaticEvents[eventName].loadArena()
-                    mp.events.call(AutomaticEventManagerEvents.EVENT_START_SOON, eventName)
+                    if (this._activeEvents[eventName]) {
+                        mp.players.forEach((playerMpForNotification: PlayerMp) => {
+                            this._notificationSender.send(
+                                playerMpForNotification, "AUTOMATIC_EVENT_SOON_SOON",
+                                NotificationType.INFO, NotificationTimeout.LONG,
+                                [automaticEventData.displayName],
+                            )
+                        })
+                        this._waitForEnd[eventName] = true
+                    } else {
+                        mp.players.forEach((playerMpForNotification: PlayerMp) => {
+                            this._notificationSender.send(
+                                playerMpForNotification, "AUTOMATIC_EVENT_SOON_START",
+                                NotificationType.INFO, NotificationTimeout.LONG,
+                                [automaticEventData.displayName],
+                            )
+                        })
+                        this._activeEvents[eventName] = true
+                        this._automaticEvents[eventName].loadArena()
+                        mp.events.call(AutomaticEventManagerEvents.EVENT_START_SOON, eventName)
+                    }
+
                 }
             }
         })
@@ -212,6 +229,16 @@ export class AutomaticEventManager {
                         [automaticEventData.displayName],
                     )
                     automaticEventData.actualPlayers--
+                    if (automaticEventData.actualPlayers < automaticEventData.minPlayers) {
+                        mp.players.forEach((playerMpForNotification: PlayerMp) => {
+                            this._notificationSender.send(
+                                playerMpForNotification, "AUTOMATIC_EVENT_CANT_START",
+                                NotificationType.ERROR, NotificationTimeout.LONG,
+                                [automaticEventData.displayName],
+                            )
+                        })
+                        return this._end(name, null)
+                    }
                 } else {
                     playerMp.setVariable(
                         PlayerDataProps.SAVED_ON_EVENTS,
@@ -261,5 +288,19 @@ export class AutomaticEventManager {
         this._playersOnEvent[name].forEach((playerMp: PlayerMp) => {
             mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
         })
+        this._activeEvents[name] = false
+        if (this._waitForEnd[name]) {
+            mp.players.forEach((playerMpForNotification: PlayerMp) => {
+                this._notificationSender.send(
+                    playerMpForNotification, "AUTOMATIC_EVENT_SOON_START",
+                    NotificationType.INFO, NotificationTimeout.LONG,
+                    [automaticEventData.displayName],
+                )
+            })
+            this._activeEvents[name] = true
+            this._waitForEnd[name] = false
+            this._automaticEvents[name].loadArena()
+            mp.events.call(AutomaticEventManagerEvents.EVENT_START_SOON, name)
+        }
     }
 }
