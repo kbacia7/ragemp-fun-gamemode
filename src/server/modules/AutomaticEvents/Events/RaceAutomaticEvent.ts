@@ -22,6 +22,7 @@ import { AutomaticEventManagerEvents } from "../AutomaticEventManagerEvents"
 import { AutomaticEventType } from "../AutomaticEventType"
 import { IAutomaticEvent } from "../IAutomaticEvent"
 import { IAutomaticEventData } from "../IAutomaticEventData"
+import { RaceAutomaticEventEndPlayerReasons } from "./RaceAutomaticEventEndPlayerReasons"
 
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
@@ -40,6 +41,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     private _winners: number = RaceAutomaticEvent.MAX_WINNERS
     private _id: number = 0
     private _startedDimension: number = 0
+    private _playersAdded: boolean = false
 
     constructor(
         automaticEventData: IAutomaticEventData,
@@ -67,6 +69,22 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             }
         })
 
+        mp.events.add("playerExitVehicle", (player: PlayerMp, vehicle: VehicleMp) => {
+            const playerData: IPlayerData = this._playerDataFactory.create().load(player)
+            const trueOnEvent = playerData.status === PlayerDataStatus.ON_EVENT &&
+                playerData.onEvent === AutomaticEventType.RACE
+            if (trueOnEvent && this._playersAdded) {
+                this._endRaceForPlayer(player, RaceAutomaticEventEndPlayerReasons.FORCE)
+            }
+        })
+
+        mp.events.add("playerDeath", (player: PlayerMp) => {
+            const playerData: IPlayerData = this._playerDataFactory.create().load(player)
+            if (playerData.status === PlayerDataStatus.ON_EVENT && playerData.onEvent === AutomaticEventType.RACE) {
+                this._endRaceForPlayer(player, RaceAutomaticEventEndPlayerReasons.FORCE)
+            }
+        })
+
     }
 
     public loadArena() {
@@ -76,6 +94,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._raceArenaSpawns = []
         this._loadedPlayers = 0
         this._players = []
+        this._playersAdded = false
         this._winners = RaceAutomaticEvent.MAX_WINNERS
         console.log("Load arena " + this._id)
         RaceArena.query()
@@ -108,9 +127,10 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                                         raceArenaCheckpoints[nextIndex].z,
                                     )
                                 }
+                                const checkpointType = (nextPosition) ? 2 : 4
                                 this._checkpoints.push(
                                     this._checkpointFactory.create(
-                                        2, this._vector3Factory.create(
+                                        checkpointType, this._vector3Factory.create(
                                             raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
                                         ), 10, nextPosition, checkpointColor, false, this._eventDimension,
                                     ),
@@ -132,12 +152,16 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public start() {
-        this._players.forEach((player) => {
-            player.call(FreezePlayerModuleEvents.UNFREEZE_PLAYER)
-            this._notificationSender.send(
-                player, "RACE_EVENT_MAP_START", NotificationType.INFO, NotificationTimeout.VERY_LONG,
-            )
-        })
+        setTimeout(() => {
+            this._players.forEach((player) => {
+                player.call(FreezePlayerModuleEvents.UNFREEZE_PLAYER)
+                this._notificationSender.send(
+                    player, "RACE_EVENT_MAP_START", NotificationType.INFO, NotificationTimeout.VERY_LONG,
+                )
+            })
+            this._playersAdded = true
+        }, 3000)
+
     }
 
     public preparePlayer(playerMp: PlayerMp) {
@@ -181,30 +205,39 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         }
     }
 
-    private _endRaceForPlayer(playerMp: PlayerMp) {
+    private _endRaceForPlayer(
+        playerMp: PlayerMp,
+        reason: RaceAutomaticEventEndPlayerReasons = RaceAutomaticEventEndPlayerReasons.NORMAL,
+    ) {
         const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-        const automaticEventData: IAutomaticEventData = this._automaticEventData
+        if (reason === RaceAutomaticEventEndPlayerReasons.NORMAL) {
+            const automaticEventData: IAutomaticEventData = this._automaticEventData
 
-        let randomMoney: number = random.int(automaticEventData.minMoney, automaticEventData.maxMoney)
-        let randomExp: number = random.int(automaticEventData.minExp, automaticEventData.maxExp)
-        randomMoney *= (this._winners / RaceAutomaticEvent.MAX_WINNERS)
-        randomExp *= (this._winners / RaceAutomaticEvent.MAX_WINNERS)
-        this._notificationSender.send(
-            playerMp, "RACE_EVENT_YOU_WIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
-            [(4 - this._winners).toString(), randomMoney.toString(), randomExp.toString()],
-        )
+            let randomMoney: number = random.int(automaticEventData.minMoney, automaticEventData.maxMoney)
+            let randomExp: number = random.int(automaticEventData.minExp, automaticEventData.maxExp)
+            randomMoney *= (this._winners / RaceAutomaticEvent.MAX_WINNERS)
+            randomExp *= (this._winners / RaceAutomaticEvent.MAX_WINNERS)
+            this._notificationSender.send(
+                playerMp, "RACE_EVENT_YOU_WIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
+                [(4 - this._winners).toString(), randomMoney.toString(), randomExp.toString()],
+            )
+            this._players.forEach((playerMpForNotification: PlayerMp) => {
+                if (playerMpForNotification.id !== playerMp.id) {
+                    this._notificationSender.send(
+                        playerMpForNotification, "RACE_EVENT_WINNER", NotificationType.INFO, NotificationTimeout.LONG,
+                        [playerData.name, (4 - this._winners).toString(), "00:00"],
+                    )
+                }
+            })
+            this._winners--
+        } else {
+            this._notificationSender.send(
+                playerMp, "RACE_EVENT_LOOSE", NotificationType.INFO, NotificationTimeout.LONG,
+            )
+        }
         this._players = this._players.filter((p) => {
             return p.id !== playerMp.id
         })
-        this._players.forEach((playerMpForNotification: PlayerMp) => {
-            if (playerMpForNotification.id !== playerMp.id) {
-                this._notificationSender.send(
-                    playerMpForNotification, "RACE_EVENT_WINNER", NotificationType.INFO, NotificationTimeout.LONG,
-                    [playerData.name, (4 - this._winners).toString(), "00:00"],
-                )
-            }
-        })
-        this._winners--
         playerMp.setVariable(PlayerDataProps.STATUS, PlayerDataStatus.ACTIVE)
         playerMp.setVariable(PlayerDataProps.ON_EVENT, AutomaticEventType.NOTHING)
         mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
