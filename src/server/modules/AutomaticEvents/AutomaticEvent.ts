@@ -10,13 +10,18 @@ import { IAutomaticEventData } from "./IAutomaticEventData"
 
 export class AutomaticEvent implements IAutomaticEvent {
     protected _automaticEventData: IAutomaticEventData
-    protected _eventDimension: number = Dimension.EVENTS + this._automaticEventData.type
+    protected _eventDimension: number = 100
     public get automaticEventData() {
         return this._automaticEventData
     }
 
     constructor(automaticEventData: IAutomaticEventData) {
         this._automaticEventData = automaticEventData
+        this._eventDimension = Dimension.EVENTS * this.automaticEventData.type + 1
+    }
+
+    public start() {
+        throw new AutomaticEventLoadArenaNotImplemented()
     }
 
     public preparePlayer(playerMp) {
