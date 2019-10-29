@@ -39,6 +39,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     private _nextCheckpointForPlayer: {[playerId: number]: number}
     private _winners: number = RaceAutomaticEvent.MAX_WINNERS
     private _id: number = 0
+    private _startedDimension: number = 0
 
     constructor(
         automaticEventData: IAutomaticEventData,
@@ -56,6 +57,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._notificationSender = notificationSenderFactory.create()
         this._nextCheckpointForPlayer = {}
         this._id = random.int(100, 10000000)
+        this._startedDimension = this._eventDimension
 
         mp.events.add("playerEnterCheckpoint", (player: PlayerMp) => {
             const playerData: IPlayerData = this._playerDataFactory.create().load(player)
@@ -68,6 +70,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public loadArena() {
+        this._eventDimension++
         console.log("Load arena " + this._id)
         RaceArena.query()
             .select()
@@ -211,6 +214,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._vehicles.forEach((vehicle) => {
             vehicle.destroy()
         })
+        this._eventDimension = this._startedDimension
         mp.events.call(AutomaticEventManagerEvents.EVENT_END, this.automaticEventData.name)
     }
 

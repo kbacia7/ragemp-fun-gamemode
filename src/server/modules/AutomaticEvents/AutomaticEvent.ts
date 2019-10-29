@@ -10,7 +10,7 @@ import { IAutomaticEventData } from "./IAutomaticEventData"
 
 export class AutomaticEvent implements IAutomaticEvent {
     protected _automaticEventData: IAutomaticEventData
-    protected _eventDimension: number = 100
+    protected _eventDimension: number = 0
     public get automaticEventData() {
         return this._automaticEventData
     }
