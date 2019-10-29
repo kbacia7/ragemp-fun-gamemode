@@ -15,7 +15,7 @@ export class PlayerSpawnManager {
             })
 
         mp.events.add(PlayerSpawnManagerEvents.FORCE_RESPAWN, (playerMp: PlayerMp) => {
-            const spawnId = random.int(0, this._spawns.length)
+            const spawnId = random.int(0, this._spawns.length - 1)
             playerMp.dimension = Dimension.NORMAL
             playerMp.spawn(
                 vector3Factory.create(
