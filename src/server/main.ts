@@ -43,19 +43,15 @@ import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnMana
 const knex = Knex({
    client: dbConfig.development.client,
    connection: dbConfig.development.connection,
+   debug: true,
 })
 
-// FIXME: Nie usuwać tego, bez tego Objection.js nie działa. Nie mam pojęcia czemu <shrug face here>
-knex.select().table("players").then(() => {
-   console.log("")
+knex.raw("SELECT 1").then(() => {
+   console.log("Connected to database")
+}).catch((err) => {
+   console.log(err)
 })
-knex.select().table("settings").then(() => {
-   console.log("")
-})
-
 Model.knex(knex)
-Player.knex(knex)
-Setting.knex(knex)
 
 const playerDataFactory = new PlayerDataFactory()
 const notificationSenderFactory = new NotificationSenderFactory()

@@ -3,11 +3,12 @@ import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
+import { AutomaticEventFactory } from "../AutomaticEventFactory"
 import { IAutomaticEventData } from "../IAutomaticEventData"
 import { IAutomaticEventFactory } from "../IAutomaticEventFactory"
 import { RaceAutomaticEvent } from "./RaceAutomaticEvent"
 
-export class RaceAutomaticEventFactory implements IAutomaticEventFactory {
+export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     private _vehicleFactory: IVehicleFactory = null
     private _vector3Factory: IVector3Factory = null
     private _checkpointFactory: ICheckpointFactory = null

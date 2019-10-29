@@ -1,3 +1,4 @@
+import { FreezePlayerModuleEvents } from "client/modules/FreezePlayerModule/FreezePlayerModuleEvents"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
@@ -14,6 +15,7 @@ import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { RaceArena } from "server/entity/RaceArena"
 import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
+import { PlayerSpawnManagerEvents } from "server/modules/PlayerSpawnManager/PlayerSpawnManagerEvents"
 import { AutomaticEvent } from "../AutomaticEvent"
 import { AutomaticEventManagerEvents } from "../AutomaticEventManagerEvents"
 import { AutomaticEventType } from "../AutomaticEventType"
@@ -33,9 +35,10 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     private _checkpointFactory: ICheckpointFactory = null
     private _notificationSender: INotificationSender = null
     private _playerDataFactory: IPlayerDataFactory = null
-    private _players: PlayerMp[]
-    private _nextCheckpointForPlayer: {[playerId: number]: number} = {}
+    private _players: PlayerMp[] = []
+    private _nextCheckpointForPlayer: {[playerId: number]: number}
     private _winners: number = RaceAutomaticEvent.MAX_WINNERS
+    private _id: number = 0
 
     constructor(
         automaticEventData: IAutomaticEventData,
@@ -51,10 +54,13 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._checkpointFactory = checkpointFactory
         this._playerDataFactory = playerDataFactory
         this._notificationSender = notificationSenderFactory.create()
+        this._nextCheckpointForPlayer = {}
+        this._id = random.int(100, 10000000)
 
         mp.events.add("playerEnterCheckpoint", (player: PlayerMp) => {
             const playerData: IPlayerData = this._playerDataFactory.create().load(player)
             if (playerData.status === PlayerDataStatus.ON_EVENT && playerData.onEvent === AutomaticEventType.RACE) {
+                console.log(JSON.stringify(this._nextCheckpointForPlayer))
                 this._playerEnterCheckpoint(player)
             }
         })
@@ -62,6 +68,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public loadArena() {
+        console.log("Load arena " + this._id)
         RaceArena.query()
             .select()
             .orderByRaw("RAND()")
@@ -69,8 +76,9 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             .then((raceArenas: RaceArena[]) => {
                 if (raceArenas.length > 0) {
                     const raceArena: RaceArena = raceArenas[0]
+                    console.log(`Loaded arena: ${raceArena.name}`)
                     raceArena
-                        .$relatedQuery("races_arenas_checkpoints")
+                        .$relatedQuery("checkpoints")
                         .orderBy("id", "ASC")
                         .then((raceArenaCheckpoints: RaceArenaCheckpoint[]) => {
                             const checkpointColor: [number, number, number, number] = [
@@ -79,15 +87,17 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                                 Math.floor(Math.random() * 255) + 1,
                                 255,
                             ]
+                            console.log("Loaded checkpoints: " + raceArenaCheckpoints.length)
                             this._raceArenaCheckpoints = raceArenaCheckpoints
                             let index = 0
                             raceArenaCheckpoints.forEach((raceArenaCheckpoint: RaceArenaCheckpoint) => {
-                                let nextPosition: Vector3Mp
-                                if (raceArenaCheckpoints[index]) {
+                                let nextPosition: Vector3Mp = null
+                                const nextIndex = index + 1
+                                if (raceArenaCheckpoints[nextIndex]) {
                                     nextPosition = this._vector3Factory.create(
-                                        raceArenaCheckpoints[index].x,
-                                        raceArenaCheckpoints[index].y,
-                                        raceArenaCheckpoints[index].z,
+                                        raceArenaCheckpoints[nextIndex].x,
+                                        raceArenaCheckpoints[nextIndex].y,
+                                        raceArenaCheckpoints[nextIndex].z,
                                     )
                                 }
                                 this._checkpoints.push(
@@ -101,21 +111,35 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                             })
                         })
                     raceArena
-                        .$relatedQuery("races_arenas_spawns")
+                        .$relatedQuery("spawns")
                         .then((raceArenaSpawns: RaceArenaSpawnPoint[]) => {
+                            console.log("Max players on arena: " + raceArenaSpawns.length)
                             this._raceArenaSpawns = raceArenaSpawns
                         })
+                    console.log("aID " + this._id)
+
                     this._raceArena = raceArena
                 }
             })
     }
 
+    public start() {
+        this._players.forEach((player) => {
+            player.call(FreezePlayerModuleEvents.UNFREEZE_PLAYER)
+            this._notificationSender.send(
+                player, "RACE_EVENT_MAP_START", NotificationType.INFO, NotificationTimeout.VERY_LONG,
+            )
+        })
+    }
+
     public preparePlayer(playerMp: PlayerMp) {
+        console.log("prepare " + this._id)
         if (this._loadedPlayers > this._raceArenaSpawns.length - 1) {
             this._notificationSender.send(
                 playerMp, "RACE_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
                 [this._raceArena.name],
             )
+            this._endRaceForPlayer(playerMp)
         } else {
             const raceArenaSpawn: RaceArenaSpawnPoint = this._raceArenaSpawns[this._loadedPlayers]
             const randomColor: [number, number, number] = [
@@ -127,14 +151,19 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 raceArenaSpawn.vehicleModel,
                 this._vector3Factory.create(raceArenaSpawn.x,  raceArenaSpawn.y,  raceArenaSpawn.z),
                 raceArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
-                true, true, super._eventDimension,
+                true, true, this._eventDimension,
             )
-            playerMp.dimension = super._eventDimension
+            console.log("prepare 2")
+            playerMp.dimension = this._eventDimension
             playerMp.putIntoVehicle(vehicleForSpawn, -1)
-            playerMp.freezePosition(true)
+            playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
+            console.log("oo")
+            this._checkpoints.forEach((checkPoint: CheckpointMp) => {
+                checkPoint.hideFor(playerMp)
+            })
             this._checkpoints[0].showFor(playerMp)
-            this._nextCheckpointForPlayer[playerMp.id] = 1
-
+            this._nextCheckpointForPlayer[playerMp.id] = 0
+            console.log(JSON.stringify(this._nextCheckpointForPlayer))
             this._notificationSender.send(
                 playerMp, "RACE_EVENT_MAP_INFO", NotificationType.INFO, NotificationTimeout.LONG,
                 [this._raceArena.name, this._raceArena.author],
@@ -156,8 +185,20 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             playerMp, "RACE_EVENT_YOU_WIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
             [(4 - this._winners).toString(), randomMoney.toString(), randomExp.toString()],
         )
+        this._players = this._players.filter((p) => {
+            return p.id !== playerMp.id
+        })
+        this._players.forEach((playerMpForNotification: PlayerMp) => {
+            if (playerMpForNotification.id !== playerMp.id) {
+                this._notificationSender.send(
+                    playerMpForNotification, "RACE_EVENT_WINNER", NotificationType.INFO, NotificationTimeout.LONG,
+                    [playerData.name, (4 - this._winners).toString(), "00:00"],
+                )
+            }
+        })
         this._winners--
-        if (this._winners === 0) {
+        mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
+        if (this._winners === 0 || this._players.length === 0) {
             this._endRace()
         }
 
@@ -170,10 +211,19 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._vehicles.forEach((vehicle) => {
             vehicle.destroy()
         })
-        mp.events.call(AutomaticEventManagerEvents.EVENT_END)
+        mp.events.call(AutomaticEventManagerEvents.EVENT_END, this.automaticEventData.name)
     }
 
     private _playerEnterCheckpoint(playerMp: PlayerMp) {
+        console.log(this._nextCheckpointForPlayer[playerMp.id])
+        console.log(playerMp.id)
+        console.log("ID " + this._id)
+        console.log(JSON.stringify(this._nextCheckpointForPlayer))
+        console.log(JSON.stringify(this._checkpoints))
+        if (!this._nextCheckpointForPlayer[playerMp.id]) {
+            this._nextCheckpointForPlayer[playerMp.id] = 0
+            console.log("fixed")
+        }
         this._checkpoints[this._nextCheckpointForPlayer[playerMp.id]].hideFor(playerMp)
         if (this._checkpoints[this._nextCheckpointForPlayer[playerMp.id] + 1]) {
             this._nextCheckpointForPlayer[playerMp.id]++
