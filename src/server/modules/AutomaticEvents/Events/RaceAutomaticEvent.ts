@@ -8,6 +8,7 @@ import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import Knex = require("knex")
 import { knexSnakeCaseMappers } from "objection"
 import random from "random"
+import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -29,11 +30,13 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     private _raceArena: RaceArena = null
     private _raceArenaSpawns: RaceArenaSpawnPoint[] = []
     private _checkpoints: CheckpointMp[]  = []
+    private _blips: BlipMp[] = []
     private _vehicles: VehicleMp[] = []
     private _loadedPlayers: number = 0
     private _vehicleFactory: IVehicleFactory = null
     private _vector3Factory: IVector3Factory = null
     private _checkpointFactory: ICheckpointFactory = null
+    private _blipFactory: IBlipFactory = null
     private _notificationSender: INotificationSender = null
     private _playerDataFactory: IPlayerDataFactory = null
     private _players: PlayerMp[] = []
@@ -48,6 +51,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         checkpointFactory: ICheckpointFactory,
+        blipFactory: IBlipFactory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
@@ -55,6 +59,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
         this._checkpointFactory = checkpointFactory
+        this._blipFactory = blipFactory
         this._playerDataFactory = playerDataFactory
         this._notificationSender = notificationSenderFactory.create()
         this._nextCheckpointForPlayer = {}
@@ -94,6 +99,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._raceArenaSpawns = []
         this._loadedPlayers = 0
         this._players = []
+        this._blips = []
         this._playersAdded = false
         this._winners = RaceAutomaticEvent.MAX_WINNERS
         console.log("Load arena " + this._id)
@@ -128,11 +134,19 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                                     )
                                 }
                                 const checkpointType = (nextPosition) ? 2 : 4
+                                const thisCheckpointVector: Vector3Mp = this._vector3Factory.create(
+                                    raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
+                                )
                                 this._checkpoints.push(
                                     this._checkpointFactory.create(
-                                        checkpointType, this._vector3Factory.create(
-                                            raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
-                                        ), 10, nextPosition, checkpointColor, false, this._eventDimension,
+                                        checkpointType, thisCheckpointVector, 10, nextPosition,
+                                        checkpointColor, false, this._eventDimension,
+                                    ),
+                                )
+                                this._blips.push(
+                                    this._blipFactory.create(
+                                        103, thisCheckpointVector, undefined, undefined, undefined, undefined,
+                                        undefined, undefined, undefined, this._eventDimension,
                                     ),
                                 )
                                 index++
@@ -253,6 +267,9 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         })
         this._vehicles.forEach((vehicle) => {
             vehicle.destroy()
+        })
+        this._blips.forEach((blip) => {
+            blip.destroy()
         })
         this._eventDimension = this._startedDimension
         mp.events.call(AutomaticEventManagerEvents.EVENT_END, this.automaticEventData.name)

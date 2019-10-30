@@ -1,4 +1,5 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
@@ -12,6 +13,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     private _vehicleFactory: IVehicleFactory = null
     private _vector3Factory: IVector3Factory = null
     private _checkpointFactory: ICheckpointFactory = null
+    private _blipFactory: IBlipFactory = null
     private _notificationSenderFactory: INotificationSenderFactory = null
     private _playerDataFactory: IPlayerDataFactory = null
 
@@ -19,12 +21,14 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         checkpointFactory: ICheckpointFactory,
+        blipFactory: IBlipFactory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
         this._checkpointFactory = checkpointFactory
+        this._blipFactory = blipFactory
         this._notificationSenderFactory = notificationSenderFactory
         this._playerDataFactory = playerDataFactory
     }
@@ -35,6 +39,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
             this._vehicleFactory,
             this._vector3Factory,
             this._checkpointFactory,
+            this._blipFactory,
             this._notificationSenderFactory,
             this._playerDataFactory,
         )

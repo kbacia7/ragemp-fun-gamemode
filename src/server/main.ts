@@ -13,6 +13,7 @@ import { PlayerDataFactory } from "core/PlayerDataProps/PlayerDataFactory"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
 import { Model } from "objection"
+import { BlipFactory } from "./core/BlipFactory/BlipFactory"
 import { CheckpointFactory } from "./core/Checkpoint/CheckpointFactory"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
 import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
@@ -66,6 +67,7 @@ const playerLoginValidatorFactory = new PlayerLoginValidatorFactory(regExpFactor
 const automaticEventDataFactory = new AutomaticEventDataFactory()
 const vehicleFactory = new VehicleFactory()
 const checkpointFactory = new CheckpointFactory()
+const blipFactory = new BlipFactory()
 const vector3Factory = new Vector3Factory()
 const playerSpawnManager: PlayerSpawnManager = new PlayerSpawnManager(knex, vector3Factory)
 
@@ -90,8 +92,8 @@ const allCommands: ICommand[] = [
 ]
 const commandExecutor = new CommandExecutor(playerDataFactory)
 const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
-   vehicleFactory, vector3Factory, checkpointFactory, notificationSenderFactory,
-   playerDataFactory,
+   vehicleFactory, vector3Factory, checkpointFactory, blipFactory,
+   notificationSenderFactory, playerDataFactory,
 )
 
 const mappedEventsToFactories = {
