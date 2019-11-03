@@ -47,6 +47,8 @@ const knex = Knex({
    connection: dbConfig.development.connection,
    debug: true,
 })
+declare const _VERSION_: any
+console.log(`Script version: ${_VERSION_}`)
 
 knex.raw("SELECT 1").then(() => {
    console.log("Connected to database")

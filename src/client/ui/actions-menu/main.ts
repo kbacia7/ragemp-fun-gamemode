@@ -10,6 +10,7 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import "./style.less"
 import { ActionsMenu } from "server/core/ActionsMenu/ActionsMenu"
 import { ActionsMenuModuleEvents } from "client/modules/ActionsMenuModule/ActionsMenuModuleEvents"
+declare const _VERSION_: any
 
 $(document).ready(() => {
     const promiseFactory = new PromiseFactory<string>()
@@ -17,6 +18,7 @@ $(document).ready(() => {
     const internationalizationSettings = new InternationalizationSettings("pl_PL")
     const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
     i18nTranslator.loadTranslations("translations")
+    $("#action-menu-script-version").text(_VERSION_)
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
         element.innerText = i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
     })
