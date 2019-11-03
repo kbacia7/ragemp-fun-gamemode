@@ -74,18 +74,24 @@ export class PlayerRegisterAndLoginModule extends Module {
             mp.events.call(NotificationEvent.SEND,
                 "SUCCESS_LOGIN", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
             )
-            this._currentWindow.execute(`removeModal()`)
-            mp.gui.cursor.show(false, false)
-            this.destroyUI()
+            if (this._currentWindow) {
+                this._currentWindow.execute(`removeModal()`)
+                mp.gui.cursor.show(false, false)
+                this.destroyUI()
+            }
+
         })
 
         mp.events.add(PlayerRegisterEvent.PLAY_AS_GUEST_SUCCESS, () => {
             mp.events.call(NotificationEvent.SEND,
                 "PLAY_AS_GUEST", NotificationType.WARNING, NotificationTimeout.LONG, [],
             )
-            this._currentWindow.execute(`removeModal()`)
-            mp.gui.cursor.show(false, false)
-            this.destroyUI()
+            if (this._currentWindow) {
+                this._currentWindow.execute(`removeModal()`)
+                mp.gui.cursor.show(false, false)
+                this.destroyUI()
+            }
+
         })
 
         mp.events.add(PlayerRegisterEvent.LOGIN_INCORRECT_DATA, () => {

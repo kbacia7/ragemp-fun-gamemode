@@ -63,6 +63,7 @@ $(document).ready(() => {
                     if (emailValidator.validate(email)) {
                         if (loginValidator.validate(login)) {
                             const hashedPassword: string = password
+                            $("#registerButton").attr("disabled", "true")
                             mp.trigger(
                                 PlayerRegisterAndLoginModuleEvent.TRY_CREATE_ACCOUNT,
                                 login, email, hashedPassword,
@@ -100,6 +101,7 @@ $(document).ready(() => {
         } else {
             if (loginValidator.validate(login)) {
                 if (passwordValidator.validate(password)) {
+                    $("#loginButton").attr("disabled", "true")
                     mp.trigger(PlayerRegisterAndLoginModuleEvent.TRY_LOGIN, login, password)
                 } else {
                     $("#inputLoginModalPassword").addClass("is-invalid")
