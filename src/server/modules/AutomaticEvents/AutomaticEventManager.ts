@@ -42,7 +42,6 @@ export class AutomaticEventManager {
         this._automaticEvents = {}
 
         automaticEventsList.forEach((automaticEventName: string) => {
-            console.log(JSON.stringify(automaticEventName))
             const evName = automaticEventName
             this._playersOnEvent[evName] = []
             this._activeEvents[evName] = false
@@ -126,12 +125,9 @@ export class AutomaticEventManager {
 
     private _playerSave(playerMp: PlayerMp, eventName: string) {
         const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-        console.log(eventName)
         Object.values(this._automaticEvents).forEach((automaticEvent: IAutomaticEvent) => {
             const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
             if (automaticEventData.name === eventName) {
-                console.log("here " + JSON.stringify(playerData.savedOnEvents) + " im!")
-                console.log(JSON.stringify(playerData))
                 playerData.savedOnEvents.push(automaticEventData.type)
 
                 playerMp.setVariable(
@@ -178,12 +174,9 @@ export class AutomaticEventManager {
 
     private _playerSignOff(playerMp: PlayerMp, eventName: string) {
         const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-        console.log(eventName)
         Object.values(this._automaticEvents).forEach((automaticEvent: IAutomaticEvent) => {
             const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
             if (automaticEventData.name === eventName) {
-                console.log("here " + JSON.stringify(playerData.savedOnEvents) + " im!")
-                console.log(JSON.stringify(playerData))
                 const savedOnEvents = playerData.savedOnEvents.filter((ev: AutomaticEventType) => {
                     return ev !== automaticEventData.type
                 })

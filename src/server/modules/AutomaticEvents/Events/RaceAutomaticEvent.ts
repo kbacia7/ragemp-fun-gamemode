@@ -77,7 +77,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         mp.events.add("playerEnterCheckpoint", (player: PlayerMp) => {
             const playerData: IPlayerData = this._playerDataFactory.create().load(player)
             if (playerData.status === PlayerDataStatus.ON_EVENT && playerData.onEvent === AutomaticEventType.RACE) {
-                console.log(JSON.stringify(this._nextCheckpointForPlayer))
                 this._playerEnterCheckpoint(player)
             }
         })
@@ -168,8 +167,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                             console.log("Max players on arena: " + raceArenaSpawns.length)
                             this._raceArenaSpawns = raceArenaSpawns
                         })
-                    console.log("aID " + this._id)
-
                     this._raceArena = raceArena
                 }
             })
@@ -200,7 +197,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public preparePlayer(playerMp: PlayerMp) {
-        console.log("prepare " + this._id)
         if (this._loadedPlayers > this._raceArenaSpawns.length - 1) {
             this._notificationSender.send(
                 playerMp, "RACE_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
@@ -221,17 +217,14 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 raceArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
                 true, true, this._eventDimension,
             )
-            console.log("prepare 2")
             playerMp.dimension = this._eventDimension
             playerMp.putIntoVehicle(vehicleForSpawn, -1)
             playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
-            console.log("oo")
             this._checkpoints.forEach((checkPoint: CheckpointMp) => {
                 checkPoint.hideFor(playerMp)
             })
             this._checkpoints[0].showFor(playerMp)
             this._nextCheckpointForPlayer[playerMp.id] = 0
-            console.log(JSON.stringify(this._nextCheckpointForPlayer))
             this._notificationSender.send(
                 playerMp, "RACE_EVENT_MAP_INFO", NotificationType.INFO, NotificationTimeout.LONG,
                 [this._raceArena.name, this._raceArena.author],
@@ -316,7 +309,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 raceDataPlayer = raceData
             })
 
-            console.log(JSON.stringify(this._getThreeTopPlayers()))
             playerOnRace.call(RaceAutomaticEventPageEvents.UPDATE_PAGE, [
                 JSON.stringify(this._getThreeTopPlayers()), this._checkpoints.length, raceDataPlayer.timeInMs,
                 raceDataPlayer.checkpoints,
