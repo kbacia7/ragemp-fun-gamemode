@@ -62,17 +62,17 @@ export class PlayerRegisterAndLoginModule extends Module {
 
         mp.events.add(PlayerRegisterEvent.CREATED, () => {
             mp.events.call(NotificationEvent.SEND,
-                "ACCOUNT_CREATED", NotificationType.SUCCESS, NotificationTimeout.LONG,
+                "ACCOUNT_CREATED", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
             )
             mp.events.call(NotificationEvent.SEND,
-                "EMAIL_SENDED", NotificationType.SUCCESS, NotificationTimeout.LONG,
+                "EMAIL_SENDED", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
             )
             mp.events.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
         })
 
         mp.events.add(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT, () => {
             mp.events.call(NotificationEvent.SEND,
-                "SUCCESS_LOGIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
+                "SUCCESS_LOGIN", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
             )
             this._currentWindow.execute(`removeModal()`)
             mp.gui.cursor.show(false, false)
@@ -81,7 +81,7 @@ export class PlayerRegisterAndLoginModule extends Module {
 
         mp.events.add(PlayerRegisterEvent.PLAY_AS_GUEST_SUCCESS, () => {
             mp.events.call(NotificationEvent.SEND,
-                "PLAY_AS_GUEST", NotificationType.WARNING, NotificationTimeout.LONG,
+                "PLAY_AS_GUEST", NotificationType.WARNING, NotificationTimeout.LONG, [],
             )
             this._currentWindow.execute(`removeModal()`)
             mp.gui.cursor.show(false, false)
