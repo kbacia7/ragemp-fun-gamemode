@@ -6,5 +6,6 @@
     "TABLE_HEADER_DEATH": "Deadów",
     "TABLE_HEADER_PING": "Ping",
     "TABLE_HEADER_STATUS": "Status",
-    "TABLE_PLAYER_STATUS_0": "Aktywny"
+    "TABLE_PLAYER_STATUS_0": "Aktywny",
+    "TABLE_PLAYER_STATUS_1": "Na zabawie"
 }
