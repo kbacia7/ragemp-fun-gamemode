@@ -14,6 +14,8 @@ import {
     AutomaticEventsTableModuleEvents,
 } from "client/modules/AutomaticEventsTableModule/AutomaticEventsTableModuleEvents"
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
+import { IRaceData } from "server/modules/AutomaticEvents/Events/IRaceData"
+import * as luxon from "luxon"
 
 const promiseFactory = new PromiseFactory<string>()
 const xmlFileRequest = new XMLFileRequest(promiseFactory)
@@ -24,6 +26,20 @@ $(document).ready(() => {
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
         element.innerText = i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
     })
+
+    $("#automatic-event-table-tabs").on("click", "[id^=tabs]", (event) => {
+        const id: string = event.target.id
+        if (id && id.length > 0) {
+            const pageName: string = id.split("-")[1]
+            if (pageName !== "sample") {
+                $(".active").removeClass("active")
+                $(`#${id}`).addClass("active")
+                $("[id$='-page']").addClass("d-none")
+                $(`#${pageName}-page`).removeClass("d-none")
+            }
+        }
+    })
+    _global.togglePage("events")
 })
 
 const _global: any = (window || global) as any
@@ -53,7 +69,7 @@ _global.setEventsInTable = (automaticEventsDatasStr: string) => {
 
         })
         el.removeClass("d-none")
-        el.prependTo("#automatic-events-table-main")
+        el.prependTo("#events-page")
     })
 }
 
@@ -70,4 +86,49 @@ _global.updateButton = (eventName: string) => {
     button.removeClass("btn-info")
     button.addClass("btn-primary")
     button.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
+}
+
+_global.addButtonToEventPage = (evName: string, displayName: string) => {
+    const clonedButton = $("#tabs-sample").clone()
+    clonedButton.removeClass("d-none")
+    clonedButton.removeAttr("id")
+    const link =  clonedButton.find(".nav-link")
+    link.attr("id", `tabs-${evName}`)
+    link.text(displayName)
+    $("#automatic-event-table-tabs").append(clonedButton)
+}
+
+_global.togglePage = (evName: string) => {
+    $(".active").removeClass("active")
+    $(`#tabs-${evName}`).addClass("active")
+    $("[id$='-page']").addClass("d-none")
+    $(`#${evName}-page`).removeClass("d-none")
+}
+
+_global.clearRaceList = () => {
+    $("#race-page-players-list").children("li:not(#race-page-player-sample)").remove()
+}
+
+_global.setRaceData = (
+    playersWithTimeStr: string, allCheckpoints: string,
+    playerTime: string, playerChekpoints: string,
+) => {
+    const playersWithTime = JSON.parse(playersWithTimeStr)
+    playerTime = luxon.DateTime.fromMillis(parseInt(playerTime, 10)).toFormat("mm:ss.SSS")
+    playersWithTime.forEach((raceData: IRaceData) => {
+        const el = $("#race-page-player-sample").clone()
+        el.removeAttr("id")
+        el.removeClass("d-none")
+        const ms = luxon.DateTime.fromMillis(raceData.timeInMs).toFormat("mm:ss.SSS")
+        el.text(`${raceData.name} (${ms})`)
+        $("#race-page-players-list").append(el)
+    })
+    $("#race-page-info-checkpoints").text(playerChekpoints)
+    $("#race-page-info-checkpoints-all").text(allCheckpoints)
+    $("#race-page-info-time").text(playerTime)
+}
+
+_global.removePage = (evName: string) => {
+    $(`#tabs-${evName}`).parent("li").first().remove()
+    $(`#${evName}-page`).addClass("d-none")
 }

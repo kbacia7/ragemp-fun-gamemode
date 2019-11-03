@@ -26,6 +26,7 @@ import { AutomaticEventDataFactory } from "./modules/AutomaticEvents/AutomaticEv
 import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
 import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
 import { RaceAutomaticEventFactory } from "./modules/AutomaticEvents/Events/RaceAutomaticEventFactory"
+import { RaceDataFactory } from "./modules/AutomaticEvents/Events/RaceDataFactory"
 import { IAutomaticEventData } from "./modules/AutomaticEvents/IAutomaticEventData"
 import { Chat } from "./modules/Chat/Chat"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
@@ -69,6 +70,7 @@ const vehicleFactory = new VehicleFactory()
 const checkpointFactory = new CheckpointFactory()
 const blipFactory = new BlipFactory()
 const vector3Factory = new Vector3Factory()
+const raceDataFactory = new RaceDataFactory()
 const playerSpawnManager: PlayerSpawnManager = new PlayerSpawnManager(knex, vector3Factory)
 
 const playerHashPasswordFactory = new PlayerHashPasswordFactory()
@@ -93,7 +95,7 @@ const allCommands: ICommand[] = [
 const commandExecutor = new CommandExecutor(playerDataFactory)
 const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
    vehicleFactory, vector3Factory, checkpointFactory, blipFactory,
-   notificationSenderFactory, playerDataFactory,
+   notificationSenderFactory, playerDataFactory, raceDataFactory,
 )
 
 const mappedEventsToFactories = {

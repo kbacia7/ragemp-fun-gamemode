@@ -6,6 +6,7 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import Knex = require("knex")
+import * as luxon from "luxon"
 import { knexSnakeCaseMappers } from "objection"
 import random from "random"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
@@ -23,8 +24,10 @@ import { AutomaticEventManagerEvents } from "../AutomaticEventManagerEvents"
 import { AutomaticEventType } from "../AutomaticEventType"
 import { IAutomaticEvent } from "../IAutomaticEvent"
 import { IAutomaticEventData } from "../IAutomaticEventData"
+import { IRaceData } from "./IRaceData"
+import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEventEndPlayerReasons } from "./RaceAutomaticEventEndPlayerReasons"
-
+import { RaceAutomaticEventPageEvents } from "./RaceAutomaticEventPageEvents"
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
     private _raceArena: RaceArena = null
@@ -39,12 +42,15 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     private _blipFactory: IBlipFactory = null
     private _notificationSender: INotificationSender = null
     private _playerDataFactory: IPlayerDataFactory = null
+    private _raceDataFactory: IRaceDataFactory = null
     private _players: PlayerMp[] = []
     private _nextCheckpointForPlayer: {[playerId: number]: number}
     private _winners: number = RaceAutomaticEvent.MAX_WINNERS
     private _id: number = 0
     private _startedDimension: number = 0
     private _playersAdded: boolean = false
+    private _playersRaceData: IRaceData[] = []
+    private _startTime: number = 0
 
     constructor(
         automaticEventData: IAutomaticEventData,
@@ -54,6 +60,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         blipFactory: IBlipFactory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
+        raceDataFactory: IRaceDataFactory,
     ) {
         super(automaticEventData)
         this._vehicleFactory = vehicleFactory
@@ -63,6 +70,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._playerDataFactory = playerDataFactory
         this._notificationSender = notificationSenderFactory.create()
         this._nextCheckpointForPlayer = {}
+        this._raceDataFactory = raceDataFactory
         this._id = random.int(100, 10000000)
         this._startedDimension = this._eventDimension
 
@@ -102,6 +110,8 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._blips = []
         this._playersAdded = false
         this._winners = RaceAutomaticEvent.MAX_WINNERS
+        this._playersRaceData = []
+        this._startTime = 0
         console.log("Load arena " + this._id)
         RaceArena.query()
             .select()
@@ -166,7 +176,18 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public start() {
+        const topThreePlayers = this._getThreeTopPlayers()
+        this._players.forEach((player: PlayerMp) => {
+            const playerData: IPlayerData = this._playerDataFactory.create().load(player)
+            const thisRaceData = this._playersRaceData.filter((v) => v.name === playerData.name)
+            player.call(RaceAutomaticEventPageEvents.DISPLAY_PAGE, [
+                this.automaticEventData.name, this.automaticEventData.displayName,
+                JSON.stringify(topThreePlayers), this._checkpoints.length, thisRaceData[0].timeInMs,
+                thisRaceData[0].checkpoints,
+            ])
+        })
         setTimeout(() => {
+            this._startTime = luxon.DateTime.local().toMillis()
             this._players.forEach((player) => {
                 player.call(FreezePlayerModuleEvents.UNFREEZE_PLAYER)
                 this._notificationSender.send(
@@ -187,6 +208,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             )
             this._endRaceForPlayer(playerMp)
         } else {
+            const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
             const raceArenaSpawn: RaceArenaSpawnPoint = this._raceArenaSpawns[this._loadedPlayers]
             const randomColor: [number, number, number] = [
                 Math.floor(Math.random() * 255) + 1,
@@ -215,6 +237,11 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 [this._raceArena.name, this._raceArena.author],
             )
             this._players.push(playerMp)
+            this._playersRaceData.push(
+                this._raceDataFactory.create(
+                    0, 0, playerData.name,
+                ),
+            )
             this._loadedPlayers++
         }
     }
@@ -249,6 +276,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 playerMp, "RACE_EVENT_LOOSE", NotificationType.INFO, NotificationTimeout.LONG,
             )
         }
+        playerMp.call(RaceAutomaticEventPageEvents.REMOVE_PAGE)
         this._players = this._players.filter((p) => {
             return p.id !== playerMp.id
         })
@@ -276,15 +304,25 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     private _playerEnterCheckpoint(playerMp: PlayerMp) {
-        console.log(this._nextCheckpointForPlayer[playerMp.id])
-        console.log(playerMp.id)
-        console.log("ID " + this._id)
-        console.log(JSON.stringify(this._nextCheckpointForPlayer))
-        console.log(JSON.stringify(this._checkpoints))
-        if (!this._nextCheckpointForPlayer[playerMp.id]) {
-            this._nextCheckpointForPlayer[playerMp.id] = 0
-            console.log("fixed")
-        }
+        const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
+
+        this._players.forEach((playerOnRace: PlayerMp) => {
+            let raceDataPlayer: IRaceData = null
+            this._playersRaceData.forEach((raceData: IRaceData) => {
+                if (raceData.name === playerData.name) {
+                    raceData.checkpoints++
+                    raceData.timeInMs = luxon.DateTime.local().toMillis() - this._startTime
+                }
+                raceDataPlayer = raceData
+            })
+
+            console.log(JSON.stringify(this._getThreeTopPlayers()))
+            playerOnRace.call(RaceAutomaticEventPageEvents.UPDATE_PAGE, [
+                JSON.stringify(this._getThreeTopPlayers()), this._checkpoints.length, raceDataPlayer.timeInMs,
+                raceDataPlayer.checkpoints,
+            ])
+        })
+
         this._checkpoints[this._nextCheckpointForPlayer[playerMp.id]].hideFor(playerMp)
         if (this._checkpoints[this._nextCheckpointForPlayer[playerMp.id] + 1]) {
             this._nextCheckpointForPlayer[playerMp.id]++
@@ -293,5 +331,19 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             this._endRaceForPlayer(playerMp)
         }
 
+    }
+
+    private _getThreeTopPlayers(): IRaceData[] {
+        const copy = this._playersRaceData.slice(0)
+        copy.sort((a, b) => {
+            const dCps = b.checkpoints - a.checkpoints
+            if (dCps) {
+                return dCps
+            }
+
+            const dTime = a.timeInMs - b.timeInMs
+            return dTime
+        })
+        return copy.slice(0, 3)
     }
 }

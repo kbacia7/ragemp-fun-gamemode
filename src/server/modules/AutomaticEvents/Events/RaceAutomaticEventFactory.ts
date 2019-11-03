@@ -7,6 +7,7 @@ import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { AutomaticEventFactory } from "../AutomaticEventFactory"
 import { IAutomaticEventData } from "../IAutomaticEventData"
 import { IAutomaticEventFactory } from "../IAutomaticEventFactory"
+import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEvent } from "./RaceAutomaticEvent"
 
 export class RaceAutomaticEventFactory implements AutomaticEventFactory {
@@ -16,6 +17,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     private _blipFactory: IBlipFactory = null
     private _notificationSenderFactory: INotificationSenderFactory = null
     private _playerDataFactory: IPlayerDataFactory = null
+    private _raceDataFactory: IRaceDataFactory = null
 
     constructor(
         vehicleFactory: IVehicleFactory,
@@ -24,6 +26,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
         blipFactory: IBlipFactory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
+        raceDataFactory: IRaceDataFactory,
     ) {
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
@@ -31,6 +34,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
         this._blipFactory = blipFactory
         this._notificationSenderFactory = notificationSenderFactory
         this._playerDataFactory = playerDataFactory
+        this._raceDataFactory = raceDataFactory
     }
 
     public create(automaticEventData: IAutomaticEventData) {
@@ -42,6 +46,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
             this._blipFactory,
             this._notificationSenderFactory,
             this._playerDataFactory,
+            this._raceDataFactory,
         )
     }
 }

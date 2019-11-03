@@ -18,21 +18,49 @@
 <body style="background: none !important">
   <div id="automatic-events-table" class="card">
     <div class="card-body" id="automatic-events-table-main">
-
-      <div id="automatic-events-table-sample-row" class="container row align-items-center d-none">
+      <div class="d-none" id="events-page">
+          <div id="automatic-events-table-sample-row" class="container row align-items-center d-none">
               <div class="col-10">
                 <p class="automatic-events-table-row-title"></p>
               </div>
               <div class="col-2">
                   <button type="button" data-i18n-translate="AUTOMATIC_EVENTS_ARENA_SAVE" class="btn btn-primary btn-sm automatic-events-table-row-save-button"></button>
               </div>
+          </div>
       </div>
-      <ul class="nav nav-tabs justify-content-center">
+      <div class="d-none" id="arenas-page">
+         
+      </div>
+      <div class="d-none" id="race-page">
+        <div class="row">
+          <div class="col-12">
+            <h5 class="text-center" data-i18n-translate="AUTOMATIC_EVENTS_RACE_PLAYERS"></h5>
+            <ol id="race-page-players-list">
+              <li id="race-page-player-sample" class="d-none"></li>
+            </ol>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+              <h5 class="text-center" data-i18n-translate="AUTOMATIC_EVENTS_RACE_INFO"></h5>
+              <p class="mb-0">
+                <b data-i18n-translate="AUTOMATIC_EVENTS_RACE_INFO_CHECKPOINTS"></b>: <span id="race-page-info-checkpoints"></span>/<span id="race-page-info-checkpoints-all"></span>
+              </p>
+              <p class="mb-0">
+                  <b data-i18n-translate="AUTOMATIC_EVENTS_RACE_INFO_TIME"></b>: <span id="race-page-info-time"></span>
+                </p>
+            </div>
+          </div>
+      </div>
+      <ul id="automatic-event-table-tabs" class="nav nav-tabs justify-content-center">
           <li class="nav-item">
-              <a class="nav-link active" data-i18n-translate="AUTOMATIC_EVENTS_EVENTS" href="#"></a>
+              <a class="nav-link" id="tabs-events" data-i18n-translate="AUTOMATIC_EVENTS_EVENTS" href="#"></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"  data-i18n-translate="AUTOMATIC_EVENTS_ARENA" href="#"></a>
+              <a class="nav-link" id="tabs-arenas" data-i18n-translate="AUTOMATIC_EVENTS_ARENA" href="#"></a>
+            </li>
+            <li class="nav-item" id="tabs-sample" class="d-none">
+              <a class="nav-link" href="#"></a>
             </li>
           </ul>
     </div>
