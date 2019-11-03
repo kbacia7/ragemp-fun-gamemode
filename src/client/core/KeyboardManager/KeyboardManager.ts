@@ -22,10 +22,10 @@ export class KeyboardManager {
         })
 
         this._actionsMenuModule = actionsMenuModuleFactory.create()
-        mp.keys.bind(Keys.F, true, () => {
+        mp.keys.bind(Keys.E, true, () => {
             this._actionsMenuModule.loadUI()
         })
-        mp.keys.bind(Keys.F, false, () => {
+        mp.keys.bind(Keys.E, false, () => {
             this._actionsMenuModule.destroyUI()
         })
     }
