@@ -53,6 +53,8 @@ export class PlayerRegister {
                                             console.log(created)
                                             if (created) {
                                                 player.call(PlayerRegisterEvent.CREATED)
+                                                player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                                                mp.events.call("playerStartPlay", player, playerRegisterData.login)
                                             } else {
                                                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
                                             }
