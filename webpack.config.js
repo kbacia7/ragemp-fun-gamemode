@@ -8,6 +8,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const TerserPlugin = require('terser-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const childProcess = require('child_process')
+const versionString = childProcess.execSync('git rev-parse --short HEAD').toString().trim()
 
 const getEntries = () => {
   const matches = glob.sync("./src/client/ui/*/main.ts")
@@ -85,6 +87,9 @@ const configServer = {
          {from: './src/server/migrations', to: './migrations'},
          {from: './src/server/seeds', to: './seeds'}
       ]),
+      new webpack.DefinePlugin({
+         _VERSION_: `"${require("./package.json").codeNameVersion} build ${versionString}"`
+      })
    ]
 
 };
@@ -148,6 +153,9 @@ const configClient = {
       new CopyPlugin([
          {from: './src/client/ui', to: './client_packages/ui', ignore: ['*.less', '*.ts']}
       ]),
+      new webpack.DefinePlugin({
+         _VERSION_: `"${require("./package.json").codeNameVersion} build ${versionString}"`
+      })
    ]
 };
 
