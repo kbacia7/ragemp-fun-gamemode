@@ -51,6 +51,7 @@ const knex = Knex({
 knex.raw("SELECT 1").then(() => {
    console.log("Connected to database")
 }).catch((err) => {
+   console.log("Can't connect to database!")
    console.log(err)
 })
 Model.knex(knex)
