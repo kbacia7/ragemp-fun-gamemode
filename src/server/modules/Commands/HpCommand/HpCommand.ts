@@ -17,5 +17,7 @@ export class HpCommand implements ICommand {
 
     public execute(player: PlayerMp, args: string[]) {
         player.health = parseInt(args[0], 10)
+        console.log(`X: ${player.position.x} Y: ${player.position.y} Z: ${player.position.z}
+         Rotation: ${player.heading}`)
     }
 }

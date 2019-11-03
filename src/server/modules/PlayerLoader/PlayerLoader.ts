@@ -4,6 +4,7 @@ import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
 import Knex from "knex"
 import { Player } from "server/entity/Player"
+import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
 
 export class PlayerLoader {
     constructor(knex: Knex, playerDataFactory: IPlayerDataFactory) {
@@ -32,6 +33,7 @@ export class PlayerLoader {
                      playerMp.setVariable(PlayerDataProps.ISLOGGED, true)
                      const playerData: IPlayerData = playerDataFactory.create().load(playerMp)
                      playerMp.call("playerStartPlay", [JSON.stringify(playerData)])
+                     mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
                  })
         })
     }

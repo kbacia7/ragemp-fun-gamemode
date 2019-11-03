@@ -11,8 +11,13 @@ export class NotificationModule extends Module {
     constructor(promiseFactory: IPromiseFactory<boolean>) {
         super(promiseFactory)
         this._name = "notifications"
-        mp.events.add(NotificationEvent.SEND, (label: string, type: NotificationType, timeout: NotificationTimeout) => {
-            this._sendNotification(label, type, timeout)
+        mp.events.add(NotificationEvent.SEND, (
+            label: string,
+            type: NotificationType,
+            timeout: NotificationTimeout,
+            args: string,
+        ) => {
+            this._sendNotification(label, type, timeout, args)
         })
     }
 
@@ -33,7 +38,7 @@ export class NotificationModule extends Module {
         })
     }
 
-    private _sendNotification(label: string, type: NotificationType, timeout: NotificationTimeout) {
-        this._currentWindow.execute(`sendNotification('${label}', '${type}', ${timeout})`)
+    private _sendNotification(label: string, type: NotificationType, timeout: NotificationTimeout, args: string) {
+        this._currentWindow.execute(`sendNotification('${label}', '${type}', ${timeout}, '${args}')`)
     }
 }

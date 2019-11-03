@@ -12,14 +12,22 @@ import { PlayerLoginValidatorFactory } from "core/DataValidator/PlayerLogin/Play
 import { PlayerDataFactory } from "core/PlayerDataProps/PlayerDataFactory"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
-import { IRegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/IRegisterAutomaticEventDataFactory"
-import { RegisterAutomaticEventDataFactory } from "core/RegisterAutomaticEvents/RegisterAutomaticEventDataFactory"
 import { Model } from "objection"
-import { emitKeypressEvents } from "readline"
+import { BlipFactory } from "./core/BlipFactory/BlipFactory"
+import { CheckpointFactory } from "./core/Checkpoint/CheckpointFactory"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
+import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
+import { Vector3Factory } from "./core/Vector3Factory/Vector3Factory"
+import { VehicleFactory } from "./core/VehicleFactory/VehicleFactory"
 import { Player } from "./entity/Player"
-import { AutomaticEventsDataProvider } from "./modules/AutomaticEvents/AutomaticEventsDataProvider"
+import { Setting } from "./entity/Setting"
+import { AutomaticEventDataFactory } from "./modules/AutomaticEvents/AutomaticEventDataFactory"
+import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
+import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
+import { RaceAutomaticEventFactory } from "./modules/AutomaticEvents/Events/RaceAutomaticEventFactory"
+import { RaceDataFactory } from "./modules/AutomaticEvents/Events/RaceDataFactory"
+import { IAutomaticEventData } from "./modules/AutomaticEvents/IAutomaticEventData"
 import { Chat } from "./modules/Chat/Chat"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
@@ -32,30 +40,39 @@ import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
+import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
 
 const knex = Knex({
    client: dbConfig.development.client,
    connection: dbConfig.development.connection,
+   debug: true,
 })
 
-// FIXME: Nie usuwać tego, bez tego Objection.js nie działa. Nie mam pojęcia czemu <shrug face here>
-knex.select().table("players").then(() => {
-   console.log("")
+knex.raw("SELECT 1").then(() => {
+   console.log("Connected to database")
+}).catch((err) => {
+   console.log(err)
 })
-
 Model.knex(knex)
-Player.knex(knex)
 
 const playerDataFactory = new PlayerDataFactory()
-const notificationSender = new NotificationSender()
+const notificationSenderFactory = new NotificationSenderFactory()
 const playerDataLoader = new PlayerDataLoader(playerDataFactory)
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(knex, playerDataFactory)
-const chat: Chat = new Chat(playerDataFactory, notificationSender)
+const chat: Chat = new Chat(playerDataFactory, notificationSenderFactory)
 const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const regExpFactory = new RegExpFactory()
 const playerEmailValidatorFactory = new PlayerEmailValidatorFactory(regExpFactory)
 const playerLoginValidatorFactory = new PlayerLoginValidatorFactory(regExpFactory)
+const automaticEventDataFactory = new AutomaticEventDataFactory()
+const vehicleFactory = new VehicleFactory()
+const checkpointFactory = new CheckpointFactory()
+const blipFactory = new BlipFactory()
+const vector3Factory = new Vector3Factory()
+const raceDataFactory = new RaceDataFactory()
+const playerSpawnManager: PlayerSpawnManager = new PlayerSpawnManager(knex, vector3Factory)
+
 const playerHashPasswordFactory = new PlayerHashPasswordFactory()
 const playerRegister: PlayerRegister = new PlayerRegister(
    knex, promiseBooleanFactory, playerEmailValidatorFactory, playerLoginValidatorFactory,
@@ -70,14 +87,29 @@ const playerPlayAsGuest: PlayerPlayAsGuest = new PlayerPlayAsGuest(
 const playerSave: PlayerSave = new PlayerSave(
    knex, playerDataFactory,
 )
-const registerAutomaticEventDataFactory: IRegisterAutomaticEventDataFactory = new RegisterAutomaticEventDataFactory()
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
 ]
 const commandExecutor = new CommandExecutor(playerDataFactory)
-const automaticEventsDataProvider = new AutomaticEventsDataProvider(registerAutomaticEventDataFactory)
+const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
+   vehicleFactory, vector3Factory, checkpointFactory, blipFactory,
+   notificationSenderFactory, playerDataFactory, raceDataFactory,
+)
+
+const mappedEventsToFactories = {
+   race: raceAutomaticEventFactory,
+}
+const mappedEventsToTypes = {
+   race: AutomaticEventType.RACE,
+}
+
+const automaticEventManager = new AutomaticEventManager(
+   knex, notificationSenderFactory,
+   ["tdm", "hideandseek", "race", "derby"],
+   playerDataFactory, automaticEventDataFactory, mappedEventsToTypes, mappedEventsToFactories,
+)
 commandExecutor.addCommands(allCommands)
 
 mp.events.add("debug", (player: PlayerMp, text: string) => {

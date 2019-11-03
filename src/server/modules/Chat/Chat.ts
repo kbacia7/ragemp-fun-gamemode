@@ -4,9 +4,10 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
+import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 
 export class Chat {
-    constructor(playerDataFactory: IPlayerDataFactory, notificationSender: INotificationSender) {
+    constructor(playerDataFactory: IPlayerDataFactory, notificationSenderFactory: INotificationSenderFactory) {
         mp.events.add("playerChat", (player: PlayerMp, message: string) => {
             const playerData: IPlayerData = playerDataFactory.create().load(player)
             if (playerData.isLogged) {
@@ -17,7 +18,7 @@ export class Chat {
                         sendMessageTo.outputChatBox(`!{${senderColor}}${senderName}!{#FFFFFF}: ${message}`)
                     })
                 } else {
-                    notificationSender.send(
+                    notificationSenderFactory.create().send(
                         player, "NOTIFICATION_CHAT_INCORRECT_VALUE",
                         NotificationType.ERROR, NotificationTimeout.NORMAL,
                     )

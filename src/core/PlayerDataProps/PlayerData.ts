@@ -1,5 +1,7 @@
+import { AutomaticEventType } from "server/modules/AutomaticEvents/AutomaticEventType"
 import { IPlayerData } from "./IPlayerData"
 import { PlayerDataProps } from "./PlayerDataProps"
+import { PlayerDataStatus } from "./PlayerDataStatus"
 
 export class PlayerData implements IPlayerData {
     private _id: number
@@ -22,7 +24,7 @@ export class PlayerData implements IPlayerData {
         return this._deaths
     }
 
-    private _status: string
+    private _status: PlayerDataStatus
     public get status() {
         return this._status
     }
@@ -47,6 +49,16 @@ export class PlayerData implements IPlayerData {
         return this._playAsGuest
     }
 
+    private _savedOnEvents: AutomaticEventType[]
+    public get savedOnEvents() {
+        return this._savedOnEvents
+    }
+
+    private _onEvent: AutomaticEventType
+    public get onEvent() {
+        return this._onEvent
+    }
+
     private _nameColor: string
     public get nameColor() {
         return this._nameColor
@@ -62,12 +74,14 @@ export class PlayerData implements IPlayerData {
         this._kills = 0
         this._id = player.id
         this._deaths = 0
-        this._status = "Aktywny"
+        this._status = PlayerDataStatus.ACTIVE
         this._ping = player.ping
         this._name = player.name
         this._isLogged = false
         this._playAsGuest = false
+        this._savedOnEvents = []
         this._ped = 0
+        this._onEvent = AutomaticEventType.NOTHING
         this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
@@ -78,6 +92,8 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.NAME, this._name)
         player.setVariable(PlayerDataProps.ISLOGGED, this._isLogged)
         player.setVariable(PlayerDataProps.PLAY_AS_GUEST, this._playAsGuest)
+        player.setVariable(PlayerDataProps.SAVED_ON_EVENTS, this._savedOnEvents)
+        player.setVariable(PlayerDataProps.ON_EVENT, this._onEvent)
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.PED, this._ped)
@@ -99,6 +115,8 @@ export class PlayerData implements IPlayerData {
         this._isLogged = player.getVariable(PlayerDataProps.ISLOGGED)
         this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
+        this._onEvent = player.getVariable(PlayerDataProps.ON_EVENT)
+        this._savedOnEvents = player.getVariable(PlayerDataProps.SAVED_ON_EVENTS)
         this._id = player.id
         this._ped = player.getVariable(PlayerDataProps.PED)
     }
@@ -114,6 +132,8 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.ID] = this._id
         obj[PlayerDataProps.ISLOGGED] = this._isLogged
         obj[PlayerDataProps.PLAY_AS_GUEST] = this._playAsGuest
+        obj[PlayerDataProps.SAVED_ON_EVENTS] = this._savedOnEvents
+        obj[PlayerDataProps.ON_EVENT] = this._onEvent
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         obj[PlayerDataProps.PED] = this._ped
         return obj

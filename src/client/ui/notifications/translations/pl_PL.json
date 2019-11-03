@@ -3,5 +3,19 @@
     "ACCOUNT_CREATED": "Konto zostało założone!",
     "SUCCESS_LOGIN": "Pomyślnie zalogowano na konto!",
     "EMAIL_SENDED": "Na podany adres e-mail wysłaliśmy link z prośbą o aktywację",
-    "PLAY_AS_GUEST": "Grasz jako gość! Twoje dane nie zostaną nigdzie zapisane!"
+    "PLAY_AS_GUEST": "Grasz jako gość! Twoje dane nie zostaną nigdzie zapisane!",
+    "AUTOMATIC_EVENT_START": "Zabawa %s właśnie się rozpoczęła! Można już się zapisywac na następną kolejkę!",
+    "AUTOMATIC_EVENT_CANT_PREPARE": "Upsss! Nie zostałeś zabrany na %s ponieważ jesteś nieosiągalny",
+    "AUTOMATIC_EVENT_END": "Zabawa %s została zakończona! Zwyciężył %s!",
+    "AUTOMATIC_EVENT_SAVED_SUCCESS": "Zapisałeś się na zabawę %s!",
+    "AUTOMATIC_EVENT_SOON_START": "Zabawa %s zacznie się za 30 sekund!",
+    "RACE_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
+    "RACE_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
+    "RACE_EVENT_YOU_WIN": "Zająłeś %s miejsce na wyścigu i wygrałeś %s$ i %s expa!",
+    "RACE_EVENT_MAP_START": "Zabawa rozpoczęta!",
+    "RACE_EVENT_WINNER": "%s ukończył race zajmując %s miejsce z czasem %s!",
+    "AUTOMATIC_EVENT_SIGNED_OFF_SUCCESS": "Wypisałeś się z %s!",
+    "AUTOMATIC_EVENT_CANT_START": "%s nie może wystartować z powodu niewystarczającej ilości graczy, zapisy zostały rozpoczęte od nowa",
+    "AUTOMATIC_EVENT_SOON_SOON": "Odliczanie do startu zabawy %s rozpocznie się gdy aktualna zakończy się", 
+    "RACE_EVENT_LOOSE": "Niestety, nie udało Ci się dokończyć wyścigu"
 }
