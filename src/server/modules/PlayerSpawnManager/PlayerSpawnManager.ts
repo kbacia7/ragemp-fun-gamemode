@@ -1,3 +1,5 @@
+import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import Knex from "knex"
 import random from "random"
 import { Dimension } from "server/core/Dimension/Dimension"
@@ -7,12 +9,19 @@ import { PlayerSpawnManagerEvents } from "./PlayerSpawnManagerEvents"
 
 export class PlayerSpawnManager {
     private _spawns: PlayerSpawn[] = []
-    constructor(knex: Knex, vector3Factory: IVector3Factory) {
+    constructor(knex: Knex, vector3Factory: IVector3Factory, playerDataFactory: IPlayerDataFactory) {
         PlayerSpawn.query()
             .select()
             .then((spawns: PlayerSpawn[]) =>  {
                 this._spawns = spawns
             })
+
+        mp.events.add("playerDeath", (playerMp: PlayerMp) => {
+            const playerData = playerDataFactory.create().load(playerMp)
+            if (playerData.status === PlayerDataStatus.ACTIVE) {
+                mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
+            }
+        })
 
         mp.events.add(PlayerSpawnManagerEvents.FORCE_RESPAWN, (playerMp: PlayerMp) => {
             const spawnId = random.int(0, this._spawns.length - 1)

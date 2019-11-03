@@ -72,7 +72,7 @@ const checkpointFactory = new CheckpointFactory()
 const blipFactory = new BlipFactory()
 const vector3Factory = new Vector3Factory()
 const raceDataFactory = new RaceDataFactory()
-const playerSpawnManager: PlayerSpawnManager = new PlayerSpawnManager(knex, vector3Factory)
+const playerSpawnManager: PlayerSpawnManager = new PlayerSpawnManager(knex, vector3Factory, playerDataFactory)
 
 const playerHashPasswordFactory = new PlayerHashPasswordFactory()
 const playerRegister: PlayerRegister = new PlayerRegister(
