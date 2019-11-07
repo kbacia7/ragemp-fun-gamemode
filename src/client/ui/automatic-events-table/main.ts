@@ -14,7 +14,7 @@ import {
     AutomaticEventsTableModuleEvents,
 } from "client/modules/AutomaticEventsTableModule/AutomaticEventsTableModuleEvents"
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
-import { IRaceData } from "server/modules/AutomaticEvents/Events/IRaceData"
+import { IRaceData } from "server/modules/AutomaticEvents/Events/Race/IRaceData"
 import * as luxon from "luxon"
 
 const promiseFactory = new PromiseFactory<string>()

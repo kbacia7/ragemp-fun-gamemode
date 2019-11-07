@@ -4,7 +4,7 @@ import { PlayerDataLoaderEvents } from "core/PlayerDataLoader/PlayerDataLoaderEv
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { AutomaticEventManagerEvents } from "server/modules/AutomaticEvents/AutomaticEventManagerEvents"
-import { RaceAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/RaceAutomaticEventPageEvents"
+import { RaceAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Race/RaceAutomaticEventPageEvents"
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 import { Module } from "./../Module"
 import { AutomaticEventsTableModuleEvents } from "./AutomaticEventsTableModuleEvents"
