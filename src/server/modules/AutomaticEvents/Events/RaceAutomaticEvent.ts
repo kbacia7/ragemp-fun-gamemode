@@ -18,6 +18,7 @@ import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { RaceArena } from "server/entity/RaceArena"
 import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
+import { PlayerQuitEvents } from "server/modules/PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManagerEvents } from "server/modules/PlayerSpawnManager/PlayerSpawnManagerEvents"
 import { AutomaticEvent } from "../AutomaticEvent"
 import { AutomaticEventManagerEvents } from "../AutomaticEventManagerEvents"
@@ -94,6 +95,17 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             const playerData: IPlayerData = this._playerDataFactory.create().load(player)
             if (playerData.status === PlayerDataStatus.ON_EVENT && playerData.onEvent === AutomaticEventType.RACE) {
                 this._endRaceForPlayer(player, RaceAutomaticEventEndPlayerReasons.FORCE)
+            }
+        })
+
+        mp.events.add(PlayerQuitEvents.PLAYER_QUIT_ON_EVENT, (playerData: IPlayerData) => {
+            if (playerData.onEvent === AutomaticEventType.RACE) {
+                this._players = this._players.filter((p) => {
+                    return p.id !== playerData.id
+                })
+                if (this._players.length === 0) {
+                    this._endRace()
+                }
             }
         })
 
