@@ -26,6 +26,9 @@ const _global: any = (window || global) as any
 _global.loadPlayerData = (playerDataInJson: string) => {
     const playerData: IPlayerData = JSON.parse(playerDataInJson)
     $("#player-profile-username").text(playerData.name)
+    if (playerData.name.length > 12) {
+        $("#player-profile-username").css({"font-size": "1rem", "margin-top": "0.5rem"})
+    }
     $("#player-profile-username").css("color", playerData.nameColor)
     $("#player-profile-rank").text(playerData.rank)
     $("#player-profile-level").text("1")
