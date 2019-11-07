@@ -9,6 +9,7 @@ import Knex = require("knex")
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { Setting } from "server/entity/Setting"
+import { PlayerQuitEvents } from "../PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManager } from "../PlayerSpawnManager/PlayerSpawnManager"
 import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
 import { AutomaticEvent } from "./AutomaticEvent"
@@ -116,6 +117,21 @@ export class AutomaticEventManager {
             this._playerSignOff(playerMp, eventName)
         })
 
+        mp.events.add(PlayerQuitEvents.PLAYER_QUIT_SAVED_ON_EVENT, (playerData: IPlayerData) => {
+            Object.values(this._automaticEvents).forEach((automaticEvent: IAutomaticEvent) => {
+                const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
+                if (playerData.savedOnEvents.includes(automaticEventData.type)) {
+                    const eventName = automaticEventData.name
+                    automaticEventData.actualPlayers--
+                    mp.players.forEach((pMp: PlayerMp) => {
+                        pMp.call(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE, [
+                            eventName, JSON.stringify(automaticEventData),
+                        ])
+                    })
+                }
+            })
+        })
+
         mp.events.add(AutomaticEventManagerEvents.EVENT_START_SOON, (eventName: string) => {
             setTimeout(() => {
                 this._start(eventName)
@@ -190,9 +206,11 @@ export class AutomaticEventManager {
                     [automaticEventData.displayName],
                 )
                 automaticEventData.actualPlayers--
-                playerMp.call(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE, [
-                    eventName, JSON.stringify(automaticEventData),
-                ])
+                mp.players.forEach((pMp: PlayerMp) => {
+                    pMp.call(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE, [
+                        eventName, JSON.stringify(automaticEventData),
+                    ])
+                })
             }
         })
 
@@ -201,6 +219,9 @@ export class AutomaticEventManager {
     private _start(name: string) {
         const automaticEvent: IAutomaticEvent = this._automaticEvents[name]
         const automaticEventData: IAutomaticEventData = automaticEvent.automaticEventData
+        if (mp.players.length <= 0) {
+            return this._end(name, null)
+        }
         mp.players.forEach((playerMp: PlayerMp) => {
             if (automaticEventData.actualPlayers < automaticEventData.minPlayers) {
                 mp.players.forEach((playerMpForNotification: PlayerMp) => {
