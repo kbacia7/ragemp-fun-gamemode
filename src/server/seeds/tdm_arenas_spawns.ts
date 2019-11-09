@@ -25,7 +25,7 @@ export async function seed(knex: Knex): Promise<any> {
                 },
                 {
                     id: 3,
-                    x:32.87093734741211,
+                    x: 32.87093734741211,
                     y: -219.02822875976562,
                     z: 51.249977111816406,
                     team: 1,
@@ -33,7 +33,7 @@ export async function seed(knex: Knex): Promise<any> {
                 },
                 {
                     id: 4,
-                    x: 38.51408767700195, 
+                    x: 38.51408767700195,
                     y: -221.5759735107422,
                     z: 51.0904541015625,
                     team: 1,
