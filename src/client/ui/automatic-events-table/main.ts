@@ -128,6 +128,14 @@ _global.setRaceData = (
     $("#race-page-info-time").text(playerTime)
 }
 
+_global.setTdmData = (
+    weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
+) => {
+    $("#tdm-page-weapons").text(weapons)
+    $("#tdm-page-players-a").text(teamAPlayersCount)
+    $("#tdm-page-players-b").text(teamBPlayersCount)
+}
+
 _global.removePage = (evName: string) => {
     $(`#tabs-${evName}`).parent("li").first().remove()
     $(`#${evName}-page`).addClass("d-none")
