@@ -4,7 +4,10 @@ import { PlayerDataLoaderEvents } from "core/PlayerDataLoader/PlayerDataLoaderEv
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { AutomaticEventManagerEvents } from "server/modules/AutomaticEvents/AutomaticEventManagerEvents"
-import { RaceAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/RaceAutomaticEventPageEvents"
+import { RaceAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Race/RaceAutomaticEventPageEvents"
+import {
+    TeamDeathmatchAutomaticEventPageEvents,
+} from "server/modules/AutomaticEvents/Events/TDM/TeamDeathmatchAutomaticEventPageEvents"
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 import { Module } from "./../Module"
 import { AutomaticEventsTableModuleEvents } from "./AutomaticEventsTableModuleEvents"
@@ -60,6 +63,24 @@ export class AutomaticEventsTableModule extends Module {
         mp.events.add(RaceAutomaticEventPageEvents.REMOVE_PAGE, () => {
             this._clearRaceList()
             this._removePage("race")
+            this._togglePage("events")
+        })
+
+        mp.events.add(TeamDeathmatchAutomaticEventPageEvents.DISPLAY_PAGE,
+            (eventName: string, displayName: string,
+             weapons: string, teamAPlayersCount: string, teamBPlayersCount: string) => {
+            this._addButton(eventName, displayName)
+            this._togglePage(eventName)
+            this._setTdmData(weapons, teamAPlayersCount, teamBPlayersCount)
+        })
+
+        mp.events.add(TeamDeathmatchAutomaticEventPageEvents.UPDATE_PAGE,
+            (weapons: string, teamAPlayersCount: string, teamBPlayersCount: string) => {
+                this._setTdmData(weapons, teamAPlayersCount, teamBPlayersCount)
+            })
+
+        mp.events.add(TeamDeathmatchAutomaticEventPageEvents.REMOVE_PAGE, () => {
+            this._removePage("tdm")
             this._togglePage("events")
         })
     }
@@ -128,6 +149,17 @@ export class AutomaticEventsTableModule extends Module {
             `setRaceData(
                 '${playersWithTime}', '${allCheckpoints}',
                 '${playerTime}', '${playerChekpoints}'
+            )`,
+        )
+    }
+
+    private _setTdmData(
+        weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
+    ) {
+        this._currentWindow.execute(
+            `setTdmData(
+                '${weapons}', '${teamAPlayersCount}',
+                '${teamBPlayersCount}'
             )`,
         )
     }

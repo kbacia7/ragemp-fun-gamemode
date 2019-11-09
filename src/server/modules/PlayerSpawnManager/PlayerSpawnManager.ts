@@ -1,3 +1,4 @@
+import { ChangePlayerPedModuleEvents } from "client/modules/ChangePlayerPedModule/ChangePlayerPedModuleEvents"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import Knex from "knex"
@@ -24,6 +25,7 @@ export class PlayerSpawnManager {
         })
 
         mp.events.add(PlayerSpawnManagerEvents.FORCE_RESPAWN, (playerMp: PlayerMp) => {
+            const playerData = playerDataFactory.create().load(playerMp)
             const spawnId = random.int(0, this._spawns.length - 1)
             playerMp.dimension = Dimension.NORMAL
             playerMp.spawn(
@@ -33,6 +35,8 @@ export class PlayerSpawnManager {
                     this._spawns[spawnId].z,
                 ),
             )
+            playerMp.removeAllWeapons()
+            playerMp.call(ChangePlayerPedModuleEvents.CHANGE_PED, [playerData.ped])
         })
     }
 }

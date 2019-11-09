@@ -10,8 +10,6 @@ export class PlayerProfileModule extends Module {
         super(promiseFactory)
         this._name = "player-profile"
         mp.events.add("playerStartPlay", (playerDataInJson: string) => {
-            const playerData: IPlayerData = JSON.parse(playerDataInJson)
-            mp.players.local.model = playerData.ped
             this.loadUI()
         })
 

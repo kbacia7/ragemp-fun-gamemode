@@ -14,7 +14,7 @@ import {
     AutomaticEventsTableModuleEvents,
 } from "client/modules/AutomaticEventsTableModule/AutomaticEventsTableModuleEvents"
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
-import { IRaceData } from "server/modules/AutomaticEvents/Events/IRaceData"
+import { IRaceData } from "server/modules/AutomaticEvents/Events/Race/IRaceData"
 import * as luxon from "luxon"
 
 const promiseFactory = new PromiseFactory<string>()
@@ -126,6 +126,14 @@ _global.setRaceData = (
     $("#race-page-info-checkpoints").text(playerChekpoints)
     $("#race-page-info-checkpoints-all").text(allCheckpoints)
     $("#race-page-info-time").text(playerTime)
+}
+
+_global.setTdmData = (
+    weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
+) => {
+    $("#tdm-page-weapons").text(weapons)
+    $("#tdm-page-players-a").text(teamAPlayersCount)
+    $("#tdm-page-players-b").text(teamBPlayersCount)
 }
 
 _global.removePage = (evName: string) => {
