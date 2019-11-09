@@ -35,6 +35,7 @@ export class PlayerSpawnManager {
                     this._spawns[spawnId].z,
                 ),
             )
+            playerMp.removeAllWeapons()
             playerMp.call(ChangePlayerPedModuleEvents.CHANGE_PED, [playerData.ped])
         })
     }
