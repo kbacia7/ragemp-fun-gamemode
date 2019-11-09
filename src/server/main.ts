@@ -25,8 +25,11 @@ import { Setting } from "./entity/Setting"
 import { AutomaticEventDataFactory } from "./modules/AutomaticEvents/AutomaticEventDataFactory"
 import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
 import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
-import { RaceAutomaticEventFactory } from "./modules/AutomaticEvents/Events/RaceAutomaticEventFactory"
-import { RaceDataFactory } from "./modules/AutomaticEvents/Events/RaceDataFactory"
+import { RaceAutomaticEventFactory } from "./modules/AutomaticEvents/Events/Race/RaceAutomaticEventFactory"
+import { RaceDataFactory } from "./modules/AutomaticEvents/Events/Race/RaceDataFactory"
+import {
+   TeamDeathmatchAutomaticEventFactory,
+} from "./modules/AutomaticEvents/Events/TDM/TeamDeathmatchAutomaticEventFactory"
 import { IAutomaticEventData } from "./modules/AutomaticEvents/IAutomaticEventData"
 import { Chat } from "./modules/Chat/Chat"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
@@ -100,12 +103,18 @@ const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
    vehicleFactory, vector3Factory, checkpointFactory, blipFactory,
    notificationSenderFactory, playerDataFactory, raceDataFactory,
 )
+const tdmAutomaticEventFactory = new TeamDeathmatchAutomaticEventFactory(
+   vector3Factory, blipFactory,
+   notificationSenderFactory, playerDataFactory,
+)
 
 const mappedEventsToFactories = {
    race: raceAutomaticEventFactory,
+   tdm: tdmAutomaticEventFactory,
 }
 const mappedEventsToTypes = {
    race: AutomaticEventType.RACE,
+   tdm: AutomaticEventType.TDM,
 }
 
 const automaticEventManager = new AutomaticEventManager(

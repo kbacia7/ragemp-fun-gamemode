@@ -51,8 +51,8 @@ export class AutomaticEventManager {
                 .select()
                 .where("name", "LIKE", `${evName}_%`)
                 .then((settingsFromDb: Setting[]) => {
-                    console.log(`Load settings for ${evName} event`)
                     if (settingsFromDb.length > 0) {
+                        console.log(`Load settings for ${evName} event ${settingsFromDb.length}`)
                         const mappedSettingsByName: { [name: string]: string } = Object.assign(
                             {},
                             ...(settingsFromDb.map((item) => ({ [item.name]: item.value }))),
@@ -77,13 +77,12 @@ export class AutomaticEventManager {
                         const tmpMapped = {
                             derby: "Derby",
                             hideandseek: "Hide&Seek",
-                            tdm: "TDM",
                         }
 
                         const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
                             evName,
                             tmpMapped[evName],
-                            AutomaticEventType.TDM,
+                            AutomaticEventType.HIDEANDSEEK,
                             1,
                             0,
                             10,

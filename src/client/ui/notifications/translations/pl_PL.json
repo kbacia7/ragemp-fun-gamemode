@@ -17,5 +17,9 @@
     "AUTOMATIC_EVENT_SIGNED_OFF_SUCCESS": "Wypisałeś się z %s!",
     "AUTOMATIC_EVENT_CANT_START": "%s nie może wystartować z powodu niewystarczającej ilości graczy, zapisy zostały rozpoczęte od nowa",
     "AUTOMATIC_EVENT_SOON_SOON": "Odliczanie do startu zabawy %s rozpocznie się gdy aktualna zakończy się", 
-    "RACE_EVENT_LOOSE": "Niestety, nie udało Ci się dokończyć wyścigu"
+    "RACE_EVENT_LOOSE": "Niestety, nie udało Ci się dokończyć wyścigu",
+    "TDM_EVENT_MAP_START": "Mecz TDM się rozpoczął!",
+    "TDM_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
+    "TDM_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
+    "TDM_EVENT_YOUR_TEAM_WIN": "Twoja drużyna wygrała TDM, otrzymujesz %s$ i %s expa!"
 }

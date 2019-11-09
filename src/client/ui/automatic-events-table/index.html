@@ -24,7 +24,7 @@
                 <p class="automatic-events-table-row-title"></p>
               </div>
               <div class="col-2">
-                  <button type="button" data-i18n-translate="AUTOMATIC_EVENTS_ARENA_SAVE" class="btn btn-primary btn-sm automatic-events-table-row-save-button"></button>
+                  <button type="button" data-i18n-translate="AUTOMATIC_EVENTS_ARENA_SAVE" tabindex="-1" class="btn btn-primary btn-sm automatic-events-table-row-save-button"></button>
               </div>
           </div>
       </div>
@@ -52,15 +52,30 @@
             </div>
           </div>
       </div>
+      <div class="d-none" id="tdm-page">
+        <div class="row">
+          <div class="col-7">
+            <p><b data-i18n-translate="AUTOMATIC_EVENTS_TDM_TEAM_A"></b>: <span id="tdm-page-players-a"></span></p>
+          </div>
+          <div class="col-5">
+            <p><b data-i18n-translate="AUTOMATIC_EVENTS_TDM_TEAM_B"></b>: <span id="tdm-page-players-b"></span></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="text-center"><b data-i18n-translate="AUTOMATIC_EVENTS_TDM_WEAPONS"></b>: <span id="tdm-page-weapons"></span></p>
+          </div>
+        </div>
+      </div>
       <ul id="automatic-event-table-tabs" class="nav nav-tabs justify-content-center">
           <li class="nav-item">
-              <a class="nav-link" id="tabs-events" data-i18n-translate="AUTOMATIC_EVENTS_EVENTS" href="#"></a>
+              <a class="nav-link" tabindex="-1" id="tabs-events" tabindex="-1" data-i18n-translate="AUTOMATIC_EVENTS_EVENTS" href="#"></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="tabs-arenas" data-i18n-translate="AUTOMATIC_EVENTS_ARENA" href="#"></a>
+              <a class="nav-link" tabindex="-1" id="tabs-arenas" tabindex="-1" data-i18n-translate="AUTOMATIC_EVENTS_ARENA" href="#"></a>
             </li>
-            <li class="nav-item" id="tabs-sample" class="d-none">
-              <a class="nav-link" href="#"></a>
+            <li class="nav-item" id="tabs-sample" tabindex="-1" class="d-none">
+              <a class="nav-link" tabindex="-1" href="#"></a>
             </li>
           </ul>
     </div>
