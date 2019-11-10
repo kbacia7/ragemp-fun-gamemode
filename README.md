@@ -61,6 +61,91 @@ Po tym w bazie danych powinny być dane i tabele
 1. Zawsze ręcznie po kompilacji kopiujemy `client_packages/` i `packages/` z `dist/`
 2. [A potem już klasycznie](https://wiki.rage.mp/index.php?title=Getting_Started_with_Server)
 
+## Docker
+### Konfiguracja
+1. Klonujemy repozytorium na hosta który odpala kontenery, instalujemy knex'a i pobieramy paczki (opisane wyżej)
+2. Budujemy obrazy i kontenery
+```
+docker-compose --force-recreate --build up
+```
+3. Zatrzymujemy je i odpalamy samą bazę
+```
+docker-compose down
+docker-compose up db
+```
+4. Minimalizujemy konsolę z bazą gdy zobaczymy że się zainicjalizowała (CTRL+Z)
+5. W knexfile.ts wpisujemy dane do połączenia z bazą 
+* Host: localhost
+* Port: 10106
+* Użytkownik: psa-user
+* Hasło: psa-user-pwd
+* Baza danych: project-san-andreas
+6. Kompilujemy (dokładniej opisane niżej)
+```
+npm run-script build
+```
+6. Odpalamy migracje 
+```
+knex migrate:latest
+```
+7. Odpalamy seedy
+```
+knex seed:run
+```
+8. Sprawdzamy w jakiej sieci jest baza danych i jakie ma lokalne IP (domyślnie sieć nazywa się 4fun-project_default)
+```
+docker network ls
+docker network inspect <nazwa_sieci>
+```
+9. Gdy już znamy adres IP bazy danych zmieniamy w knexfile.ts port i hosta (IP to prawdopodobnie 172.18.0.2, ale warto się upewnić)
+* Host: 172.18.0.2
+* Port: 3306
+10. Ponownie kompilujemy
+```
+npm run-script build
+```
+11. Wyłączamy bazę
+```
+docker-compose down
+```
+12. Ponownie budujemy obrazy i zatrzymujemy (CTRL+C po zbudowaniu)
+```
+docker-compose --force-recreate --build up
+```
+13. Raz jeszcze odpalamy samą bazę
+```
+docker-compose up db
+```
+14. I gdy się uruchomi minimalizujemy (CTRL+Z), odpalamy serwer (minimalizujemy CTRL+Z)
+```
+docker-compose up server
+```
+15. Teraz pozostaje zamknąć port 10106 z hosta np. w ufw
+```
+ufw deny 10106
+```
+### Następne uruchomienia
+Zakładając że zatrzymaliśmy bazę i serwer (np. przez `docker-compose down`)
+1. Uruchamiamy bazę i czekamy chwilę aż się zainicjalizujemy po czym minimalizujemy (CTRL+Z)
+```
+docker-compose up db
+```
+2. Uruchamiamy serwer
+```
+docker-compose up server
+```
+
+### Wrzucanie zmian do bazy
+1. Podmieniamy port i hosta w knexfile.ts
+* Port: 10106
+* Host: localhost
+2. Odpalamy migracje/seedy
+```
+knex migrate:latest
+knex seed:run
+```
+3. Przywracamy stary host i port w knexfile.ts
+4. Ew. resetujemy serwer
 ## Programowanie
 ### Podstawy
 Programujemy przy użyciu [TypeScripta](https://en.wikipedia.org/wiki/TypeScript), kompilacja do JavaScriptu odbywa się przy pomocy [Webpack'a](https://webpack.js.org/).
