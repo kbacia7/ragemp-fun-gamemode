@@ -13,7 +13,6 @@ export async function seed(knex: Knex): Promise<any> {
                     rank: "Player",
                     deaths: 0,
                     kills: 0,
-                    ped: 0xD1FEB884,
                 },
 
             ])
