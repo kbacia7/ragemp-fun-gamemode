@@ -91,7 +91,7 @@ export class ArenaManager {
             if (playerData.status === PlayerDataStatus.ON_ARENA) {
                 Object.values(this._arenas).forEach((arena: IArena) => {
                     if (arena.data.type === playerData.onArena) {
-                        arena.spawnPlayer(playerMp)
+                        arena.spawnPlayer(playerMp, false)
                     }
                 } )
 
@@ -132,7 +132,7 @@ export class ArenaManager {
                         NotificationType.INFO, NotificationTimeout.NORMAL,
                         [arenaData.displayName],
                     )
-                    this._arenas[arenaName].spawnPlayer(playerMp)
+                    this._arenas[arenaName].spawnPlayer(playerMp, true)
                     arenaData.actualPlayers++
                     playerMp.setVariable(
                         PlayerDataProps.ON_ARENA,
