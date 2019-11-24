@@ -11,11 +11,11 @@ import { DMArenaWeapon } from "server/entity/DMArenaWeapon"
 import { HeavyDMArena } from "server/entity/HeavyDMArena"
 import { HeavyDMArenaSpawnPoint } from "server/entity/HeavyDMArenaSpawnPoint"
 import { HeavyDMArenaWeapon } from "server/entity/HeavyDMArenaWeapon"
-import { Arena } from "../../Arena"
-import { IArenaData } from "../../IArenaData"
 import { SniperArenaEntity } from "server/entity/SniperArenaEntity"
 import { SniperArenaSpawnPoint } from "server/entity/SniperArenaSpawnPoint"
 import { SniperArenaWeapon } from "server/entity/SniperArenaWeapon"
+import { Arena } from "../../Arena"
+import { IArenaData } from "../../IArenaData"
 
 export class SniperArena extends Arena {
     private _sniperArena: SniperArenaEntity = null
@@ -72,7 +72,7 @@ export class SniperArena extends Arena {
                 [this._sniperArena.name, this._sniperArena.author],
             )
         }
-        const spawn: SniperArenaSpawnPoint = 
+        const spawn: SniperArenaSpawnPoint =
             this._sniperArenaSpawns[random.int(0, this._sniperArenaSpawns.length - 1)]
         playerMp.removeAllWeapons()
         playerMp.position = this._vector3Factory.create(

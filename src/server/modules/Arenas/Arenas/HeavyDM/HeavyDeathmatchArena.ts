@@ -69,7 +69,7 @@ export class HeavyDeathmatchArena extends Arena {
                 [this._heavyDmArena.name, this._heavyDmArena.author],
             )
         }
-        const spawn: HeavyDMArenaSpawnPoint = 
+        const spawn: HeavyDMArenaSpawnPoint =
             this._heavyDmArenaSpawns[random.int(0, this._heavyDmArenaSpawns.length - 1)]
         playerMp.removeAllWeapons()
         playerMp.position = this._vector3Factory.create(
