@@ -142,7 +142,6 @@ export class AutomaticEventManager {
                         eventName, JSON.stringify(this._automaticEvents[eventName].automaticEventData),
                     ])
                 })
-                
 
                 if (automaticEventData.actualPlayers >= automaticEventData.minPlayers) {
                     if (this._activeEvents[eventName]) {
