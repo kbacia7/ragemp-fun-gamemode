@@ -134,6 +134,67 @@ export async function seed(knex: Knex): Promise<any> {
                     name: "derby_display_name",
                     value: "Derby",
                 },
+                {
+                    description: "Minimalna liczba graczy do startu zabawy Hide&Seek",
+                    id: 22,
+                    name: "hideandseek_min_players",
+                    value: "1",
+                },
+                {
+                    description: "Maksymalna liczba graczy jaka może się zapisać na Hide&Seek",
+                    id: 23,
+                    name: "hideandseek_max_players",
+                    value: "30",
+                },
+                {
+                    description: "Minimalna kwota jaką może otrzymać gracz za wygraną na Hide&Seek",
+                    id: 24,
+                    name: "hideandseek_min_money",
+                    value: "1000",
+                },
+                {
+                    description: "Maksymalna kwota jaką może otrzymać gracz za wygraną na Hide&Seek",
+                    id: 25,
+                    name: "hideandseek_max_money",
+                    value: "3000",
+                },
+                {
+                    description: "Minimalna liczba expa jaką może otrzymać gracz za wygraną na Hide&Seek",
+                    id: 26,
+                    name: "hideandseek_min_exp",
+                    value: "3",
+                },
+                {
+                    description: "Maksymalna liczba expa jaką może otrzymać gracz za wygraną na Hide&Seek",
+                    id: 27,
+                    name: "hideandseek_max_exp",
+                    value: "10",
+                },
+                {
+                    description: "Nazwa wyświetlana dla Hide&Seek w tabeli",
+                    id: 28,
+                    name: "hideandseek_display_name",
+                    value: "Hide&Seek",
+                },
+                {
+                    description: "Pozycja X w którą zostanie przeniesiony szukający podczas gdy gracze będą się chować",
+                    id: 29,
+                    name: "hideandseek_looking_wait_room_x",
+                    value: "0",
+                },
+                {
+                    description: "Pozycja Y w którą zostanie przeniesiony szukający podczas gdy gracze będą się chować",
+                    id: 30,
+                    name: "hideandseek_looking_wait_room_x",
+                    value: "0",
+                },
+                {
+                    description: "Pozycja Z w którą zostanie przeniesiony szukający podczas gdy gracze będą się chować",
+                    id: 31,
+                    name: "hideandseek_looking_wait_room_z",
+                    value: "0",
+                },
+
             ])
         })
 }

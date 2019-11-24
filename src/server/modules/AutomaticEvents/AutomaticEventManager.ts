@@ -72,24 +72,7 @@ export class AutomaticEventManager {
                         this._automaticEvents[evName] =  mappedNamesToFactories[evName].create(
                             automaticEventData,
                         )
-                    } else {
-                        // TODO: Usuwać wraz z dodawaniem nowych zabaw
-                        const tmpMapped = {
-                            hideandseek: "Hide&Seek",
-                        }
-
-                        const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
-                            evName,
-                            tmpMapped[evName],
-                            AutomaticEventType.HIDEANDSEEK,
-                            1,
-                            0,
-                            10,
-                            0, 0, 0, 0,
-                        )
-                        this._automaticEvents[evName] = new AutomaticEvent(automaticEventData)
-
-                    }
+                    } 
                 })
         })
 

@@ -27,5 +27,11 @@
     "DERBY_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
     "DERBY_EVENT_YOU_WIN": "Wygrałeś derby! Wygrałeś %s$ i $s expa!",
     "DERBY_EVENT_WINNER": "%s wygrał derby!",
-    "DERBY_EVENT_LOOSE": "Odpadłeś z derby!"
+    "DERBY_EVENT_LOOSE": "Odpadłeś z derby!",
+    "HIDE_AND_SEEK_EVENT_MAP_START": "Zabawa rozpoczęta, za 3 minuty szukający zacznie szukać!",
+    "HIDE_AND_SEEK_EVENT_MATCH_START": "Szukający zaczyna szukać!", 
+    "HIDE_AND_SEEK_EVENT_YOU_LOOKING": "Jesteś szukającym! Za 3 minuty zostaniesz przeniesiony na arenę!",
+    "HIDE_AND_SEEK_EVENT_MAP_INFO": "Załadowana arena to %s stworzona przez %s",
+    "HIDE_AND_SEEK_EVENT_LOOKING_LEAVE": "Wygląda na to że szukający opuścił grę. Zabawa zostaje anulowana",
+    "HIDE_AND_SEEK_EVENT_YOU_WIN": "Jesteś ostatnim żywym na zabawie, wygrywasz %s$ i %s expa"
 }
