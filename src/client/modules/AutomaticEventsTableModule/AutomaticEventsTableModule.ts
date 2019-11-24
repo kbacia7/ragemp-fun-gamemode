@@ -11,6 +11,7 @@ import {
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 import { Module } from "./../Module"
 import { AutomaticEventsTableModuleEvents } from "./AutomaticEventsTableModuleEvents"
+import { HideAndSeekAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventPageEvents"
 
 export class AutomaticEventsTableModule extends Module {
 
@@ -83,6 +84,26 @@ export class AutomaticEventsTableModule extends Module {
             this._removePage("tdm")
             this._togglePage("events")
         })
+
+        mp.events.add(HideAndSeekAutomaticEventPageEvents.DISPLAY_PAGE,
+            (eventName: string, displayName: string,
+             playersNames: string, lookingPlayerName: string) => {
+            this._addButton(eventName, displayName)
+            this._togglePage(eventName)
+            this._clearHideAndSeekList()
+            this._setHideAndSeekData(playersNames, lookingPlayerName)
+        })
+
+        mp.events.add(HideAndSeekAutomaticEventPageEvents.UPDATE_PAGE,
+            (playersNames: string, lookingPlayerName: string) => {
+                this._clearHideAndSeekList()
+                this._setHideAndSeekData(playersNames, lookingPlayerName)
+        })
+
+        mp.events.add(HideAndSeekAutomaticEventPageEvents.REMOVE_PAGE, () => {
+            this._removePage("hideandseek")
+            this._togglePage("events")
+        })
     }
 
     public loadUI() {
@@ -135,6 +156,12 @@ export class AutomaticEventsTableModule extends Module {
         )
     }
 
+    private _clearHideAndSeekList() {
+        this._currentWindow.execute(
+            `clearHideAndSeekList()`,
+        )
+    }
+
     private _removePage(ev: string) {
         this._currentWindow.execute(
             `removePage('${ev}')`,
@@ -149,6 +176,16 @@ export class AutomaticEventsTableModule extends Module {
             `setRaceData(
                 '${playersWithTime}', '${allCheckpoints}',
                 '${playerTime}', '${playerChekpoints}'
+            )`,
+        )
+    }
+
+    private _setHideAndSeekData(
+        playersNames: string, lookingPlayerName: string
+    ) {
+        this._currentWindow.execute(
+            `setHideAndSeekData(
+                '${playersNames}', '${lookingPlayerName}'
             )`,
         )
     }

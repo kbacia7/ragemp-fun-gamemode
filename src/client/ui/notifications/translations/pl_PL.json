@@ -21,5 +21,12 @@
     "TDM_EVENT_MAP_START": "Mecz TDM się rozpoczął!",
     "TDM_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
     "TDM_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
-    "TDM_EVENT_YOUR_TEAM_WIN": "Twoja drużyna wygrała TDM, otrzymujesz %s$ i %s expa!"
+    "TDM_EVENT_YOUR_TEAM_WIN": "Twoja drużyna wygrała TDM, otrzymujesz %s$ i %s expa!",
+    "HIDE_AND_SEEK_EVENT_MAP_START": "Zabawa rozpoczęta, za 3 minuty szukający zacznie szukać!",
+    "HIDE_AND_SEEK_EVENT_MATCH_START": "Szukający zaczyna szukać!", 
+    "HIDE_AND_SEEK_EVENT_YOU_LOOKING": "Jesteś szukającym! Za 3 minuty zostaniesz przeniesiony na arenę!",
+    "HIDE_AND_SEEK_EVENT_MAP_INFO": "Załadowana arena to %s stworzona przez %s",
+    "HIDE_AND_SEEK_EVENT_LOOKING_LEAVE": "Wygląda na to że szukający opuścił grę. Zabawa zostaje anulowana",
+    "HIDE_AND_SEEK_EVENT_YOU_WIN": "Jesteś ostatnim żywym na zabawie, wygrywasz %s$ i %s expa"
+
 }

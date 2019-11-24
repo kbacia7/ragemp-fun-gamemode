@@ -44,6 +44,7 @@ import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
+import { HideAndSeekAutomaticEventFactory } from "./modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventFactory"
 
 const knex = Knex({
    client: dbConfig.development.client,
@@ -107,12 +108,17 @@ const tdmAutomaticEventFactory = new TeamDeathmatchAutomaticEventFactory(
    vector3Factory, blipFactory,
    notificationSenderFactory, playerDataFactory,
 )
+const hideAndSeekAutomaticEventFactory = new HideAndSeekAutomaticEventFactory(
+   vector3Factory, notificationSenderFactory, playerDataFactory,
+)
 
 const mappedEventsToFactories = {
+   hideandseek: hideAndSeekAutomaticEventFactory,
    race: raceAutomaticEventFactory,
    tdm: tdmAutomaticEventFactory,
 }
 const mappedEventsToTypes = {
+   hideandseek: AutomaticEventType.HIDEANDSEEK,
    race: AutomaticEventType.RACE,
    tdm: AutomaticEventType.TDM,
 }
