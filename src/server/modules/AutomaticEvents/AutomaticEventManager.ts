@@ -76,7 +76,6 @@ export class AutomaticEventManager {
                         // TODO: Usuwać wraz z dodawaniem nowych zabaw
                         const tmpMapped = {
                             derby: "Derby",
-                            hideandseek: "Hide&Seek",
                         }
 
                         const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(

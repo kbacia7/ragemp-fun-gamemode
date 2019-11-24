@@ -128,6 +128,31 @@ _global.setRaceData = (
     $("#race-page-info-time").text(playerTime)
 }
 
+_global.clearHideAndSeekList = () => {
+    $("#hideandseek-page-players-list").children("li:not(#hideandseek-page-player-sample)").remove()
+}
+
+_global.setHideAndSeekData = (
+    playersListStr: string, lookingPlayerName: string
+) => {
+    const playersList: string[] = JSON.parse(playersListStr)
+    playersList.forEach((playerName: string) => {
+        const el = $("#hideandseek-page-player-sample").clone()
+        el.removeAttr("id")
+        el.removeClass("d-none")
+        const isLooking = playerName === lookingPlayerName
+        if(isLooking) {
+            el.addClass("font-weight-bold")
+        }
+        el.text(`${playerName}`)
+        $("#hideandseek-page-players-list").append(el)
+    })
+}
+
+_global.clearHideAndSeekList = () => {
+    $("#hideandseek-page-players-list").children("li:not(#hideandseek-page-player-sample)").remove()
+}
+
 _global.setTdmData = (
     weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
 ) => {
