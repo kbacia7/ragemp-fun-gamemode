@@ -24,6 +24,8 @@ import { Player } from "./entity/Player"
 import { Setting } from "./entity/Setting"
 import { ArenaDataFactory } from "./modules/Arenas/ArenaDataFactory"
 import { ArenaManager } from "./modules/Arenas/ArenaManager"
+import { DeathmatchArenaFactory } from "./modules/Arenas/Arenas/DM/DeathmatchArenaFactory"
+import { ArenaType } from "./modules/Arenas/ArenaType"
 import { AutomaticEventDataFactory } from "./modules/AutomaticEvents/AutomaticEventDataFactory"
 import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
 import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
@@ -121,12 +123,18 @@ const hideAndSeekAutomaticEventFactory = new HideAndSeekAutomaticEventFactory(
    vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
+const deathmatchArenaFactory = new DeathmatchArenaFactory(
+   vector3Factory, notificationSenderFactory, playerDataFactory,
+)
+
 const mappedArenasToFactories = {
+   dm: deathmatchArenaFactory,
 
 }
 const mappedArenasToTypes = {
-
+   dm: ArenaType.DM,
 }
+
 const arenaManager = new ArenaManager(
    knex, notificationSenderFactory,
    ["dm", "heavydm", "sniper", "oneshoot"],

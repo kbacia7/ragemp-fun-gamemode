@@ -53,17 +53,16 @@ export class ArenaManager {
                             arenaName,
                             mappedSettingsByName[`${arenaName}_display_name`],
                             mappedNamesToTypes[arenaName],
-                            parseInt(mappedSettingsByName[`${arenaName}_min_players`], 10),
                             0,
                             parseInt(mappedSettingsByName[`${arenaName}_max_players`], 10),
                         )
                         this._arenas[arenaName] =  mappedNamesToFactories[arenaName].create(
                             arenaData,
                         )
+                        this._arenas[arenaName].loadArena()
                     } else {
                          // TODO: Usuwać wraz z dodawaniem nowych aren
                          const tmpMapped = {
-                            dm: "DM",
                             heavydm: "HeavyDM",
                             oneshoot: "OneShoot",
                             sniper: "Sniper",
@@ -74,7 +73,6 @@ export class ArenaManager {
                             tmpMapped[arenaName],
                             ArenaType.ONESHOOT,
                             1,
-                            0,
                             10,
                         )
                          this._arenas[arenaName] = new Arena(arenaData)
