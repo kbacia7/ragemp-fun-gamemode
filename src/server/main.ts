@@ -25,6 +25,7 @@ import { Setting } from "./entity/Setting"
 import { AutomaticEventDataFactory } from "./modules/AutomaticEvents/AutomaticEventDataFactory"
 import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
 import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
+import { DerbyAutomaticEventFactory } from "./modules/AutomaticEvents/Events/Derby/DerbyAutomaticEventFactory"
 import { RaceAutomaticEventFactory } from "./modules/AutomaticEvents/Events/Race/RaceAutomaticEventFactory"
 import { RaceDataFactory } from "./modules/AutomaticEvents/Events/Race/RaceDataFactory"
 import {
@@ -107,12 +108,17 @@ const tdmAutomaticEventFactory = new TeamDeathmatchAutomaticEventFactory(
    vector3Factory, blipFactory,
    notificationSenderFactory, playerDataFactory,
 )
+const derbyAutomaticEventFactory = new DerbyAutomaticEventFactory(
+   vehicleFactory, vector3Factory, notificationSenderFactory, playerDataFactory,
+)
 
 const mappedEventsToFactories = {
+   derby: derbyAutomaticEventFactory,
    race: raceAutomaticEventFactory,
    tdm: tdmAutomaticEventFactory,
 }
 const mappedEventsToTypes = {
+   derby: AutomaticEventType.DERBY,
    race: AutomaticEventType.RACE,
    tdm: AutomaticEventType.TDM,
 }

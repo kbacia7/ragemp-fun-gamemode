@@ -75,7 +75,6 @@ export class AutomaticEventManager {
                     } else {
                         // TODO: Usuwać wraz z dodawaniem nowych zabaw
                         const tmpMapped = {
-                            derby: "Derby",
                             hideandseek: "Hide&Seek",
                         }
 

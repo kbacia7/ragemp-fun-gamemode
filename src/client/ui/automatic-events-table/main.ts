@@ -128,6 +128,23 @@ _global.setRaceData = (
     $("#race-page-info-time").text(playerTime)
 }
 
+_global.clearDerbyList = () => {
+    $("#derby-page-players-list").children("li:not(#derby-page-player-sample)").remove()
+}
+
+_global.setDerbyData = (
+    playersNamesStr: string,
+) => {
+    const playersNames: string[] = JSON.parse(playersNamesStr)
+    playersNames.forEach((playerName: string) => {
+        const el = $("#derby-page-player-sample").clone()
+        el.removeAttr("id")
+        el.removeClass("d-none")
+        el.text(`${playerName}`)
+        $("#derby-page-players-list").append(el)
+    })
+}
+
 _global.setTdmData = (
     weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
 ) => {
