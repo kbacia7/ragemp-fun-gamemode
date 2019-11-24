@@ -21,5 +21,11 @@
     "TDM_EVENT_MAP_START": "Mecz TDM się rozpoczął!",
     "TDM_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
     "TDM_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
-    "TDM_EVENT_YOUR_TEAM_WIN": "Twoja drużyna wygrała TDM, otrzymujesz %s$ i %s expa!"
+    "TDM_EVENT_YOUR_TEAM_WIN": "Twoja drużyna wygrała TDM, otrzymujesz %s$ i %s expa!",
+    "DERBY_EVENT_MAP_START": "Mecz derby się rozpoczął!",
+    "DERBY_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
+    "DERBY_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
+    "DERBY_EVENT_YOU_WIN": "Wygrałeś derby! Wygrałeś %s$ i $s expa!",
+    "DERBY_EVENT_WINNER": "%s wygrał derby!",
+    "DERBY_EVENT_LOOSE": "Odpadłeś z derby!"
 }
