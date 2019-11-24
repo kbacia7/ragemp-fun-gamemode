@@ -5,6 +5,7 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { AutomaticEventManagerEvents } from "server/modules/AutomaticEvents/AutomaticEventManagerEvents"
 import { DerbyAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Derby/DerbyAutomaticEventPageEvents"
+import { HideAndSeekAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventPageEvents"
 import { RaceAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Race/RaceAutomaticEventPageEvents"
 import {
     TeamDeathmatchAutomaticEventPageEvents,
@@ -12,7 +13,6 @@ import {
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 import { Module } from "./../Module"
 import { AutomaticEventsTableModuleEvents } from "./AutomaticEventsTableModuleEvents"
-import { HideAndSeekAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventPageEvents"
 
 export class AutomaticEventsTableModule extends Module {
 
@@ -182,7 +182,7 @@ export class AutomaticEventsTableModule extends Module {
             `clearDerbyList()`,
         )
     }
-  
+
     private _clearHideAndSeekList() {
         this._currentWindow.execute(
             `clearHideAndSeekList()`,
@@ -218,7 +218,7 @@ export class AutomaticEventsTableModule extends Module {
     }
 
     private _setHideAndSeekData(
-        playersNames: string, lookingPlayerName: string
+        playersNames: string, lookingPlayerName: string,
     ) {
         this._currentWindow.execute(
             `setHideAndSeekData(
@@ -226,7 +226,7 @@ export class AutomaticEventsTableModule extends Module {
             )`,
         )
     }
-              
+
     private _setTdmData(
         weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
     ) {

@@ -72,7 +72,7 @@ export class AutomaticEventManager {
                         this._automaticEvents[evName] =  mappedNamesToFactories[evName].create(
                             automaticEventData,
                         )
-                    } 
+                    }
                 })
         })
 

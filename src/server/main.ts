@@ -26,6 +26,7 @@ import { AutomaticEventDataFactory } from "./modules/AutomaticEvents/AutomaticEv
 import { AutomaticEventManager } from "./modules/AutomaticEvents/AutomaticEventManager"
 import { AutomaticEventType } from "./modules/AutomaticEvents/AutomaticEventType"
 import { DerbyAutomaticEventFactory } from "./modules/AutomaticEvents/Events/Derby/DerbyAutomaticEventFactory"
+import { HideAndSeekAutomaticEventFactory } from "./modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventFactory"
 import { RaceAutomaticEventFactory } from "./modules/AutomaticEvents/Events/Race/RaceAutomaticEventFactory"
 import { RaceDataFactory } from "./modules/AutomaticEvents/Events/Race/RaceDataFactory"
 import {
@@ -45,7 +46,6 @@ import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
-import { HideAndSeekAutomaticEventFactory } from "./modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventFactory"
 
 const knex = Knex({
    client: dbConfig.development.client,
@@ -119,8 +119,8 @@ const hideAndSeekAutomaticEventFactory = new HideAndSeekAutomaticEventFactory(
 )
 
 const mappedEventsToFactories = {
-   hideandseek: hideAndSeekAutomaticEventFactory,
    derby: derbyAutomaticEventFactory,
+   hideandseek: hideAndSeekAutomaticEventFactory,
    race: raceAutomaticEventFactory,
    tdm: tdmAutomaticEventFactory,
 }

@@ -150,7 +150,7 @@ _global.clearHideAndSeekList = () => {
 }
 
 _global.setHideAndSeekData = (
-    playersListStr: string, lookingPlayerName: string
+    playersListStr: string, lookingPlayerName: string,
 ) => {
     const playersList: string[] = JSON.parse(playersListStr)
     playersList.forEach((playerName: string) => {
@@ -158,7 +158,7 @@ _global.setHideAndSeekData = (
         el.removeAttr("id")
         el.removeClass("d-none")
         const isLooking = playerName === lookingPlayerName
-        if(isLooking) {
+        if (isLooking) {
             el.addClass("font-weight-bold")
         }
         el.text(`${playerName}`)
