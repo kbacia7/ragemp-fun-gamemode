@@ -26,7 +26,7 @@ export class PlayerSave {
             } else if (playerData.savedOnEvents.length > 0) {
                 mp.events.call(PlayerQuitEvents.PLAYER_QUIT_SAVED_ON_EVENT, playerData)
             }
-            if(playerData.status === PlayerDataStatus.ON_ARENA) {
+            if (playerData.status === PlayerDataStatus.ON_ARENA) {
                 mp.events.call(PlayerQuitEvents.PLAYER_QUIT_ON_ARENA, playerData)
             }
         })
