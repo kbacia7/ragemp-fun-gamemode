@@ -92,6 +92,48 @@ export async function seed(knex: Knex): Promise<any> {
                     value: "TDM",
                 },
 
+                {
+                    description: "Minimalna liczba graczy do startu zabawy Derby",
+                    id: 15,
+                    name: "derby_min_players",
+                    value: "1",
+                },
+                {
+                    description: "Maksymalna liczba graczy jaka może się zapisać na Derby",
+                    id: 16,
+                    name: "derby_max_players",
+                    value: "30",
+                },
+                {
+                    description: "Minimalna kwota jaką może otrzymać gracz za wygraną na Derby",
+                    id: 17,
+                    name: "derby_min_money",
+                    value: "1000",
+                },
+                {
+                    description: "Maksymalna kwota jaką może otrzymać gracz za wygraną na Derby",
+                    id: 18,
+                    name: "derby_max_money",
+                    value: "3000",
+                },
+                {
+                    description: "Minimalna liczba expa jaką może otrzymać gracz za wygraną na Derby",
+                    id: 19,
+                    name: "derby_min_exp",
+                    value: "3",
+                },
+                {
+                    description: "Maksymalna liczba expa jaką może otrzymać gracz za wygraną na Derby",
+                    id: 20,
+                    name: "derby_max_exp",
+                    value: "10",
+                },
+                {
+                    description: "Nazwa wyświetlana dla Derby w tabeli",
+                    id: 21,
+                    name: "derby_display_name",
+                    value: "Derby",
+                },
             ])
         })
 }
