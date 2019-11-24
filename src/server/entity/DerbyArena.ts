@@ -7,6 +7,7 @@ export class DerbyArena extends Model {
   public name: string
   public author: string
   public vehicleModel: number
+  public heightLimit: number
 
   public static get relationMappings()  {
     return {

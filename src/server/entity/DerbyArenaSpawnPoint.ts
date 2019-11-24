@@ -1,5 +1,5 @@
 import { Model } from "objection"
-import { DerbyArena } from "./RaceArena"
+import { DerbyArena } from "./DerbyArena"
 
 export class DerbyArenaSpawnPoint extends Model {
   public static tableName = "derby_arenas_spawns"
