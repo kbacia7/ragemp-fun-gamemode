@@ -11,13 +11,19 @@ import { DMArenaWeapon } from "server/entity/DMArenaWeapon"
 import { HeavyDMArena } from "server/entity/HeavyDMArena"
 import { HeavyDMArenaSpawnPoint } from "server/entity/HeavyDMArenaSpawnPoint"
 import { HeavyDMArenaWeapon } from "server/entity/HeavyDMArenaWeapon"
+import { OneShootArena } from "server/entity/OneShootArena"
+import { OneShootArenaSpawnPoint } from "server/entity/OneShootArenaSpawnPoint"
+import { OneShootArenaWeapon } from "server/entity/OneShootArenaWeapon"
+import { SniperArenaEntity } from "server/entity/SniperArenaEntity"
+import { SniperArenaSpawnPoint } from "server/entity/SniperArenaSpawnPoint"
+import { SniperArenaWeapon } from "server/entity/SniperArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
 
-export class HeavyDeathmatchArena extends Arena {
-    private _heavyDmArena: HeavyDMArena = null
-    private _heavyDmArenaSpawns: HeavyDMArenaSpawnPoint[] = []
-    private _heavyDmArenaWeapons: HeavyDMArenaWeapon[] = []
+export class OneShootOneDieArena extends Arena {
+    private _oneShootArena: OneShootArena = null
+    private _oneShootArenaSpawns: OneShootArenaSpawnPoint[] = []
+    private _oneShootArenaWeapons: OneShootArenaWeapon[] = []
     private _vector3Factory: IVector3Factory = null
     private _playerDataFactory: IPlayerDataFactory = null
     private _notificationSender: INotificationSender = null
@@ -39,24 +45,24 @@ export class HeavyDeathmatchArena extends Arena {
             .select()
             .where("active", "=", true)
             .limit(1)
-            .then((heavyDmArenas: HeavyDMArena[]) => {
-                if (heavyDmArenas.length > 0) {
-                    const heavyDmArena: HeavyDMArena = heavyDmArenas[0]
-                    console.log(`Loaded arena: ${heavyDmArena.name}`)
-                    heavyDmArena
+            .then((oneShootArenas: OneShootArena[]) => {
+                if (oneShootArenas.length > 0) {
+                    const oneShootArena: OneShootArena = oneShootArenas[0]
+                    console.log(`Loaded arena: ${oneShootArena.name}`)
+                    oneShootArena
                         .$relatedQuery("weapons")
                         .orderBy("id", "ASC")
-                        .then((heavyDmArenaWeapons: HeavyDMArenaWeapon[]) => {
-                            this._heavyDmArenaWeapons = heavyDmArenaWeapons
-                            console.log("Loaded weapons: " + heavyDmArenaWeapons.length)
+                        .then((oneShootArenaWeapons: OneShootArenaWeapon[]) => {
+                            this._oneShootArenaWeapons = oneShootArenaWeapons
+                            console.log("Loaded weapons: " + oneShootArenaWeapons.length)
                         })
 
-                    heavyDmArena
+                    oneShootArena
                         .$relatedQuery("spawns")
-                        .then((heavyDmArenaSpawns: HeavyDMArenaSpawnPoint[]) => {
-                            this._heavyDmArenaSpawns = heavyDmArenaSpawns
+                        .then((oneShootArenaSpawns: OneShootArenaSpawnPoint[]) => {
+                            this._oneShootArenaSpawns = oneShootArenaSpawns
                         })
-                    this._heavyDmArena = heavyDmArena
+                    this._oneShootArena = oneShootArena
                 }
             })
     }
@@ -64,19 +70,20 @@ export class HeavyDeathmatchArena extends Arena {
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {
         if (firstSpawn) {
             this._notificationSender.send(
-                playerMp, "HEAVYDM_ARENA_MAP_INFO",
+                playerMp, "ONESHOOT_ARENA_MAP_INFO",
                 NotificationType.INFO, NotificationTimeout.NORMAL,
-                [this._heavyDmArena.name, this._heavyDmArena.author],
+                [this._oneShootArena.name, this._oneShootArena.author],
             )
         }
-        const spawn: HeavyDMArenaSpawnPoint =
-            this._heavyDmArenaSpawns[random.int(0, this._heavyDmArenaSpawns.length - 1)]
+        const spawn: OneShootArenaSpawnPoint =
+            this._oneShootArenaSpawns[random.int(0, this._oneShootArenaSpawns.length - 1)]
         playerMp.removeAllWeapons()
+        playerMp.health = 5
         playerMp.position = this._vector3Factory.create(
             spawn.x, spawn.y, spawn.z,
         )
         playerMp.dimension = this._dimension
-        this._heavyDmArenaWeapons.forEach((arenaWeapon: HeavyDMArenaWeapon) => {
+        this._oneShootArenaWeapons.forEach((arenaWeapon: OneShootArenaWeapon) => {
             playerMp.giveWeapon(arenaWeapon.weaponId, arenaWeapon.ammo)
         })
     }

@@ -60,20 +60,6 @@ export class ArenaManager {
                             arenaData,
                         )
                         this._arenas[arenaName].loadArena()
-                    } else {
-                         // TODO: Usuwać wraz z dodawaniem nowych aren
-                         const tmpMapped = {
-                            oneshoot: "OneShoot",
-                        }
-
-                         const arenaData: IArenaData = arenaDataFactory.create(
-                            arenaName,
-                            tmpMapped[arenaName],
-                            ArenaType.ONESHOOT,
-                            1,
-                            10,
-                        )
-                         this._arenas[arenaName] = new Arena(arenaData)
                     }
                 })
         })

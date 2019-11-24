@@ -230,6 +230,18 @@ export async function seed(knex: Knex): Promise<any> {
                     name: "sniper_max_players",
                     value: "30",
                 },
+                {
+                    description: "Nazwa wyświetlana dla oneshoot w tabeli",
+                    id: 38,
+                    name: "oneshoot_display_name",
+                    value: "OneShoot",
+                },
+                {
+                    description: "Maksymalna liczba graczy jaka może się zapisać na OneShoot",
+                    id: 39,
+                    name: "oneshoot_max_players",
+                    value: "30",
+                },
             ])
         })
 }
