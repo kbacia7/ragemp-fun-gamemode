@@ -41,7 +41,7 @@ export class HeavyDeathmatchArena extends Arena {
             .limit(1)
             .then((heavyDmArenas: HeavyDMArena[]) => {
                 if (heavyDmArenas.length > 0) {
-                    const heavyDmArena: DMArena = heavyDmArenas[0]
+                    const heavyDmArena: HeavyDMArena = heavyDmArenas[0]
                     console.log(`Loaded arena: ${heavyDmArena.name}`)
                     heavyDmArena
                         .$relatedQuery("weapons")
