@@ -51,6 +51,7 @@ import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
 import { HeavyDeathmatchArenaFactory } from "./modules/Arenas/Arenas/HeavyDM/HeavyDeathmatchArenaFactory"
+import { SniperArenaFactory } from "./modules/Arenas/Arenas/Sniper/SniperArenaFactory"
 
 const knex = Knex({
    client: dbConfig.development.client,
@@ -132,14 +133,21 @@ const heavyDeathmatchArenaFactory = new HeavyDeathmatchArenaFactory(
    vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
+const sniperArenaFactory = new SniperArenaFactory(
+   vector3Factory, notificationSenderFactory, playerDataFactory,
+)
+
+
 const mappedArenasToFactories = {
    dm: deathmatchArenaFactory,
-   heavydm: heavyDeathmatchArenaFactory
+   heavydm: heavyDeathmatchArenaFactory,
+   sniper: sniperArenaFactory
 
 }
 const mappedArenasToTypes = {
    dm: ArenaType.DM,
    heavydm: ArenaType.HEAVYDM,
+   sniper: ArenaType.SNIPER
 }
 
 const arenaManager = new ArenaManager(

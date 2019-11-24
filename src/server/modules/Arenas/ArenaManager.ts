@@ -64,7 +64,6 @@ export class ArenaManager {
                          // TODO: Usuwać wraz z dodawaniem nowych aren
                          const tmpMapped = {
                             oneshoot: "OneShoot",
-                            sniper: "Sniper",
                         }
 
                          const arenaData: IArenaData = arenaDataFactory.create(
