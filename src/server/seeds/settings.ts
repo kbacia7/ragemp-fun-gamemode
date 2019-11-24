@@ -194,7 +194,18 @@ export async function seed(knex: Knex): Promise<any> {
                     name: "hideandseek_looking_wait_room_z",
                     value: "0",
                 },
-
+                {
+                    description: "Nazwa wyświetlana dla dm w tabeli",
+                    id: 32,
+                    name: "dm_display_name",
+                    value: "DM",
+                },
+                {
+                    description: "Maksymalna liczba graczy jaka może się zapisać na DM",
+                    id: 33,
+                    name: "dm_max_players",
+                    value: "30",
+                },
             ])
         })
 }
