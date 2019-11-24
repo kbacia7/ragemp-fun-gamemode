@@ -12,12 +12,11 @@ export class ArenaDataFactory implements IArenaDataFactory {
         name: string,
         displayName: string,
         type: ArenaType,
-        minPlayers: number,
         actualPlayers: number,
         maxPlayers: number,
     ) {
         return new ArenaData(
-            name, displayName, type, minPlayers, actualPlayers, maxPlayers,
+            name, displayName, type, actualPlayers, maxPlayers,
         )
     }
 }

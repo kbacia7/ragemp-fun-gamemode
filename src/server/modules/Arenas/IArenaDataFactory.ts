@@ -6,7 +6,6 @@ export interface IArenaDataFactory {
         name: string,
         displayName: string,
         type: ArenaType,
-        minPlayers: number,
         actualPlayers: number,
         maxPlayers: number,
     ) => IArenaData
