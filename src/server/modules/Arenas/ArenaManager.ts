@@ -63,7 +63,6 @@ export class ArenaManager {
                     } else {
                          // TODO: Usuwać wraz z dodawaniem nowych aren
                          const tmpMapped = {
-                            heavydm: "HeavyDM",
                             oneshoot: "OneShoot",
                             sniper: "Sniper",
                         }
