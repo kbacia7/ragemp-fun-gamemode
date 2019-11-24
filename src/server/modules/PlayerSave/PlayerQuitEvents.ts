@@ -1,4 +1,5 @@
 export enum PlayerQuitEvents {
     PLAYER_QUIT_ON_EVENT = "playerQuitWhenIsOnEvent",
-    PLAYER_QUIT_SAVED_ON_EVENT = "playerQuitWhevSavedOnEvent",
+    PLAYER_QUIT_SAVED_ON_EVENT = "playerQuitWhenSavedOnEvent",
+    PLAYER_QUIT_ON_ARENA = "playerQuitWhenIsOnArena",
 }

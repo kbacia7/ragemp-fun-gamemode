@@ -16,6 +16,7 @@ import {
 import { IAutomaticEventData } from "server/modules/AutomaticEvents/IAutomaticEventData"
 import { IRaceData } from "server/modules/AutomaticEvents/Events/Race/IRaceData"
 import * as luxon from "luxon"
+import { IArenaData } from "server/modules/Arenas/IArenaData"
 
 const promiseFactory = new PromiseFactory<string>()
 const xmlFileRequest = new XMLFileRequest(promiseFactory)
@@ -71,6 +72,51 @@ _global.setEventsInTable = (automaticEventsDatasStr: string) => {
         el.removeClass("d-none")
         el.prependTo("#events-page")
     })
+}
+
+_global.setArenasInTable = (arenasDatasStr: string) => {
+    const arenasData: IArenaData[] = JSON.parse(arenasDatasStr)
+    arenasData.forEach((arenaData: IArenaData) => {
+        const el: JQuery<HTMLElement> = $("#arenas-table-sample-row").clone()
+        el.get(0).setAttribute("id", `arenas-table-${arenaData.name}-row`)
+        el.find(".arenas-table-row-title").text(
+            `${arenaData.displayName} (${arenaData.actualPlayers}/${arenaData.maxPlayers})`,
+        )
+        const clickedButton = el.find(".arenas-table-row-save-button")
+        clickedButton.on("click", () => {
+            if (clickedButton.hasClass("arenas-saved")) {
+                mp.trigger(AutomaticEventsTableModuleEvents.QUIT_ARENA, arenaData.name)
+                clickedButton.removeClass("arenas-saved")
+                clickedButton.removeClass("btn-info")
+                clickedButton.addClass("btn-primary")
+                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
+            } else {
+                mp.trigger(AutomaticEventsTableModuleEvents.JOIN_ARENA, arenaData.name)
+                clickedButton.removeClass("btn-primary")
+                clickedButton.addClass("btn-info")
+                clickedButton.addClass("arenas-saved")
+                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVED"))
+            }
+
+        })
+        el.removeClass("d-none")
+        el.prependTo("#arenas-page")
+    })
+}
+
+_global.updateArenaRow = (arenaName: string, arenaDataStr: string) => {
+    const arenaData: IArenaData = JSON.parse(arenaDataStr)
+    $(`#arenas-table-${arenaName}-row`).find(".arenas-table-row-title").text(
+        `${arenaData.displayName} (${arenaData.actualPlayers}/${arenaData.maxPlayers})`,
+    )
+}
+
+_global.updateArenaButton = (arenaName: string) => {
+    const button = $(`#arenas-table-${arenaName}-row`).find(".arenas-table-row-save-button")
+    button.removeClass("arenas-saved")
+    button.removeClass("btn-info")
+    button.addClass("btn-primary")
+    button.text(i18nTranslator.translate("ARENA_SAVE"))
 }
 
 _global.updateRow = (eventName: string, automaticEventDataStr: string) => {

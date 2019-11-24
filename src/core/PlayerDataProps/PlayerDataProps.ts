@@ -12,4 +12,5 @@ export enum PlayerDataProps {
     PED = "ped",
     SAVED_ON_EVENTS = "savedOnEvents",
     ON_EVENT = "onEvent",
+    ON_ARENA = "onArena",
 }

@@ -33,5 +33,9 @@
     "HIDE_AND_SEEK_EVENT_YOU_LOOKING": "Jesteś szukającym! Za 3 minuty zostaniesz przeniesiony na arenę!",
     "HIDE_AND_SEEK_EVENT_MAP_INFO": "Załadowana arena to %s stworzona przez %s",
     "HIDE_AND_SEEK_EVENT_LOOKING_LEAVE": "Wygląda na to że szukający opuścił grę. Zabawa zostaje anulowana",
-    "HIDE_AND_SEEK_EVENT_YOU_WIN": "Jesteś ostatnim żywym na zabawie, wygrywasz %s$ i %s expa"
+    "HIDE_AND_SEEK_EVENT_YOU_WIN": "Jesteś ostatnim żywym na zabawie, wygrywasz %s$ i %s expa",
+    "ARENA_JOIN": "Dołączyłeś na arenę %s",
+    "ARENA_EXIT": "Opuściłes arenę %s",
+    "ARENA_CANT_JOIN": "Nie możesz dołączyć aktualnie na arenę",
+    "DM_ARENA_MAP_INFO": "Aktualna mapa na DM to %s (stworzona przez %s)"
 }

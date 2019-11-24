@@ -1,3 +1,4 @@
+import { ArenaType } from "server/modules/Arenas/ArenaType"
 import { AutomaticEventType } from "server/modules/AutomaticEvents/AutomaticEventType"
 import { PlayerDataStatus } from "./PlayerDataStatus"
 
@@ -14,6 +15,7 @@ export interface IPlayerData {
     nameColor: string,
     savedOnEvents: AutomaticEventType[],
     onEvent: AutomaticEventType,
+    onArena: ArenaType,
     ped: number,
     initialize: (player: PlayerMp) => void
     load: (player: PlayerMp) => IPlayerData

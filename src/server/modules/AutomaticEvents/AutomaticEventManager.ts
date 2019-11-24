@@ -137,9 +137,11 @@ export class AutomaticEventManager {
                     [automaticEventData.displayName],
                 )
                 automaticEventData.actualPlayers++
-                playerMp.call(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE, [
-                    eventName, JSON.stringify(this._automaticEvents[eventName].automaticEventData),
-                ])
+                mp.players.forEach((pMp) => {
+                    pMp.call(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE, [
+                        eventName, JSON.stringify(this._automaticEvents[eventName].automaticEventData),
+                    ])
+                })
 
                 if (automaticEventData.actualPlayers >= automaticEventData.minPlayers) {
                     if (this._activeEvents[eventName]) {

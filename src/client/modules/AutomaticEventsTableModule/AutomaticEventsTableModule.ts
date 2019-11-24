@@ -3,6 +3,8 @@ import { eventNames } from "cluster"
 import { PlayerDataLoaderEvents } from "core/PlayerDataLoader/PlayerDataLoaderEvents"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
+import { ArenaManagerEvents } from "server/modules/Arenas/ArenaManagerEvents"
+import { IArenaData } from "server/modules/Arenas/IArenaData"
 import { AutomaticEventManagerEvents } from "server/modules/AutomaticEvents/AutomaticEventManagerEvents"
 import { DerbyAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Derby/DerbyAutomaticEventPageEvents"
 import { HideAndSeekAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/HideAndSeek/HideAndSeekAutomaticEventPageEvents"
@@ -17,16 +19,28 @@ import { AutomaticEventsTableModuleEvents } from "./AutomaticEventsTableModuleEv
 export class AutomaticEventsTableModule extends Module {
 
     private _automaticEventsDatas: IAutomaticEventData[] = null
+    private _arenasDatas: IArenaData[] = null
     constructor(promiseFactory: IPromiseFactory<boolean>) {
         super(promiseFactory)
         this._name = "automatic-events-table"
         mp.events.add("playerStartPlay", (playerDataInJson: string) => {
             mp.events.callRemote(AutomaticEventManagerEvents.GET_AUTOMATIC_EVENTS)
+            mp.events.callRemote(ArenaManagerEvents.GET_ARENAS)
         })
 
         mp.events.add(AutomaticEventManagerEvents.PROVIDE_AUTOMATIC_EVENTS, (automaticEventsDatas: string) => {
             this._automaticEventsDatas = JSON.parse(automaticEventsDatas)
-            this.loadUI()
+            if (this._arenasDatas !== null) {
+                this.loadUI()
+
+            }
+        })
+
+        mp.events.add(ArenaManagerEvents.PROVIDE_ARENAS, (arenasDatas: string) => {
+            this._arenasDatas = JSON.parse(arenasDatas)
+            if (this._automaticEventsDatas !== null) {
+                this.loadUI()
+            }
         })
 
         mp.events.add(AutomaticEventsTableModuleEvents.PLAYER_SAVE_ON_EVENT, (eventName: string) => {
@@ -37,9 +51,26 @@ export class AutomaticEventsTableModule extends Module {
             mp.events.callRemote(AutomaticEventManagerEvents.PLAYER_SIGNED_OFF_EVENT, eventName)
         })
 
+        mp.events.add(AutomaticEventsTableModuleEvents.JOIN_ARENA, (arenaName: string) => {
+            mp.events.callRemote(ArenaManagerEvents.PLAYER_JOIN_ARENA, arenaName)
+        })
+
+        mp.events.add(AutomaticEventsTableModuleEvents.QUIT_ARENA, (arenaName: string) => {
+            mp.events.callRemote(ArenaManagerEvents.PLAYER_QUIT_ARENA, arenaName)
+        })
+
         mp.events.add(AutomaticEventManagerEvents.UPDATE_EVENTS_TABLE,
             (eventName: string, automaticEventDataStr: string) => {
                 this._updateTableRow(eventName, automaticEventDataStr)
+        })
+
+        mp.events.add(ArenaManagerEvents.UPDATE_ARENAS_TABLE,
+            (arenaName: string, arenaData: string) => {
+                this._updateArenaTableRow(arenaName, arenaData)
+        })
+
+        mp.events.add(ArenaManagerEvents.UPDATE_ARENAS_BUTTON_TABLE, (arenaName: string) => {
+            this._updateArenaButton(arenaName)
         })
 
         mp.events.add(AutomaticEventManagerEvents.UPDATE_EVENTS_BUTTON_TABLE, (eventName: string) => {
@@ -133,6 +164,9 @@ export class AutomaticEventsTableModule extends Module {
                 this._currentWindow.execute(
                     `setEventsInTable('${JSON.stringify(this._automaticEventsDatas)}')`,
                 )
+                this._currentWindow.execute(
+                    `setArenasInTable('${JSON.stringify(this._arenasDatas)}')`,
+                )
                 resolve(loaded)
             })
         })
@@ -153,9 +187,21 @@ export class AutomaticEventsTableModule extends Module {
         )
     }
 
+    private _updateArenaTableRow(arenaName: string, arenaData: string) {
+        this._currentWindow.execute(
+            `updateArenaRow('${arenaName}', '${arenaData}')`,
+        )
+    }
+
     private _updateButton(eventName: string) {
         this._currentWindow.execute(
             `updateButton('${eventName}')`,
+        )
+    }
+
+    private _updateArenaButton(arenaName: string) {
+        this._currentWindow.execute(
+            `updateArenaButton('${arenaName}')`,
         )
     }
 
