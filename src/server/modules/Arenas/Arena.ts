@@ -16,7 +16,7 @@ export class Arena implements IArena {
         this._dimension = Dimension.ARENAS + this._data.type
     }
 
-    public spawnPlayer(playerMp) {
+    public spawnPlayer(playerMp, firstSpawn) {
         throw new ArenaSpawnPlayerNotImplemented()
     }
 

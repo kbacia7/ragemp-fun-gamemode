@@ -206,6 +206,18 @@ export async function seed(knex: Knex): Promise<any> {
                     name: "dm_max_players",
                     value: "30",
                 },
+                {
+                    description: "Nazwa wyświetlana dla heavydm w tabeli",
+                    id: 34,
+                    name: "heavydm_display_name",
+                    value: "HeavyDM",
+                },
+                {
+                    description: "Maksymalna liczba graczy jaka może się zapisać na HeavyDM",
+                    id: 35,
+                    name: "heavydm_max_players",
+                    value: "30",
+                },
             ])
         })
 }
