@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<any> {
         table.string("name").notNullable()
         table.string("author").notNullable()
         table.integer("vehicleModel").notNullable()
+        table.decimal("heightLimit", 35, 25).notNullable()
     })
     const createDerbyArenasSpawns = knex.schema.createTable("derby_arenas_spawns", (table) => {
         table.increments("id").primary()
