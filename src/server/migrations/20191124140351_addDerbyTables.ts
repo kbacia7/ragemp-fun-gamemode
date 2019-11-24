@@ -1,5 +1,4 @@
-import * as Knex from "knex";
-
+import * as Knex from "knex"
 
 export async function up(knex: Knex): Promise<any> {
     const createDerbyArenas = knex.schema.createTable("derby_arenas", (table) => {
@@ -21,11 +20,9 @@ export async function up(knex: Knex): Promise<any> {
     return Promise.all([createDerbyArenas, createDerbyArenasSpawns])
 }
 
-
 export async function down(knex: Knex): Promise<any> {
     return Promise.all([
         knex.schema.dropTableIfExists("derby_arenas_spawns"),
         knex.schema.dropTableIfExists("derby_arenas"),
     ])
 }
-
