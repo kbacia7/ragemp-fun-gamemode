@@ -13,11 +13,14 @@ import { HeavyDMArenaSpawnPoint } from "server/entity/HeavyDMArenaSpawnPoint"
 import { HeavyDMArenaWeapon } from "server/entity/HeavyDMArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
+import { SniperArenaEntity } from "server/entity/SniperArenaEntity"
+import { SniperArenaSpawnPoint } from "server/entity/SniperArenaSpawnPoint"
+import { SniperArenaWeapon } from "server/entity/SniperArenaWeapon"
 
-export class HeavyDeathmatchArena extends Arena {
-    private _heavyDmArena: HeavyDMArena = null
-    private _heavyDmArenaSpawns: HeavyDMArenaSpawnPoint[] = []
-    private _heavyDmArenaWeapons: HeavyDMArenaWeapon[] = []
+export class SniperArena extends Arena {
+    private _sniperArena: SniperArenaEntity = null
+    private _sniperArenaSpawns: SniperArenaSpawnPoint[] = []
+    private _sniperArenaWeapons: SniperArenaWeapon[] = []
     private _vector3Factory: IVector3Factory = null
     private _playerDataFactory: IPlayerDataFactory = null
     private _notificationSender: INotificationSender = null
@@ -39,24 +42,24 @@ export class HeavyDeathmatchArena extends Arena {
             .select()
             .where("active", "=", true)
             .limit(1)
-            .then((heavyDmArenas: HeavyDMArena[]) => {
-                if (heavyDmArenas.length > 0) {
-                    const heavyDmArena: HeavyDMArena = heavyDmArenas[0]
-                    console.log(`Loaded arena: ${heavyDmArena.name}`)
-                    heavyDmArena
+            .then((sniperArenas: SniperArenaEntity[]) => {
+                if (sniperArenas.length > 0) {
+                    const sniperArena: SniperArenaEntity = sniperArenas[0]
+                    console.log(`Loaded arena: ${sniperArena.name}`)
+                    sniperArena
                         .$relatedQuery("weapons")
                         .orderBy("id", "ASC")
-                        .then((heavyDmArenaWeapons: HeavyDMArenaWeapon[]) => {
-                            this._heavyDmArenaWeapons = heavyDmArenaWeapons
-                            console.log("Loaded weapons: " + heavyDmArenaWeapons.length)
+                        .then((sniperArenaWeapons: SniperArenaWeapon[]) => {
+                            this._sniperArenaWeapons = sniperArenaWeapons
+                            console.log("Loaded weapons: " + sniperArenaWeapons.length)
                         })
 
-                    heavyDmArena
+                    sniperArena
                         .$relatedQuery("spawns")
-                        .then((heavyDmArenaSpawns: HeavyDMArenaSpawnPoint[]) => {
-                            this._heavyDmArenaSpawns = heavyDmArenaSpawns
+                        .then((sniperArenaSpawns: SniperArenaSpawnPoint[]) => {
+                            this._sniperArenaSpawns = sniperArenaSpawns
                         })
-                    this._heavyDmArena = heavyDmArena
+                    this._sniperArena = sniperArena
                 }
             })
     }
@@ -64,19 +67,19 @@ export class HeavyDeathmatchArena extends Arena {
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {
         if (firstSpawn) {
             this._notificationSender.send(
-                playerMp, "HEAVYDM_ARENA_MAP_INFO",
+                playerMp, "SNIPER_ARENA_MAP_INFO",
                 NotificationType.INFO, NotificationTimeout.NORMAL,
-                [this._heavyDmArena.name, this._heavyDmArena.author],
+                [this._sniperArena.name, this._sniperArena.author],
             )
         }
-        const spawn: HeavyDMArenaSpawnPoint = 
-            this._heavyDmArenaSpawns[random.int(0, this._heavyDmArenaSpawns.length - 1)]
+        const spawn: SniperArenaSpawnPoint = 
+            this._sniperArenaSpawns[random.int(0, this._sniperArenaSpawns.length - 1)]
         playerMp.removeAllWeapons()
         playerMp.position = this._vector3Factory.create(
             spawn.x, spawn.y, spawn.z,
         )
         playerMp.dimension = this._dimension
-        this._heavyDmArenaWeapons.forEach((arenaWeapon: HeavyDMArenaWeapon) => {
+        this._sniperArenaWeapons.forEach((arenaWeapon: SniperArenaWeapon) => {
             playerMp.giveWeapon(arenaWeapon.weaponId, arenaWeapon.ammo)
         })
     }

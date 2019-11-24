@@ -218,6 +218,18 @@ export async function seed(knex: Knex): Promise<any> {
                     name: "heavydm_max_players",
                     value: "30",
                 },
+                {
+                    description: "Nazwa wyświetlana dla sniper w tabeli",
+                    id: 36,
+                    name: "sniper_display_name",
+                    value: "Sniper",
+                },
+                {
+                    description: "Maksymalna liczba graczy jaka może się zapisać na Sniper",
+                    id: 37,
+                    name: "sniper_max_players",
+                    value: "30",
+                },
             ])
         })
 }
