@@ -4,6 +4,7 @@ import { PlayerDataLoaderEvents } from "core/PlayerDataLoader/PlayerDataLoaderEv
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { AutomaticEventManagerEvents } from "server/modules/AutomaticEvents/AutomaticEventManagerEvents"
+import { DerbyAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Derby/DerbyAutomaticEventPageEvents"
 import { RaceAutomaticEventPageEvents } from "server/modules/AutomaticEvents/Events/Race/RaceAutomaticEventPageEvents"
 import {
     TeamDeathmatchAutomaticEventPageEvents,
@@ -64,6 +65,26 @@ export class AutomaticEventsTableModule extends Module {
         mp.events.add(RaceAutomaticEventPageEvents.REMOVE_PAGE, () => {
             this._clearRaceList()
             this._removePage("race")
+            this._togglePage("events")
+        })
+
+        mp.events.add(DerbyAutomaticEventPageEvents.DISPLAY_PAGE,
+            (eventName: string, displayName: string,
+             playersNames: string) => {
+            this._addButton(eventName, displayName)
+            this._togglePage(eventName)
+            this._setDerbyData(playersNames)
+        })
+
+        mp.events.add(DerbyAutomaticEventPageEvents.UPDATE_PAGE,
+            (playersNames: string) => {
+            this._clearRaceList()
+            this._setDerbyData(playersNames)
+        })
+
+        mp.events.add(DerbyAutomaticEventPageEvents.REMOVE_PAGE, () => {
+            this._clearDerbyList()
+            this._removePage("derby")
             this._togglePage("events")
         })
 
@@ -156,6 +177,12 @@ export class AutomaticEventsTableModule extends Module {
         )
     }
 
+    private _clearDerbyList() {
+        this._currentWindow.execute(
+            `clearDerbyList()`,
+        )
+    }
+  
     private _clearHideAndSeekList() {
         this._currentWindow.execute(
             `clearHideAndSeekList()`,
@@ -180,6 +207,16 @@ export class AutomaticEventsTableModule extends Module {
         )
     }
 
+    private _setDerbyData(
+        playersNames: string,
+    ) {
+        this._currentWindow.execute(
+            `setDerbyData(
+                '${playersNames}'
+            )`,
+        )
+    }
+
     private _setHideAndSeekData(
         playersNames: string, lookingPlayerName: string
     ) {
@@ -189,7 +226,7 @@ export class AutomaticEventsTableModule extends Module {
             )`,
         )
     }
-
+              
     private _setTdmData(
         weapons: string, teamAPlayersCount: string, teamBPlayersCount: string,
     ) {
