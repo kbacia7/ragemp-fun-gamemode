@@ -1,3 +1,4 @@
+import { ArenaType } from "server/modules/Arenas/ArenaType"
 import { AutomaticEventType } from "server/modules/AutomaticEvents/AutomaticEventType"
 import { IPlayerData } from "./IPlayerData"
 import { PlayerDataProps } from "./PlayerDataProps"
@@ -59,6 +60,11 @@ export class PlayerData implements IPlayerData {
         return this._onEvent
     }
 
+    private _onArena: ArenaType
+    public get onArena() {
+        return this._onArena
+    }
+
     private _nameColor: string
     public get nameColor() {
         return this._nameColor
@@ -82,6 +88,7 @@ export class PlayerData implements IPlayerData {
         this._savedOnEvents = []
         this._ped = 0
         this._onEvent = AutomaticEventType.NOTHING
+        this._onArena = ArenaType.NOTHING
         this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
@@ -94,6 +101,7 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.PLAY_AS_GUEST, this._playAsGuest)
         player.setVariable(PlayerDataProps.SAVED_ON_EVENTS, this._savedOnEvents)
         player.setVariable(PlayerDataProps.ON_EVENT, this._onEvent)
+        player.setVariable(PlayerDataProps.ON_ARENA, this._onArena)
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.PED, this._ped)
@@ -116,6 +124,7 @@ export class PlayerData implements IPlayerData {
         this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
         this._onEvent = player.getVariable(PlayerDataProps.ON_EVENT)
+        this._onArena = player.getVariable(PlayerDataProps.ON_ARENA)
         this._savedOnEvents = player.getVariable(PlayerDataProps.SAVED_ON_EVENTS)
         this._id = player.id
         this._ped = player.getVariable(PlayerDataProps.PED)
@@ -134,6 +143,7 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.PLAY_AS_GUEST] = this._playAsGuest
         obj[PlayerDataProps.SAVED_ON_EVENTS] = this._savedOnEvents
         obj[PlayerDataProps.ON_EVENT] = this._onEvent
+        obj[PlayerDataProps.ON_ARENA] = this._onArena
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         obj[PlayerDataProps.PED] = this._ped
         return obj
