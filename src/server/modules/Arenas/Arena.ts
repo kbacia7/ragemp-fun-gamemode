@@ -1,3 +1,4 @@
+import { ArenaLoadArenaNotImplemented } from "core/exception/Arena/ArenaLoadArenaNotImplemented"
 import { ArenaSpawnPlayerNotImplemented } from "core/exception/Arena/ArenaSpawnPlayerNotImplemented"
 import { Dimension } from "server/core/Dimension/Dimension"
 import { IArena } from "./IArena"
@@ -17,5 +18,9 @@ export class Arena implements IArena {
 
     public spawnPlayer(playerMp) {
         throw new ArenaSpawnPlayerNotImplemented()
+    }
+
+    public loadArena() {
+        throw new ArenaLoadArenaNotImplemented()
     }
 }
