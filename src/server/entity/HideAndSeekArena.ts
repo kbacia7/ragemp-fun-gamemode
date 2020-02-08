@@ -1,26 +1,11 @@
-import { Model } from "objection"
 import { HideAndSeekArenaSpawnPoint } from "./HideAndSeekArenaSpawnPoint"
 
-export class HideAndSeekArena extends Model {
-  public static tableName = "hideandseek_arenas"
+export class HideAndSeekArena {
   public readonly id!: number
-  public name: string
-  public author: string
-  public lookingX: number
-  public lookingY: number
-  public lookingZ: number
-
-  public static get relationMappings()  {
-    return {
-      spawns: {
-        join: {
-          from: "hideandseek_arenas.id",
-          to: "hideandseek_arenas_spawns.arenaId",
-        },
-        modelClass: HideAndSeekArenaSpawnPoint,
-        relation: Model.HasManyRelation,
-      },
-    }
-
-}
+  public readonly name: string
+  public readonly author: string
+  public readonly looking_X: number
+  public readonly looking_Y: number
+  public readonly looking_Z: number
+  public readonly spawns: HideAndSeekArenaSpawnPoint[]
 }
