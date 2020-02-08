@@ -2,6 +2,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import random from "random"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
@@ -12,27 +13,28 @@ import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
 
 export class DeathmatchArena extends Arena {
+    private _apiManager: IAPIManager<DMArena> = null
     private _dmArena: DMArena = null
-    private _dmArenaSpawns: DMArenaSpawnPoint[] = []
-    private _dmArenaWeapons: DMArenaWeapon[] = []
     private _vector3Factory: IVector3Factory = null
     private _playerDataFactory: IPlayerDataFactory = null
     private _notificationSender: INotificationSender = null
 
     constructor(
         arenaData: IArenaData,
+        apiManager: IAPIManager<DMArena>,
         vector3Factory: IVector3Factory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         super(arenaData)
+        this._apiManager = apiManager
         this._vector3Factory = vector3Factory
         this._playerDataFactory = playerDataFactory
         this._notificationSender = notificationSenderFactory.create()
     }
 
     public loadArena() {
-        DMArena.query()
+        /*DMArena.query()
             .select()
             .where("active", "=", true)
             .limit(1)
@@ -55,7 +57,7 @@ export class DeathmatchArena extends Arena {
                         })
                     this._dmArena = dmArena
                 }
-            })
+            })*/
     }
 
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {
@@ -66,14 +68,14 @@ export class DeathmatchArena extends Arena {
                 [this._dmArena.name, this._dmArena.author],
             )
         }
-        const dmSpawn: DMArenaSpawnPoint = this._dmArenaSpawns[random.int(0, this._dmArenaSpawns.length - 1)]
+        const dmSpawn: DMArenaSpawnPoint = this._dmArena.spawns[random.int(0, this._dmArena.spawns.length - 1)]
         playerMp.removeAllWeapons()
         playerMp.position = this._vector3Factory.create(
             dmSpawn.x, dmSpawn.y, dmSpawn.z,
         )
         playerMp.dimension = this._dimension
-        this._dmArenaWeapons.forEach((arenaWeapon: DMArenaWeapon) => {
-            playerMp.giveWeapon(arenaWeapon.weaponId, arenaWeapon.ammo)
+        this._dmArena.weapons.forEach((arenaWeapon: DMArenaWeapon) => {
+            playerMp.giveWeapon(arenaWeapon.weapon_id, arenaWeapon.ammo)
         })
     }
 }

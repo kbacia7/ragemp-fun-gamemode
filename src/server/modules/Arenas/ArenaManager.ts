@@ -4,10 +4,9 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
-import Knex = require("knex")
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
-import { Setting } from "server/entity/Setting"
 import { PlayerQuitEvents } from "../PlayerSave/PlayerQuitEvents"
 import { Arena } from "./Arena"
 import { ArenaManagerEvents } from "./ArenaManagerEvents"
@@ -16,30 +15,31 @@ import { IArena } from "./IArena"
 import { IArenaData } from "./IArenaData"
 import { IArenaDataFactory } from "./IArenaDataFactory"
 import { IArenaFactory } from "./IArenaFactory"
+import { Setting } from "server/entity/Setting"
 
 export class ArenaManager {
-    private _knex: Knex = null
+    private _apiManager: IAPIManager<Setting> = null
     private _notificationSender: INotificationSender = null
     private _arenas: { [name: string]: IArena } = {}
     private _playersOnArena: { [name: string]: PlayerMp[] } = {}
     private _playerDataFactory: IPlayerDataFactory = null
 
     constructor(
-        knex: Knex,
+        apiManager: IAPIManager<Setting>,
         notifiactionSenderFactory: INotificationSenderFactory,
         arenasList: string[],
         playerDataFactory: IPlayerDataFactory,
         arenaDataFactory: IArenaDataFactory,
         mappedNamesToTypes: { [name: string]: ArenaType },
         mappedNamesToFactories: { [name: string]: IArenaFactory }) {
-        this._knex = knex
+        this._apiManager = apiManager
         this._notificationSender = notifiactionSenderFactory.create()
         this._playerDataFactory = playerDataFactory
         this._arenas = {}
 
         arenasList.forEach((arenaName: string) => {
             this._playersOnArena[arenaName] = []
-            Setting.query()
+            /*Setting.query()
                 .select()
                 .where("name", "LIKE", `${arenaName}_%`)
                 .then((settingsFromDb: Setting[]) => {
@@ -61,7 +61,7 @@ export class ArenaManager {
                         )
                         this._arenas[arenaName].loadArena()
                     }
-                })
+                })*/
         })
 
         mp.events.add(ArenaManagerEvents.GET_ARENAS, (playerMp: PlayerMp) => {

@@ -6,36 +6,27 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
-import { WeaponsNames } from "core/WeaponsNames/WeaponsNames"
-import Knex = require("knex")
-import * as luxon from "luxon"
-import { knexSnakeCaseMappers } from "objection"
 import random from "random"
-import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
-import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { HideAndSeekArena } from "server/entity/HideAndSeekArena"
 import { HideAndSeekArenaSpawnPoint } from "server/entity/HideAndSeekArenaSpawnPoint"
-import { RaceArena } from "server/entity/RaceArena"
-import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
-import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
 import { Setting } from "server/entity/Setting"
 import { PlayerQuitEvents } from "server/modules/PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManagerEvents } from "server/modules/PlayerSpawnManager/PlayerSpawnManagerEvents"
 import { AutomaticEvent } from "../../AutomaticEvent"
 import { AutomaticEventManagerEvents } from "../../AutomaticEventManagerEvents"
 import { AutomaticEventType } from "../../AutomaticEventType"
-import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { HideAndSeekAutomaticEventPageEvents } from "./HideAndSeekAutomaticEventPageEvents"
 export class HideAndSeekAutomaticEvent extends AutomaticEvent {
     private static TIME_TO_HIDE: number = 180000
     private static LOOKING_WEAPON: number = 0x476BF155
+    private _apiManager: IAPIManager<HideAndSeekArena> = null
     private _hideAndSeekArena: HideAndSeekArena = null
-    private _hideAndSeekArenaSpawns: HideAndSeekArenaSpawnPoint[] = []
     private _vector3Factory: IVector3Factory = null
     private _notificationSender: INotificationSender = null
     private _playerDataFactory: IPlayerDataFactory = null
@@ -46,11 +37,13 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
     private _lookingWaitRoom: Vector3Mp = null
     constructor(
         automaticEventData: IAutomaticEventData,
+        apiManager: IAPIManager<HideAndSeekArena>,
         vector3Factory: IVector3Factory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         super(automaticEventData)
+        this._apiManager = apiManager
         this._vector3Factory = vector3Factory
         this._playerDataFactory = playerDataFactory
         this._notificationSender = notificationSenderFactory.create()
@@ -86,7 +79,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
         })
 
         const evName = this._automaticEventData.name
-        Setting.query()
+        /*Setting.query()
                 .select()
                 .where("name", "LIKE", `${evName}_%`)
                 .then((settingsFromDb: Setting[]) => {
@@ -102,7 +95,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
                             parseFloat(mappedSettingsByName.hideandseek_looking_wait_room_z),
                         )
                     }
-                })
+                })*/
 
     }
 
@@ -110,7 +103,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
         this._eventDimension++
         this._players = []
         this._playersAdded = false
-        HideAndSeekArena.query()
+        /*HideAndSeekArena.query()
             .select()
             .orderByRaw("RAND()")
             .limit(1)
@@ -125,7 +118,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
                         })
                     this._hideAndSeekArena = hideAndSeekArena
                 }
-            })
+            })*/
     }
 
     public start() {
@@ -141,7 +134,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
             })
             setTimeout(() => {
                 const hideAndSeekArenaSpawn: HideAndSeekArenaSpawnPoint =
-                    this._hideAndSeekArenaSpawns[random.int(0, this._hideAndSeekArenaSpawns.length - 1)]
+                    this._hideAndSeekArena[random.int(0, this._hideAndSeekArena.spawns.length - 1)]
                 this._looking.position  = this._vector3Factory.create(
                     hideAndSeekArenaSpawn.x, hideAndSeekArenaSpawn.y, hideAndSeekArenaSpawn.z,
                 )
@@ -161,7 +154,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
             const isLooking = random.int(0, 100) % 2 === 0 && !this._looking
             const hideAndSeekArenaSpawn: HideAndSeekArenaSpawnPoint =
-                this._hideAndSeekArenaSpawns[random.int(0, this._hideAndSeekArenaSpawns.length - 1)]
+                this._hideAndSeekArena.spawns[random.int(0, this._hideAndSeekArena.spawns.length - 1)]
             playerMp.dimension = this._eventDimension
             if (isLooking) {
                 this._looking = playerMp

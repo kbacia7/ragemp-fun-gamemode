@@ -5,10 +5,9 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
-import Knex = require("knex")
 import * as luxon from "luxon"
-import { knexSnakeCaseMappers } from "objection"
 import random from "random"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
@@ -16,7 +15,6 @@ import { INotificationSenderFactory } from "server/core/NotificationSender/INoti
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { RaceArena } from "server/entity/RaceArena"
-import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
 import { PlayerQuitEvents } from "server/modules/PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManagerEvents } from "server/modules/PlayerSpawnManager/PlayerSpawnManagerEvents"
@@ -31,8 +29,8 @@ import { RaceAutomaticEventEndPlayerReasons } from "./RaceAutomaticEventEndPlaye
 import { RaceAutomaticEventPageEvents } from "./RaceAutomaticEventPageEvents"
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
+    private _apiManager: IAPIManager<RaceArena> = null
     private _raceArena: RaceArena = null
-    private _raceArenaSpawns: RaceArenaSpawnPoint[] = []
     private _checkpoints: CheckpointMp[]  = []
     private _blips: BlipMp[] = []
     private _vehicles: VehicleMp[] = []
@@ -55,6 +53,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
 
     constructor(
         automaticEventData: IAutomaticEventData,
+        apiManager: IAPIManager<RaceArena>,
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         checkpointFactory: ICheckpointFactory,
@@ -64,6 +63,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         raceDataFactory: IRaceDataFactory,
     ) {
         super(automaticEventData)
+        this._apiManager = apiManager
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
         this._checkpointFactory = checkpointFactory
@@ -115,7 +115,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._eventDimension++
         this._checkpoints = []
         this._vehicles = []
-        this._raceArenaSpawns = []
         this._loadedPlayers = 0
         this._players = []
         this._blips = []
@@ -124,7 +123,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._playersRaceData = []
         this._startTime = 0
         console.log("Load arena " + this._id)
-        RaceArena.query()
+        /*RaceArena.query()
             .select()
             .orderByRaw("RAND()")
             .limit(1)
@@ -181,7 +180,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                         })
                     this._raceArena = raceArena
                 }
-            })
+            })*/
     }
 
     public start() {
@@ -209,7 +208,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public preparePlayer(playerMp: PlayerMp) {
-        if (this._loadedPlayers > this._raceArenaSpawns.length - 1) {
+        if (this._loadedPlayers > this._raceArena.spawns.length - 1) {
             this._notificationSender.send(
                 playerMp, "RACE_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
                 [this._raceArena.name],
@@ -217,14 +216,14 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             this._endRaceForPlayer(playerMp)
         } else {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-            const raceArenaSpawn: RaceArenaSpawnPoint = this._raceArenaSpawns[this._loadedPlayers]
+            const raceArenaSpawn: RaceArenaSpawnPoint = this._raceArena.spawns[this._loadedPlayers]
             const randomColor: [number, number, number] = [
                 Math.floor(Math.random() * 255) + 1,
                 Math.floor(Math.random() * 255) + 1,
                 Math.floor(Math.random() * 255) + 1,
             ]
             this._vehicles.push(this._vehicleFactory.create(
-                raceArenaSpawn.vehicleModel,
+                raceArenaSpawn.vehicle_model,
                 this._vector3Factory.create(raceArenaSpawn.x,  raceArenaSpawn.y,  raceArenaSpawn.z),
                 raceArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
                 true, true, this._eventDimension,

@@ -3,23 +3,22 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
-import Knex from "knex"
-import { Player } from "server/entity/Player"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { PlayerQuitEvents } from "./PlayerQuitEvents"
 
 export class PlayerSave {
-    constructor(knex: Knex, playerDataFactory: IPlayerDataFactory) {
+    constructor(apiManager: IAPIManager<object>, playerDataFactory: IPlayerDataFactory) {
         mp.events.add("playerQuit", (player: PlayerMp) => {
             const playerData: IPlayerData = playerDataFactory.create().load(player)
             if (playerData.isLogged && !playerData.playAsGuest) {
-                Player.query()
+               /* Player.query()
                 .patch({
                     deaths: playerData.deaths,
                     kills: playerData.kills,
                     ped: playerData.ped,
                 })
                 .where("login", "LIKE", playerData.name)
-                .execute()
+                .execute()*/
             }
             if (playerData.status === PlayerDataStatus.ON_EVENT) {
                 mp.events.call(PlayerQuitEvents.PLAYER_QUIT_ON_EVENT, playerData)

@@ -7,17 +7,22 @@ import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { IArenaData } from "../../IArenaData"
 import { IArenaFactory } from "../../IArenaFactory"
 import { HeavyDeathmatchArena } from "./HeavyDeathmatchArena"
+import { HeavyDMArena } from "server/entity/HeavyDMArena"
+import { IAPIManager } from "server/core/API/IAPIManager"
 
 export class HeavyDeathmatchArenaFactory implements IArenaFactory {
     private _vector3Factory: IVector3Factory = null
+    private _apiManager: IAPIManager<HeavyDMArena> = null
     private _playerDataFactory: IPlayerDataFactory = null
     private _notificationSenderFactory: INotificationSenderFactory = null
     constructor(
+        apiManager: IAPIManager<HeavyDMArena>,
         vector3Factory: IVector3Factory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         this._vector3Factory = vector3Factory
+        this._apiManager = apiManager
         this._notificationSenderFactory = notificationSenderFactory
         this._playerDataFactory = playerDataFactory
     }
@@ -25,6 +30,7 @@ export class HeavyDeathmatchArenaFactory implements IArenaFactory {
     public create(arenaData: IArenaData) {
         return new HeavyDeathmatchArena(
             arenaData,
+            this._apiManager,
             this._vector3Factory,
             this._notificationSenderFactory,
             this._playerDataFactory,

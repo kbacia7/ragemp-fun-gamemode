@@ -2,43 +2,40 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import random from "random"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { DMArena } from "server/entity/DMArena"
-import { DMArenaSpawnPoint } from "server/entity/DMArenaSpawnPoint"
-import { DMArenaWeapon } from "server/entity/DMArenaWeapon"
-import { HeavyDMArena } from "server/entity/HeavyDMArena"
-import { HeavyDMArenaSpawnPoint } from "server/entity/HeavyDMArenaSpawnPoint"
-import { HeavyDMArenaWeapon } from "server/entity/HeavyDMArenaWeapon"
-import { SniperArenaEntity } from "server/entity/SniperArenaEntity"
+import { SniperArena as SniperArenaEntity } from "server/entity/SniperArena"
 import { SniperArenaSpawnPoint } from "server/entity/SniperArenaSpawnPoint"
 import { SniperArenaWeapon } from "server/entity/SniperArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
 
 export class SniperArena extends Arena {
+    private _apiManager: IAPIManager<SniperArenaEntity> = null
     private _sniperArena: SniperArenaEntity = null
-    private _sniperArenaSpawns: SniperArenaSpawnPoint[] = []
-    private _sniperArenaWeapons: SniperArenaWeapon[] = []
     private _vector3Factory: IVector3Factory = null
     private _playerDataFactory: IPlayerDataFactory = null
     private _notificationSender: INotificationSender = null
 
     constructor(
         arenaData: IArenaData,
+        apiManager: IAPIManager<SniperArenaEntity>,
         vector3Factory: IVector3Factory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         super(arenaData)
+        this._apiManager = apiManager
         this._vector3Factory = vector3Factory
         this._playerDataFactory = playerDataFactory
         this._notificationSender = notificationSenderFactory.create()
     }
 
     public loadArena() {
-        DMArena.query()
+        /*DMArena.query()
             .select()
             .where("active", "=", true)
             .limit(1)
@@ -61,7 +58,7 @@ export class SniperArena extends Arena {
                         })
                     this._sniperArena = sniperArena
                 }
-            })
+            })*/
     }
 
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {
@@ -73,14 +70,14 @@ export class SniperArena extends Arena {
             )
         }
         const spawn: SniperArenaSpawnPoint =
-            this._sniperArenaSpawns[random.int(0, this._sniperArenaSpawns.length - 1)]
+            this._sniperArena.spawns[random.int(0, this._sniperArena.spawns.length - 1)]
         playerMp.removeAllWeapons()
         playerMp.position = this._vector3Factory.create(
             spawn.x, spawn.y, spawn.z,
         )
         playerMp.dimension = this._dimension
-        this._sniperArenaWeapons.forEach((arenaWeapon: SniperArenaWeapon) => {
-            playerMp.giveWeapon(arenaWeapon.weaponId, arenaWeapon.ammo)
+        this._sniperArena.weapons.forEach((arenaWeapon: SniperArenaWeapon) => {
+            playerMp.giveWeapon(arenaWeapon.weapon_id, arenaWeapon.ammo)
         })
     }
 }

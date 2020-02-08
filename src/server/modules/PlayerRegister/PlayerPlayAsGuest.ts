@@ -5,25 +5,23 @@ import { IPlayerLoginData } from "core/PlayerRegister/IPlayerLoginData"
 import { IPlayerRegiserData } from "core/PlayerRegister/IPlayerRegisterData"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
-import Knex = require("knex")
 import { Player } from "server/entity/Player"
+import { IAPIManager } from "server/core/API/IAPIManager"
 
 export class PlayerPlayAsGuest {
-    private _knex: Knex = null
     private _playerLoginValidatorFactory: IPlayerLoginValidatorFactory = null
 
     constructor(
-        knex: Knex,
+        apiManager: IAPIManager<Player>,
         playerLoginValidatorFactory: IPlayerLoginValidatorFactory,
 
     ) {
-        this._knex = knex
         this._playerLoginValidatorFactory = playerLoginValidatorFactory
         mp.events.add(PlayerRegisterEvent.PLAY_AS_GUEST, (player: PlayerMp, login: string) => {
             if (!this._playerLoginValidatorFactory.create().validate(login)) {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             }  else {
-                Player.query()
+                /*Player.query()
                     .select("login")
                     .where("login", "LIKE", login)
                     .then((players: Player[]) => {
@@ -34,7 +32,7 @@ export class PlayerPlayAsGuest {
                         } else {
                             player.call(PlayerRegisterEvent.LOGIN_TAKEN_FOR_GUEST)
                         }
-                    })
+                    })*/
             }
         })
     }

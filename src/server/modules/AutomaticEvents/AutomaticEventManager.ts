@@ -5,10 +5,9 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
-import Knex = require("knex")
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
-import { Setting } from "server/entity/Setting"
 import { PlayerQuitEvents } from "../PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManager } from "../PlayerSpawnManager/PlayerSpawnManager"
 import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
@@ -19,9 +18,10 @@ import { IAutomaticEvent } from "./IAutomaticEvent"
 import { IAutomaticEventData } from "./IAutomaticEventData"
 import { IAutomaticEventDataFactory } from "./IAutomaticEventDataFactory"
 import { IAutomaticEventFactory } from "./IAutomaticEventFactory"
+import { Setting } from "server/entity/Setting"
 
 export class AutomaticEventManager {
-    private _knex: Knex = null
+    private _apiManager: IAPIManager<Setting> = null
     private _notificationSender: INotificationSender = null
     private _automaticEvents: { [name: string]: IAutomaticEvent } = {}
     private _playersOnEvent: { [name: string]: PlayerMp[] } = {}
@@ -30,14 +30,14 @@ export class AutomaticEventManager {
     private _waitForEnd: { [name: string]: boolean} = {}
 
     constructor(
-        knex: Knex,
+        apiManager: IAPIManager<Setting>,
         notifiactionSenderFactory: INotificationSenderFactory,
         automaticEventsList: string[],
         playerDataFactory: IPlayerDataFactory,
         automaticEventDataFactory: IAutomaticEventDataFactory,
         mappedNamesToTypes: { [name: string]: AutomaticEventType },
         mappedNamesToFactories: { [name: string]: IAutomaticEventFactory }) {
-        this._knex = knex
+        this._apiManager = apiManager
         this._notificationSender = notifiactionSenderFactory.create()
         this._playerDataFactory = playerDataFactory
         this._automaticEvents = {}
@@ -47,7 +47,7 @@ export class AutomaticEventManager {
             this._playersOnEvent[evName] = []
             this._activeEvents[evName] = false
             this._waitForEnd[evName] = false
-            Setting.query()
+            /*Setting.query()
                 .select()
                 .where("name", "LIKE", `${evName}_%`)
                 .then((settingsFromDb: Setting[]) => {
@@ -73,7 +73,7 @@ export class AutomaticEventManager {
                             automaticEventData,
                         )
                     }
-                })
+                })*/
         })
 
         mp.events.add(AutomaticEventManagerEvents.GET_AUTOMATIC_EVENTS, (playerMp: PlayerMp) => {

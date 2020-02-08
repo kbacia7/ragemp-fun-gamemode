@@ -5,10 +5,8 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
-import Knex = require("knex")
-import * as luxon from "luxon"
-import { knexSnakeCaseMappers } from "objection"
 import random from "random"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
@@ -26,9 +24,10 @@ import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { DerbyAutomaticEventEndPlayerReasons } from "./DerbyAutomaticEventEndPlayerReasons"
 import { DerbyAutomaticEventPageEvents } from "./DerbyAutomaticEventPageEvents"
+
 export class DerbyAutomaticEvent extends AutomaticEvent {
+    private _apiManager: IAPIManager<DerbyArena> = null
     private _derbyArena: DerbyArena = null
-    private _derbyArenaSpawns: DerbyArenaSpawnPoint[] = []
     private _vehicles: VehicleMp[] = []
     private _loadedPlayers: number = 0
     private _vehicleFactory: IVehicleFactory = null
@@ -42,12 +41,14 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
 
     constructor(
         automaticEventData: IAutomaticEventData,
+        apiManager: IAPIManager<DerbyArena>,
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         super(automaticEventData)
+        this._apiManager = apiManager
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
         this._playerDataFactory = playerDataFactory
@@ -89,7 +90,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
         this._loadedPlayers = 0
         this._players = []
         this._playersAdded = false
-        DerbyArena.query()
+       /* DerbyArena.query()
             .select()
             .orderByRaw("RAND()")
             .limit(1)
@@ -105,7 +106,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
                         })
                     this._derbyArena = derbyArena
                 }
-            })
+            })*/
     }
 
     public start() {
@@ -154,7 +155,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
     }
 
     public preparePlayer(playerMp: PlayerMp) {
-        if (this._loadedPlayers > this._derbyArenaSpawns.length - 1) {
+        if (this._loadedPlayers > this._derbyArena.spawns.length - 1) {
             this._notificationSender.send(
                 playerMp, "DERBY_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
                 [this._derbyArena.name],
@@ -162,14 +163,14 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
             this._endDerbyForPlayer(playerMp)
         } else {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-            const derbyArenaSpawn: DerbyArenaSpawnPoint = this._derbyArenaSpawns[this._loadedPlayers]
+            const derbyArenaSpawn: DerbyArenaSpawnPoint = this._derbyArena.spawns[this._loadedPlayers]
             const randomColor: [number, number, number] = [
                 random.int(1, 255),
                 random.int(1, 255),
                 random.int(1, 255),
             ]
             this._vehicles.push(this._vehicleFactory.create(
-                this._derbyArena.vehicleModel,
+                this._derbyArena.vehicle_model,
                 this._vector3Factory.create(derbyArenaSpawn.x,  derbyArenaSpawn.y,  derbyArenaSpawn.z),
                 derbyArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
                 true, true, this._eventDimension,
