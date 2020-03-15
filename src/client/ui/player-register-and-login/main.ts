@@ -138,21 +138,25 @@ const _global: any = (window || global) as any
 _global.emailIsTaken = () => {
     $("#alertRegisterModalWhenEmailIsTaken").removeClass("d-none")
     $("#inputRegisterModalEmail").addClass("is-invalid")
+    $("#registerButton").attr("disabled", "false")
 }
 
 _global.loginIsTaken = () => {
     $("#alertRegisterModalWhenLoginIsTaken").removeClass("d-none")
     $("#inputRegisterModalLogin").addClass("is-invalid")
+    $("#registerButton").attr("disabled", "false")
 }
 
 _global.displayUnknownError = () => {
     $("#alertRegisterModalUnknownError").removeClass("d-none")
+    $("#registerButton").attr("disabled", "false")
 }
 
 _global.loginIncorrectData = () => {
     $("#alertLoginModalWhenDataIsInvalid").removeClass("d-none")
     $("#inputLoginModalLogin").addClass("is-invalid")
     $("#inputLoginModalPassword").addClass("is-invalid")
+    $("#loginButton").attr("disabled", "false")
 }
 
 _global.loginIsTakenForGuest = () => {
