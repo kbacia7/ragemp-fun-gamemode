@@ -7,15 +7,18 @@ import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { PlayerSpawn } from "server/entity/PlayerSpawn"
 import { PlayerSpawnManagerEvents } from "./PlayerSpawnManagerEvents"
 import { IAPIManager } from "server/core/API/IAPIManager"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class PlayerSpawnManager {
     private _spawns: PlayerSpawn[] = []
-    constructor(apiManager: IAPIManager<PlayerSpawn>, vector3Factory: IVector3Factory, playerDataFactory: IPlayerDataFactory) {
-        /*PlayerSpawn.query()
-            .select()
-            .then((spawns: PlayerSpawn[]) =>  {
-                this._spawns = spawns
-            })*/
+    constructor(
+        apiManager: IAPIManager<PlayerSpawn>, 
+        vector3Factory: IVector3Factory, 
+        playerDataFactory: IPlayerDataFactory
+    ) {
+        apiManager.query(APIRequests.PLAYER_SPAWN).then((spawns: PlayerSpawn[]) => {
+            this._spawns = spawns
+        })
 
         mp.events.add("playerDeath", (playerMp: PlayerMp) => {
             const playerData = playerDataFactory.create().load(playerMp)
