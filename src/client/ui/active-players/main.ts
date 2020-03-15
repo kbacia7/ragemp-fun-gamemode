@@ -35,7 +35,7 @@ _global.loadPlayers = (playersDataInJson: string) => {
         thID.innerText = playerData.id.toString()
         tdName.innerText = playerData.name
         tdName.style.color = playerData.nameColor
-        tdRank.innerText =  playerData.rank
+        tdRank.innerText =  playerData.rankName
         tdKills.innerText = playerData.kills.toString()
         tdDeaths.innerText = playerData.deaths.toString()
         tdPing.innerText = playerData.ping.toString()

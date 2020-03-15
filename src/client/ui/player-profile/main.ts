@@ -30,7 +30,7 @@ _global.loadPlayerData = (playerDataInJson: string) => {
         $("#player-profile-username").css({"font-size": "1rem", "margin-top": "0.5rem"})
     }
     $("#player-profile-username").css("color", playerData.nameColor)
-    $("#player-profile-rank").text(playerData.rank)
+    $("#player-profile-rank").text(playerData.rankName)
     $("#player-profile-level").text("1")
     $("#player-profile-money").text("1000$")
     $("#player-profile-diamonds").text("10")
