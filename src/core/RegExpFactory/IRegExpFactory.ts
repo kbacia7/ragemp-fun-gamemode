@@ -1,3 +1,3 @@
 export interface IRegExpFactory {
-    create: (regex: string) => RegExp
+    create: (regex: string, flags: string) => RegExp
 }

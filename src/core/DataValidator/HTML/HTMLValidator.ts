@@ -1,18 +1,14 @@
 import { IRegExpFactory } from "core/RegExpFactory/IRegExpFactory"
 import { IDataValidator } from "../IDataValidator"
 
-export class PlayerEmailValidator implements IDataValidator {
+export class HTMLValidator implements IDataValidator {
     private _regExpFactory: IRegExpFactory = null
     constructor(regExpFactory: IRegExpFactory) {
         this._regExpFactory = regExpFactory
     }
 
     public validate(text: string) {
-        const regex: RegExp = this._regExpFactory.create([
-            "^(([^<>()\\[\\]\\\.,;:\\s@\"]+",
-            "(\\.[^<>()\\[\\]\\\.,;:\\s@\"]+)*)|(\".+\"))@",
-            "((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$",
-        ].join(""), "")
+        const regex: RegExp = this._regExpFactory.create("<\/?[a-z][\s\S]*>", "")
         return regex.test(text) && text.length > 0
     }
 
