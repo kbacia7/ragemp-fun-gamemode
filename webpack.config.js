@@ -83,10 +83,6 @@ const configServer = {
       ],
    },
    plugins: [
-      new CopyPlugin([
-         {from: './src/server/migrations', to: './migrations'},
-         {from: './src/server/seeds', to: './seeds'}
-      ]),
       new webpack.DefinePlugin({
          _VERSION_: `"${require("./package.json").codeNameVersion} build ${versionString}"`
       })

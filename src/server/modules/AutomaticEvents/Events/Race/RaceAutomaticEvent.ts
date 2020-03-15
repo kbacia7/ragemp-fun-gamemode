@@ -5,10 +5,9 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
-import Knex = require("knex")
 import * as luxon from "luxon"
-import { knexSnakeCaseMappers } from "objection"
 import random from "random"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
@@ -16,7 +15,6 @@ import { INotificationSenderFactory } from "server/core/NotificationSender/INoti
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { RaceArena } from "server/entity/RaceArena"
-import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
 import { PlayerQuitEvents } from "server/modules/PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManagerEvents } from "server/modules/PlayerSpawnManager/PlayerSpawnManagerEvents"
@@ -29,10 +27,12 @@ import { IRaceData } from "./IRaceData"
 import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEventEndPlayerReasons } from "./RaceAutomaticEventEndPlayerReasons"
 import { RaceAutomaticEventPageEvents } from "./RaceAutomaticEventPageEvents"
+import { APIRequests } from "server/core/API/APIRequests"
+import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
+    private _apiManager: IAPIManager<RaceArena> = null
     private _raceArena: RaceArena = null
-    private _raceArenaSpawns: RaceArenaSpawnPoint[] = []
     private _checkpoints: CheckpointMp[]  = []
     private _blips: BlipMp[] = []
     private _vehicles: VehicleMp[] = []
@@ -55,6 +55,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
 
     constructor(
         automaticEventData: IAutomaticEventData,
+        apiManager: IAPIManager<RaceArena>,
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         checkpointFactory: ICheckpointFactory,
@@ -64,6 +65,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         raceDataFactory: IRaceDataFactory,
     ) {
         super(automaticEventData)
+        this._apiManager = apiManager
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
         this._checkpointFactory = checkpointFactory
@@ -115,7 +117,6 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._eventDimension++
         this._checkpoints = []
         this._vehicles = []
-        this._raceArenaSpawns = []
         this._loadedPlayers = 0
         this._players = []
         this._blips = []
@@ -123,65 +124,51 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._winners = RaceAutomaticEvent.MAX_WINNERS
         this._playersRaceData = []
         this._startTime = 0
-        console.log("Load arena " + this._id)
-        RaceArena.query()
-            .select()
-            .orderByRaw("RAND()")
-            .limit(1)
-            .then((raceArenas: RaceArena[]) => {
-                if (raceArenas.length > 0) {
-                    const raceArena: RaceArena = raceArenas[0]
-                    console.log(`Loaded arena: ${raceArena.name}`)
-                    raceArena
-                        .$relatedQuery("checkpoints")
-                        .orderBy("id", "ASC")
-                        .then((raceArenaCheckpoints: RaceArenaCheckpoint[]) => {
-                            const checkpointColor: [number, number, number, number] = [
-                                Math.floor(Math.random() * 255) + 1,
-                                Math.floor(Math.random() * 255) + 1,
-                                Math.floor(Math.random() * 255) + 1,
-                                255,
-                            ]
-                            console.log("Loaded checkpoints: " + raceArenaCheckpoints.length)
-                            let index = 0
-                            raceArenaCheckpoints.forEach((raceArenaCheckpoint: RaceArenaCheckpoint) => {
-                                let nextPosition: Vector3Mp = null
-                                const nextIndex = index + 1
-                                if (raceArenaCheckpoints[nextIndex]) {
-                                    nextPosition = this._vector3Factory.create(
-                                        raceArenaCheckpoints[nextIndex].x,
-                                        raceArenaCheckpoints[nextIndex].y,
-                                        raceArenaCheckpoints[nextIndex].z,
-                                    )
-                                }
-                                const checkpointType = (nextPosition) ? 2 : 4
-                                const thisCheckpointVector: Vector3Mp = this._vector3Factory.create(
-                                    raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
-                                )
-                                this._checkpoints.push(
-                                    this._checkpointFactory.create(
-                                        checkpointType, thisCheckpointVector, 10, nextPosition,
-                                        checkpointColor, false, this._eventDimension,
-                                    ),
-                                )
-                                this._blips.push(
-                                    this._blipFactory.create(
-                                        103, thisCheckpointVector, undefined, undefined, undefined, undefined,
-                                        undefined, undefined, undefined, this._eventDimension,
-                                    ),
-                                )
-                                index++
-                            })
-                        })
-                    raceArena
-                        .$relatedQuery("spawns")
-                        .then((raceArenaSpawns: RaceArenaSpawnPoint[]) => {
-                            console.log("Max players on arena: " + raceArenaSpawns.length)
-                            this._raceArenaSpawns = raceArenaSpawns
-                        })
-                    this._raceArena = raceArena
-                }
-            })
+        this._apiManager.query(APIRequests.EVENT_RACE).then((arenas: RaceArena[]) => {
+            if(arenas.length > 0) {
+                const raceArena: RaceArena = arenas[0]
+                this._raceArena = raceArena
+                console.log(`Loaded arena: ${raceArena.name}`)
+                console.log("Max players on arena: " + raceArena.spawns.length)
+                console.log("Loaded checkpoints: " + raceArena.checkpoints.length)
+
+                const checkpointColor: [number, number, number, number] = [
+                    Math.floor(Math.random() * 255) + 1,
+                    Math.floor(Math.random() * 255) + 1,
+                    Math.floor(Math.random() * 255) + 1,
+                    255,
+                ]
+                let index = 0
+                raceArena.checkpoints.forEach((raceArenaCheckpoint: RaceArenaCheckpoint) => {
+                    let nextPosition: Vector3Mp = null
+                    const nextIndex = index + 1
+                    if (raceArena.checkpoints[nextIndex]) {
+                        nextPosition = this._vector3Factory.create(
+                            raceArena.checkpoints[nextIndex].x,
+                            raceArena.checkpoints[nextIndex].y,
+                            raceArena.checkpoints[nextIndex].z,
+                        )
+                    }
+                    const checkpointType = (nextPosition) ? 2 : 4
+                    const thisCheckpointVector: Vector3Mp = this._vector3Factory.create(
+                        raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
+                    )
+                    this._checkpoints.push(
+                        this._checkpointFactory.create(
+                            checkpointType, thisCheckpointVector, 10, nextPosition,
+                            checkpointColor, false, this._eventDimension,
+                        ),
+                    )
+                    this._blips.push(
+                        this._blipFactory.create(
+                            103, thisCheckpointVector, undefined, undefined, undefined, undefined,
+                            undefined, undefined, undefined, this._eventDimension,
+                        ),
+                    )
+                    index++
+                })
+            }
+        })
     }
 
     public start() {
@@ -209,7 +196,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
     }
 
     public preparePlayer(playerMp: PlayerMp) {
-        if (this._loadedPlayers > this._raceArenaSpawns.length - 1) {
+        if (this._loadedPlayers > this._raceArena.spawns.length - 1) {
             this._notificationSender.send(
                 playerMp, "RACE_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
                 [this._raceArena.name],
@@ -217,14 +204,14 @@ export class RaceAutomaticEvent extends AutomaticEvent {
             this._endRaceForPlayer(playerMp)
         } else {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-            const raceArenaSpawn: RaceArenaSpawnPoint = this._raceArenaSpawns[this._loadedPlayers]
+            const raceArenaSpawn: RaceArenaSpawnPoint = this._raceArena.spawns[this._loadedPlayers]
             const randomColor: [number, number, number] = [
                 Math.floor(Math.random() * 255) + 1,
                 Math.floor(Math.random() * 255) + 1,
                 Math.floor(Math.random() * 255) + 1,
             ]
             this._vehicles.push(this._vehicleFactory.create(
-                raceArenaSpawn.vehicleModel,
+                raceArenaSpawn.vehicle_model,
                 this._vector3Factory.create(raceArenaSpawn.x,  raceArenaSpawn.y,  raceArenaSpawn.z),
                 raceArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
                 true, true, this._eventDimension,

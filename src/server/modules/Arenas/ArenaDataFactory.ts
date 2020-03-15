@@ -2,7 +2,6 @@ import {
     AutomaticEventLoadArenaNotImplemented,
 } from "core/exception/AutomaticEvent/AutomaticEventLoadArenaNotImplemented"
 import { Dimension } from "server/core/Dimension/Dimension"
-import { Player } from "server/entity/Player"
 import { ArenaData } from "./ArenaData"
 import { ArenaType } from "./ArenaType"
 import { IArenaDataFactory } from "./IArenaDataFactory"

@@ -1,9 +1,5 @@
-import { Model } from "objection"
-
-export class PlayerSpawn extends Model {
-  public static tableName = "players_spawns"
-  public readonly id!: number
-  public x: number
-  public y: number
-  public z: number
+export class PlayerSpawn {
+  public readonly x: number
+  public readonly y: number
+  public readonly z: number
 }

@@ -9,8 +9,11 @@ import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { IAutomaticEventFactory } from "../../IAutomaticEventFactory"
 import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEvent } from "./RaceAutomaticEvent"
+import { IAPIManager } from "server/core/API/IAPIManager"
+import { RaceArena } from "server/entity/RaceArena"
 
 export class RaceAutomaticEventFactory implements AutomaticEventFactory {
+    private _apiManager: IAPIManager<RaceArena> = null
     private _vehicleFactory: IVehicleFactory = null
     private _vector3Factory: IVector3Factory = null
     private _checkpointFactory: ICheckpointFactory = null
@@ -20,6 +23,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     private _raceDataFactory: IRaceDataFactory = null
 
     constructor(
+        apiManager:  IAPIManager<RaceArena>,
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         checkpointFactory: ICheckpointFactory,
@@ -28,6 +32,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
         playerDataFactory: IPlayerDataFactory,
         raceDataFactory: IRaceDataFactory,
     ) {
+        this._apiManager = apiManager
         this._vehicleFactory = vehicleFactory
         this._vector3Factory = vector3Factory
         this._checkpointFactory = checkpointFactory
@@ -40,6 +45,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     public create(automaticEventData: IAutomaticEventData) {
         return new RaceAutomaticEvent(
             automaticEventData,
+            this._apiManager,
             this._vehicleFactory,
             this._vector3Factory,
             this._checkpointFactory,

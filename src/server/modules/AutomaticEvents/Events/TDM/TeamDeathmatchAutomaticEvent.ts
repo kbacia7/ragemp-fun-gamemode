@@ -7,19 +7,11 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import { WeaponsNames } from "core/WeaponsNames/WeaponsNames"
-import Knex = require("knex")
-import * as luxon from "luxon"
-import { knexSnakeCaseMappers } from "objection"
 import random from "random"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
-import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
-import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
-import { RaceArena } from "server/entity/RaceArena"
-import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
-import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
 import { TeamDeathmatchArena } from "server/entity/TeamDeathmatchArena"
 import { TeamDeathmatchArenaSpawnPoint } from "server/entity/TeamDeathmatchArenaSpawnPoint"
 import { TeamDeathmatchArenaWeapon } from "server/entity/TeamDeathmatchArenaWeapon"
@@ -31,11 +23,13 @@ import { AutomaticEventType } from "../../AutomaticEventType"
 import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { TeamDeathmatchAutomaticEventPageEvents } from "./TeamDeathmatchAutomaticEventPageEvents"
+import { IAPIManager } from "server/core/API/IAPIManager"
+import { APIRequests } from "server/core/API/APIRequests"
+
 export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
     private static MAX_PLAYERS_IN_TEAM: number = 10
+    private _apiManager: IAPIManager<TeamDeathmatchArena> = null
     private _teamDeathmatchArena: TeamDeathmatchArena = null
-    private _teamDeathmatchArenaSpawns: {[teamdId: number]: TeamDeathmatchArenaSpawnPoint[]} = []
-    private _teamDeathmatchArenaWeapons: TeamDeathmatchArenaWeapon[] = []
     private _blips: BlipMp[] = []
     private _loadedPlayers: {[team: number]: number} = {}
     private _vector3Factory: IVector3Factory = null
@@ -53,12 +47,14 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
 
     constructor(
         automaticEventData: IAutomaticEventData,
+        apiManager: IAPIManager<TeamDeathmatchArena>,
         vector3Factory: IVector3Factory,
         blipFactory: IBlipFactory,
         notificationSenderFactory: INotificationSenderFactory,
         playerDataFactory: IPlayerDataFactory,
     ) {
         super(automaticEventData)
+        this._apiManager = apiManager
         this._vector3Factory = vector3Factory
         this._blipFactory = blipFactory
         this._playerDataFactory = playerDataFactory
@@ -110,42 +106,17 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         this._allPlayersInTeams = {}
         this._allPlayersInTeams[0] = []
         this._allPlayersInTeams[1] = []
-        this._teamDeathmatchArenaSpawns = {}
-        this._teamDeathmatchArenaWeapons = []
         this._blips = []
         this._teams = 0
         this._nextTeam = 0
         this._playersAdded = false
-        TeamDeathmatchArena.query()
-            .select()
-            .orderByRaw("RAND()")
-            .limit(1)
-            .then((tdmArenas: TeamDeathmatchArena[]) => {
-                if (tdmArenas.length > 0) {
-                    const tdmArena: RaceArena = tdmArenas[0]
-                    console.log(`Loaded arena: ${tdmArena.name}`)
-                    tdmArena
-                        .$relatedQuery("weapons")
-                        .orderBy("id", "ASC")
-                        .then((tdmArenaWeapons: TeamDeathmatchArenaWeapon[]) => {
-                            this._teamDeathmatchArenaWeapons = tdmArenaWeapons
-                            console.log("Loaded weapons: " + tdmArenaWeapons.length)
-                        })
-
-                    tdmArena
-                        .$relatedQuery("spawns")
-                        .then((teamDeathmatchArenaSpawns: TeamDeathmatchArenaSpawnPoint[]) => {
-                            console.log("Max players on arena: " + teamDeathmatchArenaSpawns.length)
-                            this._teamDeathmatchArenaSpawns[0] = teamDeathmatchArenaSpawns.filter((tdmArenaSpawn) =>  {
-                                return tdmArenaSpawn.team === 1
-                            })
-                            this._teamDeathmatchArenaSpawns[1] = teamDeathmatchArenaSpawns.filter((tdmArenaSpawn) =>  {
-                                return tdmArenaSpawn.team === 2
-                            })
-                        })
-                    this._teamDeathmatchArena = tdmArena
-                }
-            })
+        this._apiManager.query(APIRequests.EVENT_TDM).then((arenas: TeamDeathmatchArena[]) => {
+            if(arenas.length > 0) {
+                const tdmArena: TeamDeathmatchArena = arenas[0]
+                console.log(`Loaded arena: ${tdmArena.name}`)
+                this._teamDeathmatchArena = tdmArena
+            }
+        })
     }
 
     public start() {
@@ -154,7 +125,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
             .forEach((player: PlayerMp) => {
                 player.call(TeamDeathmatchAutomaticEventPageEvents.DISPLAY_PAGE, [
                     this.automaticEventData.name, this.automaticEventData.displayName,
-                    this._weaponsToString(this._teamDeathmatchArenaWeapons), this._playersInTeams[0].length,
+                    this._weaponsToString(this._teamDeathmatchArena.weapons), this._playersInTeams[0].length,
                     this._playersInTeams[1].length,
 
                 ])
@@ -170,7 +141,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
 
     public preparePlayer(playerMp: PlayerMp) {
         const team = this._nextTeam % 2
-        if (this._loadedPlayers[team] > this._teamDeathmatchArenaSpawns[team].length - 1) {
+        if (this._loadedPlayers[team] > this._teamDeathmatchArena.spawns[team].length - 1) {
             this._notificationSender.send(
                 playerMp, "TDM_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
                 [this._teamDeathmatchArena.name],
@@ -179,19 +150,19 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         } else {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
             const tdmArenaSpawn: TeamDeathmatchArenaSpawnPoint =
-                this._teamDeathmatchArenaSpawns[team][this._loadedPlayers[team]]
+                this._teamDeathmatchArena.spawns[team][this._loadedPlayers[team]]
             playerMp.dimension = this._eventDimension
             playerMp.position = this._vector3Factory.create(tdmArenaSpawn.x, tdmArenaSpawn.y, tdmArenaSpawn.z)
             playerMp.call(ChangePlayerPedModuleEvents.CHANGE_PED, [
                 this._mappedSkins[team][random.int(0, this._mappedSkins[team].length - 1)],
             ])
             playerMp.removeAllWeapons()
-            this._teamDeathmatchArenaWeapons.forEach((weapon: TeamDeathmatchArenaWeapon) => {
+            this._teamDeathmatchArena.weapons.forEach((weapon: TeamDeathmatchArenaWeapon) => {
                 let ammo = weapon.ammo
                 if (ammo === 0) {
                     ammo = 9999
                 }
-                playerMp.giveWeapon(weapon.weaponId, ammo)
+                playerMp.giveWeapon(weapon.weapon_id, ammo)
             })
             playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
             this._notificationSender.send(
@@ -217,7 +188,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         playerMp.setVariable(PlayerDataProps.ON_EVENT, AutomaticEventType.NOTHING)
         this._playersInTeams[0].concat(this._playersInTeams[1]).forEach((p: PlayerMp) => {
             p.call(TeamDeathmatchAutomaticEventPageEvents.UPDATE_PAGE, [
-                this._weaponsToString(this._teamDeathmatchArenaWeapons), this._playersInTeams[0].length,
+                this._weaponsToString(this._teamDeathmatchArena.weapons), this._playersInTeams[0].length,
                 this._playersInTeams[1].length,
 
             ])
@@ -257,7 +228,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
     private _weaponsToString(weapons: TeamDeathmatchArenaWeapon[]) {
         let names: string = ""
         weapons.forEach((w: TeamDeathmatchArenaWeapon) => {
-            names += `${WeaponsNames.weaponsNamesByHashes[w.weaponId]}, `
+            names += `${WeaponsNames.weaponsNamesByHashes[w.weapon_id]}, `
         })
         return names.slice(0, names.length - 2)
     }
