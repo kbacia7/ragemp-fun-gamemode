@@ -11,6 +11,7 @@ import { DMArenaSpawnPoint } from "server/entity/DMArenaSpawnPoint"
 import { DMArenaWeapon } from "server/entity/DMArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class DeathmatchArena extends Arena {
     private _apiManager: IAPIManager<DMArena> = null
@@ -34,30 +35,13 @@ export class DeathmatchArena extends Arena {
     }
 
     public loadArena() {
-        /*DMArena.query()
-            .select()
-            .where("active", "=", true)
-            .limit(1)
-            .then((dmArenas: DMArena[]) => {
-                if (dmArenas.length > 0) {
-                    const dmArena: DMArena = dmArenas[0]
-                    console.log(`Loaded arena: ${dmArena.name}`)
-                    dmArena
-                        .$relatedQuery("weapons")
-                        .orderBy("id", "ASC")
-                        .then((dmArenaWeapons: DMArenaWeapon[]) => {
-                            this._dmArenaWeapons = dmArenaWeapons
-                            console.log("Loaded weapons: " + dmArenaWeapons.length)
-                        })
-
-                    dmArena
-                        .$relatedQuery("spawns")
-                        .then((dmArenaSpawns: DMArenaSpawnPoint[]) => {
-                            this._dmArenaSpawns = dmArenaSpawns
-                        })
-                    this._dmArena = dmArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.ARENA_DM).then((arenas: DMArena[]) => {
+            if(arenas.length > 0) {
+                const dmArena: DMArena = arenas[0]
+                console.log(`Loaded arena: ${dmArena.name}`)
+                this._dmArena = dmArena
+            }
+        })
     }
 
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {

@@ -11,6 +11,7 @@ import { OneShootArenaSpawnPoint } from "server/entity/OneShootArenaSpawnPoint"
 import { OneShootArenaWeapon } from "server/entity/OneShootArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class OneShootOneDieArena extends Arena {
     private _apiManager: IAPIManager<OneShootArena> = null
@@ -34,30 +35,13 @@ export class OneShootOneDieArena extends Arena {
     }
 
     public loadArena() {
-        /*DMArena.query()
-            .select()
-            .where("active", "=", true)
-            .limit(1)
-            .then((oneShootArenas: OneShootArena[]) => {
-                if (oneShootArenas.length > 0) {
-                    const oneShootArena: OneShootArena = oneShootArenas[0]
-                    console.log(`Loaded arena: ${oneShootArena.name}`)
-                    oneShootArena
-                        .$relatedQuery("weapons")
-                        .orderBy("id", "ASC")
-                        .then((oneShootArenaWeapons: OneShootArenaWeapon[]) => {
-                            this._oneShootArenaWeapons = oneShootArenaWeapons
-                            console.log("Loaded weapons: " + oneShootArenaWeapons.length)
-                        })
-
-                    oneShootArena
-                        .$relatedQuery("spawns")
-                        .then((oneShootArenaSpawns: OneShootArenaSpawnPoint[]) => {
-                            this._oneShootArenaSpawns = oneShootArenaSpawns
-                        })
-                    this._oneShootArena = oneShootArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.ARENA_ONESHOOT).then((arenas: OneShootArena[]) => {
+            if(arenas.length > 0) {
+                const oneShootArena: OneShootArena = arenas[0]
+                console.log(`Loaded arena: ${oneShootArena.name}`)
+                this._oneShootArena = oneShootArena
+            }
+        })
     }
 
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {

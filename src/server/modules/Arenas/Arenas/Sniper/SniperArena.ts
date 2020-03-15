@@ -12,6 +12,7 @@ import { SniperArenaSpawnPoint } from "server/entity/SniperArenaSpawnPoint"
 import { SniperArenaWeapon } from "server/entity/SniperArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class SniperArena extends Arena {
     private _apiManager: IAPIManager<SniperArenaEntity> = null
@@ -35,30 +36,13 @@ export class SniperArena extends Arena {
     }
 
     public loadArena() {
-        /*DMArena.query()
-            .select()
-            .where("active", "=", true)
-            .limit(1)
-            .then((sniperArenas: SniperArenaEntity[]) => {
-                if (sniperArenas.length > 0) {
-                    const sniperArena: SniperArenaEntity = sniperArenas[0]
-                    console.log(`Loaded arena: ${sniperArena.name}`)
-                    sniperArena
-                        .$relatedQuery("weapons")
-                        .orderBy("id", "ASC")
-                        .then((sniperArenaWeapons: SniperArenaWeapon[]) => {
-                            this._sniperArenaWeapons = sniperArenaWeapons
-                            console.log("Loaded weapons: " + sniperArenaWeapons.length)
-                        })
-
-                    sniperArena
-                        .$relatedQuery("spawns")
-                        .then((sniperArenaSpawns: SniperArenaSpawnPoint[]) => {
-                            this._sniperArenaSpawns = sniperArenaSpawns
-                        })
-                    this._sniperArena = sniperArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.ARENA_SNIPER).then((arenas: SniperArenaEntity[]) => {
+            if(arenas.length > 0) {
+                const sniperArena: SniperArenaEntity = arenas[0]
+                console.log(`Loaded arena: ${sniperArena.name}`)
+                this._sniperArena = sniperArena
+            }
+        })
     }
 
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {

@@ -11,6 +11,7 @@ import { HeavyDMArenaSpawnPoint } from "server/entity/HeavyDMArenaSpawnPoint"
 import { HeavyDMArenaWeapon } from "server/entity/HeavyDMArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class HeavyDeathmatchArena extends Arena {
     private _apiManager: IAPIManager<HeavyDMArena> = null
@@ -34,30 +35,13 @@ export class HeavyDeathmatchArena extends Arena {
     }
 
     public loadArena() {
-        /*DMArena.query()
-            .select()
-            .where("active", "=", true)
-            .limit(1)
-            .then((heavyDmArenas: HeavyDMArena[]) => {
-                if (heavyDmArenas.length > 0) {
-                    const heavyDmArena: HeavyDMArena = heavyDmArenas[0]
-                    console.log(`Loaded arena: ${heavyDmArena.name}`)
-                    heavyDmArena
-                        .$relatedQuery("weapons")
-                        .orderBy("id", "ASC")
-                        .then((heavyDmArenaWeapons: HeavyDMArenaWeapon[]) => {
-                            this._heavyDmArenaWeapons = heavyDmArenaWeapons
-                            console.log("Loaded weapons: " + heavyDmArenaWeapons.length)
-                        })
-
-                    heavyDmArena
-                        .$relatedQuery("spawns")
-                        .then((heavyDmArenaSpawns: HeavyDMArenaSpawnPoint[]) => {
-                            this._heavyDmArenaSpawns = heavyDmArenaSpawns
-                        })
-                    this._heavyDmArena = heavyDmArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.ARENA_HEAVYDM).then((arenas: HeavyDMArena[]) => {
+            if(arenas.length > 0) {
+                const heavyDmArena: HeavyDMArena = arenas[0]
+                console.log(`Loaded arena: ${heavyDmArena.name}`)
+                this._heavyDmArena = heavyDmArena
+            }
+        })
     }
 
     public spawnPlayer(playerMp: PlayerMp, firstSpawn= false) {
