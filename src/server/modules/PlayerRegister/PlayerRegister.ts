@@ -6,15 +6,19 @@ import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { IPlayerHashPassword } from "../../core/PlayerHashPassword/IPlayerHashPassword"
 import { IPlayerHashPasswordFactory } from "../../core/PlayerHashPassword/IPlayerHashPasswordFactory"
+import { APIRequests } from "server/core/API/APIRequests"
+import { IncomingMessage } from "http"
+import { PlayerSaveResponses } from "server/core/API/PlayerSaveResponses"
+import { Player } from "server/entity/Player"
 
 export class PlayerRegister {
-    private _apiManager: IAPIManager<object> = null
+    private _apiManager: IAPIManager<Player> = null
     private _promiseFactory: IPromiseFactory<boolean> = null
     private _playerEmailValidatorFactory: IPlayerEmailValidatorFactory = null
     private _playerLoginValidatorFactory: IPlayerLoginValidatorFactory = null
 
     constructor(
-        apiManager: IAPIManager<object>,
+        apiManager: IAPIManager<Player>,
         promiseFactory: IPromiseFactory<boolean>,
         playerEmailValidatorFactory: IPlayerEmailValidatorFactory,
         playerLoginValidatorFactory: IPlayerLoginValidatorFactory,
@@ -28,60 +32,46 @@ export class PlayerRegister {
         mp.events.add(PlayerRegisterEvent.REGISTER, (player: PlayerMp, playerRegisterDataStr: string) => {
             const playerRegisterData: IPlayerRegiserData = JSON.parse(playerRegisterDataStr)
             const playerHashPassword: IPlayerHashPassword = playerHashPasswordFactory.create()
-            playerRegisterData.password = playerHashPassword.hash(playerRegisterData.password, playerRegisterData.login)
+            playerRegisterData.password = playerHashPassword.hash(playerRegisterData.password)
             if (!this._playerLoginValidatorFactory.create().validate(playerRegisterData.login)) {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             } else if (!this._playerEmailValidatorFactory.create().validate(playerRegisterData.email)) {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             } else {
-               /* Player.query()
-                    .select("login")
-                    .where("login", "LIKE", playerRegisterData.login).then((players: Player[]) => {
-                        if (players.length > 0) {
-                            player.call(PlayerRegisterEvent.LOGIN_TAKEN)
-                        } else {
-                            Player.query()
-                                .select("email")
-                                .where("email", "LIKE", playerRegisterData.email)
-                                .then((playersWithThisMail: Player[]) => {
-                                    if (playersWithThisMail.length > 0) {
-                                        player.call(PlayerRegisterEvent.EMAIL_TAKEN)
-
-                                    } else {
-                                        this._addNewPlayerAccount(playerRegisterData).then((created) => {
-                                            console.log(created)
-                                            if (created) {
-                                                player.call(PlayerRegisterEvent.CREATED)
-                                                player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
-                                                mp.events.call("playerStartPlay", player, playerRegisterData.login)
-                                            } else {
-                                                player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
-                                            }
-                                        })
-                                    }
-                                })
+                this._apiManager.send(APIRequests.PLAYER_REGISTER, {
+                    login: playerRegisterData.login,
+                    password:playerRegisterData.password,
+                    email: playerRegisterData.email
+                }).then((res: IncomingMessage) => {
+                    let responseAsString: string = ""
+                    res.on("data", (chunk) => {
+                        responseAsString += chunk
+                    })
+                    res.on("end", () => {
+                        const response: number = parseInt(responseAsString)
+                        switch(response) {
+                            case PlayerSaveResponses.ALL_OK: {
+                                player.call(PlayerRegisterEvent.CREATED)
+                                player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                                mp.events.call("playerStartPlay", player, playerRegisterData.login)
+                                break
+                            }
+                            case PlayerSaveResponses.EMAIL_TAKEN: {
+                                player.call(PlayerRegisterEvent.EMAIL_TAKEN)
+                                break
+                            }
+                            case PlayerSaveResponses.LOGIN_TAKEN: {
+                                player.call(PlayerRegisterEvent.LOGIN_TAKEN)
+                                break
+                            }
+                            default: {
+                                player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
+                                break
+                            }
                         }
-                    })*/
+                    })
+                })
             }
-        })
-    }
-
-    private _addNewPlayerAccount(playerRegisterData: IPlayerRegiserData) {
-        return this._promiseFactory.create((resolve) => {
-            /*Player.query().insert({
-                deaths: 0,
-                email: playerRegisterData.email,
-                kills: 0,
-                login: playerRegisterData.login,
-                password: playerRegisterData.password,
-                rank: "Gracz",
-            }).then((insertedPlayer: Player) => {
-                if (insertedPlayer) {
-                    resolve(true)
-                } else {
-                    resolve(false)
-                }
-            })*/
         })
     }
 }
