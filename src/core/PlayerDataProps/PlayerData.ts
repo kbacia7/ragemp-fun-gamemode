@@ -1,3 +1,4 @@
+import { Rank } from "server/entity/Rank"
 import { ArenaType } from "server/modules/Arenas/ArenaType"
 import { AutomaticEventType } from "server/modules/AutomaticEvents/AutomaticEventType"
 import { IPlayerData } from "./IPlayerData"
@@ -10,9 +11,14 @@ export class PlayerData implements IPlayerData {
         return this._id
     }
 
-    private _rank: string
+    private _rank: Rank
     get rank() {
         return this._rank
+    }
+
+    private _rankName: string
+    get rankName() {
+        return this._rankName
     }
 
     private _kills: number
@@ -76,7 +82,7 @@ export class PlayerData implements IPlayerData {
     }
 
     public initialize(player: PlayerMp) {
-        this._rank = "Gracz"
+        this._rankName = "Gracz"
         this._kills = 0
         this._id = player.id
         this._deaths = 0
@@ -92,6 +98,7 @@ export class PlayerData implements IPlayerData {
         this._nameColor = this._getRandomColor()
 
         player.setVariable(PlayerDataProps.RANK, this._rank)
+        player.setVariable(PlayerDataProps.RANK_NAME, this._rankName)
         player.setVariable(PlayerDataProps.KILLS, this._kills)
         player.setVariable(PlayerDataProps.DEATHS, this._deaths)
         player.setVariable(PlayerDataProps.STATUS, this._status)
@@ -115,6 +122,7 @@ export class PlayerData implements IPlayerData {
 
     public sync(player: PlayerMp) {
         this._rank = player.getVariable(PlayerDataProps.RANK)
+        this._rankName =  player.getVariable(PlayerDataProps.RANK_NAME)
         this._kills = player.getVariable(PlayerDataProps.KILLS)
         this._deaths = player.getVariable(PlayerDataProps.DEATHS)
         this._status = player.getVariable(PlayerDataProps.STATUS)
@@ -133,6 +141,7 @@ export class PlayerData implements IPlayerData {
     public toJSON() {
         const obj: any = {}
         obj[PlayerDataProps.RANK] = this._rank
+        obj[PlayerDataProps.RANK_NAME] = this._rankName
         obj[PlayerDataProps.KILLS] = this._kills
         obj[PlayerDataProps.DEATHS] = this._deaths
         obj[PlayerDataProps.STATUS] = this._status

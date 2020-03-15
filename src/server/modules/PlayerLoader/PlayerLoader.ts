@@ -18,10 +18,11 @@ export class PlayerLoader {
                 playerMp.setVariable(PlayerDataProps.KILLS, data.kills)
                 playerMp.setVariable(PlayerDataProps.DEATHS, data.deaths)
                 playerMp.setVariable(PlayerDataProps.RANK, data.rank)
+                playerMp.setVariable(PlayerDataProps.RANK_NAME, data.rank.name)
                 playerMp.setVariable(PlayerDataProps.PED, data.ped)
             } else {
                 playerMp.setVariable(PlayerDataProps.PLAY_AS_GUEST, true)
-                playerMp.setVariable(PlayerDataProps.RANK, "Gość")
+                playerMp.setVariable(PlayerDataProps.RANK_NAME, "Gość")
                 playerMp.setVariable(PlayerDataProps.PED, 0x7E0961B8)
             }
             playerMp.setVariable(PlayerDataProps.NAME, login)
