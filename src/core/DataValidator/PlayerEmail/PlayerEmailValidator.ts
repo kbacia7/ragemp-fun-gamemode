@@ -12,7 +12,7 @@ export class PlayerEmailValidator implements IDataValidator {
             "^(([^<>()\\[\\]\\\.,;:\\s@\"]+",
             "(\\.[^<>()\\[\\]\\\.,;:\\s@\"]+)*)|(\".+\"))@",
             "((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$",
-        ].join(""))
+        ].join(""), "")
         return regex.test(text) && text.length > 0
     }
 

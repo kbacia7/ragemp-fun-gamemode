@@ -8,7 +8,7 @@ export class PlayerLoginValidator implements IDataValidator {
     }
 
     public validate(text: string) {
-        const regex: RegExp = this._regExpFactory.create("[!@#$%^&*()+=[\\]\\{\\}\\;\\'\"\\,\\.?|\\/\\\`~]")
+        const regex: RegExp = this._regExpFactory.create("[!@#$%^&*()+=[\\]\\{\\}\\;\\'\"\\,\\.?|\\/\\\`~]", "")
         return !regex.test(text) && text.length <= 23 && text.length >= 3
     }
 
