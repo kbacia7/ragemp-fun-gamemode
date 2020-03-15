@@ -7,13 +7,16 @@ import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { IPlayerHashPassword } from "../../core/PlayerHashPassword/IPlayerHashPassword"
 import { IPlayerHashPasswordFactory } from "../../core/PlayerHashPassword/IPlayerHashPasswordFactory"
+import { Player } from "server/entity/Player"
+import { APIRequests } from "server/core/API/APIRequests"
+import { IncomingMessage } from "http"
 
 export class PlayerLogin {
-    private _apiManager: IAPIManager<object> = null
+    private _apiManager: IAPIManager<Player> = null
     private _playerLoginValidatorFactory: IPlayerLoginValidatorFactory = null
 
     constructor(
-        apiManager: IAPIManager<object>,
+        apiManager: IAPIManager<Player>,
         playerLoginValidatorFactory: IPlayerLoginValidatorFactory,
         playerHashPasswordFactory: IPlayerHashPasswordFactory,
 
@@ -26,21 +29,17 @@ export class PlayerLogin {
             if (!this._playerLoginValidatorFactory.create().validate(playerLoginData.login)) {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             } else {
-               /* Player.query()
-                    .select("password")
-                    .where("login", "LIKE", playerLoginData.login)
-                    .then((players: Player[]) => {
-                        if (players.length > 0) {
-                            if (playerHashPassword.compare(players[0].password, playerLoginData.password)) {
-                                player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
-                                mp.events.call("playerStartPlay", player, playerLoginData.login)
-                            } else {
-                                player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
-                            }
-                        } else {
-                            player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
-                        }
-                    })*/
+                this._apiManager.send(APIRequests.PLAYER_LOGIN, {
+                    login: playerLoginData.login,
+                    password: playerHashPassword.hash(playerLoginData.password)
+                }).then((res: IncomingMessage) => {
+                   if(res.statusCode !== 200) {
+                    player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
+                   } else {
+                    player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                    mp.events.call("playerStartPlay", player, playerLoginData.login)
+                   }
+                })
             }
         })
     }
