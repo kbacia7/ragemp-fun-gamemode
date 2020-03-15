@@ -12,6 +12,7 @@ import { RaceArena } from "src/server/entity/RaceArena"
 import { TeamDeathmatchArena } from "src/server/entity/TeamDeathmatchArena"
 import { DerbyArena } from "src/server/entity/DerbyArena"
 import { HideAndSeekArena } from "src/server/entity/HideAndSeekArena"
+import { IncomingMessage } from "http"
 
 describe("APIManager", () => {
     describe("#query()", () => {
@@ -21,7 +22,8 @@ describe("APIManager", () => {
                 port: 8000
             }
             const promiseFactory = new PromiseFactory<RaceArena[]>()
-            const apiManager = new APIManager<RaceArena>(promiseFactory, apiSetting)
+            const promiseFactoryForPosts = new PromiseFactory<IncomingMessage>()
+            const apiManager = new APIManager<RaceArena>(promiseFactory, promiseFactoryForPosts, apiSetting)
             return apiManager.query(APIRequests.EVENT_RACE).then((arena: RaceArena[]) => {
                 assert.exists(arena[0].id)
                 assert.notEqual(arena[0].spawns.length, 0)
@@ -34,7 +36,8 @@ describe("APIManager", () => {
                 port: 8000
             }
             const promiseFactory = new PromiseFactory<TeamDeathmatchArena[]>()
-            const apiManager = new APIManager<TeamDeathmatchArena>(promiseFactory, apiSetting)
+            const promiseFactoryForPosts = new PromiseFactory<IncomingMessage>()
+            const apiManager = new APIManager<TeamDeathmatchArena>(promiseFactory, promiseFactoryForPosts, apiSetting)
             return apiManager.query(APIRequests.EVENT_TDM).then((arena: TeamDeathmatchArena[]) => {
                 assert.exists(arena[0].id)
                 assert.notEqual(Object.keys(arena[0].spawns).length, 0)
@@ -47,7 +50,8 @@ describe("APIManager", () => {
                 port: 8000
             }
             const promiseFactory = new PromiseFactory<DerbyArena[]>()
-            const apiManager = new APIManager<DerbyArena>(promiseFactory, apiSetting)
+            const promiseFactoryForPosts = new PromiseFactory<IncomingMessage>()
+            const apiManager = new APIManager<DerbyArena>(promiseFactory, promiseFactoryForPosts, apiSetting)
             return apiManager.query(APIRequests.EVENT_DERBY).then((arena: DerbyArena[]) => {
                 assert.exists(arena[0].id)
                 assert.notEqual(arena[0].spawns.length, 0)
@@ -59,7 +63,8 @@ describe("APIManager", () => {
                 port: 8000
             }
             const promiseFactory = new PromiseFactory<HideAndSeekArena[]>()
-            const apiManager = new APIManager<HideAndSeekArena>(promiseFactory, apiSetting)
+            const promiseFactoryForPosts = new PromiseFactory<IncomingMessage>()
+            const apiManager = new APIManager<HideAndSeekArena>(promiseFactory, promiseFactoryForPosts, apiSetting)
             return apiManager.query(APIRequests.EVENT_HIDEANDSEEK).then((arena: HideAndSeekArena[]) => {
                 assert.exists(arena[0].id)
                 assert.notEqual(arena[0].spawns.length, 0)
