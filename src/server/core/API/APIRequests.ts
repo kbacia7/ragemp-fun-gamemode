@@ -6,5 +6,12 @@ export enum APIRequests {
     EVENT_RACE = "/events/race/",
     EVENT_TDM = "/events/tdm/",
     EVENT_DERBY = "/events/derby/",
-    EVENT_HIDEANDSEEK = "/events/hideandseek/"
+    EVENT_HIDEANDSEEK = "/events/hideandseek/",
+    PLAYER_SPAWN = "/players/spawns/",
+    PLAYER_REGISTER = "/players/register/",
+    PLAYER_LOGIN = "/players/login/",
+    PLAYER_SAVE = "/players/save/",
+    PLAY_AS_GUEST = "/players/play_as_guest/",
+    SETTINGS_FOR_TESTS = '/settings/test/',
+    SETTINGS_PREFIX = '/settings'
 }
