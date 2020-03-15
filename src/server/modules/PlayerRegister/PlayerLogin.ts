@@ -36,8 +36,16 @@ export class PlayerLogin {
                    if(res.statusCode !== 200) {
                     player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
                    } else {
-                    player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
-                    mp.events.call("playerStartPlay", player, playerLoginData.login)
+                    let responseInJson = ""
+                    res.on("data", (chunk) => {
+                        responseInJson += chunk
+                    })
+                    res.on("end", () => {
+                        const p: Player = JSON.parse(responseInJson)
+                        player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                        mp.events.call("playerStartPlay", player, playerLoginData.login, p)
+                    })
+                
                    }
                 })
             }

@@ -52,7 +52,25 @@ export class PlayerRegister {
                         switch(response) {
                             case PlayerSaveResponses.ALL_OK: {
                                 player.call(PlayerRegisterEvent.CREATED)
-                                player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                                this._apiManager.send(APIRequests.PLAYER_LOGIN, {
+                                    login: playerRegisterData.login,
+                                    password: playerHashPassword.hash(playerRegisterData.password)
+                                }).then((res: IncomingMessage) => {
+                                   if(res.statusCode !== 200) {
+                                    player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
+                                   } else {
+                                    let responseInJson = ""
+                                    res.on("data", (chunk) => {
+                                        responseInJson += chunk
+                                    })
+                                    res.on("end", () => {
+                                        const p: Player = JSON.parse(responseInJson)
+                                        player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                                        mp.events.call("playerStartPlay", player, playerRegisterData.login, p)
+                                    })
+                                
+                                   }
+                                })
                                 mp.events.call("playerStartPlay", player, playerRegisterData.login)
                                 break
                             }
