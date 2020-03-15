@@ -19,6 +19,7 @@ import { IAutomaticEventData } from "./IAutomaticEventData"
 import { IAutomaticEventDataFactory } from "./IAutomaticEventDataFactory"
 import { IAutomaticEventFactory } from "./IAutomaticEventFactory"
 import { Setting } from "server/entity/Setting"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class AutomaticEventManager {
     private _apiManager: IAPIManager<Setting> = null
@@ -47,33 +48,30 @@ export class AutomaticEventManager {
             this._playersOnEvent[evName] = []
             this._activeEvents[evName] = false
             this._waitForEnd[evName] = false
-            /*Setting.query()
-                .select()
-                .where("name", "LIKE", `${evName}_%`)
-                .then((settingsFromDb: Setting[]) => {
-                    if (settingsFromDb.length > 0) {
-                        console.log(`Load settings for ${evName} event ${settingsFromDb.length}`)
-                        const mappedSettingsByName: { [name: string]: string } = Object.assign(
-                            {},
-                            ...(settingsFromDb.map((item) => ({ [item.name]: item.value }))),
-                        )
-                        const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
-                            evName,
-                            mappedSettingsByName[`${evName}_display_name`],
-                            mappedNamesToTypes[evName],
-                            parseInt(mappedSettingsByName[`${evName}_min_players`], 10),
-                            0,
-                            parseInt(mappedSettingsByName[`${evName}_max_players`], 10),
-                            parseInt(mappedSettingsByName[`${evName}_min_exp`], 10),
-                            parseInt(mappedSettingsByName[`${evName}_max_exp`], 10),
-                            parseInt(mappedSettingsByName[`${evName}_min_money`], 10),
-                            parseInt(mappedSettingsByName[`${evName}_max_money`], 10),
-                        )
-                        this._automaticEvents[evName] =  mappedNamesToFactories[evName].create(
-                            automaticEventData,
-                        )
-                    }
-                })*/
+            this._apiManager.query(`${APIRequests.SETTINGS_PREFIX}/${evName}/`).then((settings: Setting[]) => {
+                if (settings.length > 0) {
+                    console.log(`Load settings for ${evName} event ${settings.length}`)
+                    const mappedSettingsByName: { [name: string]: string } = Object.assign(
+                        {},
+                        ...(settings.map((item) => ({ [item.name]: item.value }))),
+                    )
+                    const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
+                        evName,
+                        mappedSettingsByName[`${evName}_display_name`],
+                        mappedNamesToTypes[evName],
+                        parseInt(mappedSettingsByName[`${evName}_min_players`], 10),
+                        0,
+                        parseInt(mappedSettingsByName[`${evName}_max_players`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_min_exp`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_max_exp`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_min_money`], 10),
+                        parseInt(mappedSettingsByName[`${evName}_max_money`], 10),
+                    )
+                    this._automaticEvents[evName] =  mappedNamesToFactories[evName].create(
+                        automaticEventData,
+                    )
+                }
+            })
         })
 
         mp.events.add(AutomaticEventManagerEvents.GET_AUTOMATIC_EVENTS, (playerMp: PlayerMp) => {
