@@ -29,9 +29,9 @@ export class PlayerLogin {
             if (!this._playerLoginValidatorFactory.create().validate(playerLoginData.login)) {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             } else {
+                console.log(playerLoginData.login)
                 this._apiManager.send(APIRequests.PLAYER_LOGIN, {
                     login: playerLoginData.login,
-                    password: playerHashPassword.hash(playerLoginData.password)
                 }).then((res: IncomingMessage) => {
                    if(res.statusCode !== 200) {
                     player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
@@ -42,8 +42,14 @@ export class PlayerLogin {
                     })
                     res.on("end", () => {
                         const p: Player = JSON.parse(responseInJson)
-                        player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
-                        mp.events.call("playerStartPlay", player, playerLoginData.login, p)
+                        if(playerHashPassword.compare(p.password, playerLoginData.password)) {
+                            player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
+                            mp.events.call("playerStartPlay", player, playerLoginData.login, p)
+                        }
+                        else {
+                            player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
+                        }
+           
                     })
                 
                    }
@@ -51,5 +57,4 @@ export class PlayerLogin {
             }
         })
     }
-
 }
