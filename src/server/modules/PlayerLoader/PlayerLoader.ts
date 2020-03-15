@@ -2,9 +2,9 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { Player } from "server/entity/Player"
 import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
-import { IAPIManager } from "server/core/API/IAPIManager"
 
 export class PlayerLoader {
     constructor(apiManager: IAPIManager<Player>, playerDataFactory: IPlayerDataFactory) {
@@ -14,7 +14,7 @@ export class PlayerLoader {
         })
 
         mp.events.add("playerStartPlay", (playerMp: PlayerMp, login: string, data: Player) => {
-            if(data) {
+            if (data) {
                 playerMp.setVariable(PlayerDataProps.KILLS, data.kills)
                 playerMp.setVariable(PlayerDataProps.DEATHS, data.deaths)
                 playerMp.setVariable(PlayerDataProps.RANK, data.rank)

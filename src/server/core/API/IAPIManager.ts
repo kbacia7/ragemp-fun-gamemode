@@ -1,4 +1,4 @@
-import { IncomingMessage } from "http";
+import { IncomingMessage } from "http"
 
 export interface IAPIManager<T> {
     query: (path: string) => Promise<T[]>,

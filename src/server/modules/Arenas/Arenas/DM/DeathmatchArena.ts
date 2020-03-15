@@ -2,6 +2,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -11,7 +12,6 @@ import { DMArenaSpawnPoint } from "server/entity/DMArenaSpawnPoint"
 import { DMArenaWeapon } from "server/entity/DMArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class DeathmatchArena extends Arena {
     private _apiManager: IAPIManager<DMArena> = null
@@ -36,7 +36,7 @@ export class DeathmatchArena extends Arena {
 
     public loadArena() {
         this._apiManager.query(APIRequests.ARENA_DM).then((arenas: DMArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const dmArena: DMArena = arenas[0]
                 console.log(`Loaded arena: ${dmArena.name}`)
                 this._dmArena = dmArena

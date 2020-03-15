@@ -1,16 +1,16 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
+import { RaceArena } from "server/entity/RaceArena"
 import { AutomaticEventFactory } from "../../AutomaticEventFactory"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { IAutomaticEventFactory } from "../../IAutomaticEventFactory"
 import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEvent } from "./RaceAutomaticEvent"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { RaceArena } from "server/entity/RaceArena"
 
 export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     private _apiManager: IAPIManager<RaceArena> = null
@@ -23,7 +23,7 @@ export class RaceAutomaticEventFactory implements AutomaticEventFactory {
     private _raceDataFactory: IRaceDataFactory = null
 
     constructor(
-        apiManager:  IAPIManager<RaceArena>,
+        apiManager: IAPIManager<RaceArena>,
         vehicleFactory: IVehicleFactory,
         vector3Factory: IVector3Factory,
         checkpointFactory: ICheckpointFactory,

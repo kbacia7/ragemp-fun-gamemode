@@ -1,11 +1,11 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
+import { OneShootArena } from "server/entity/OneShootArena"
 import { IArenaData } from "../../IArenaData"
 import { IArenaFactory } from "../../IArenaFactory"
 import { OneShootOneDieArena } from "./OneShootOneDieArena"
-import { OneShootArena } from "server/entity/OneShootArena"
-import { IAPIManager } from "server/core/API/IAPIManager"
 
 export class OneShootOneDieArenaFactory implements IArenaFactory {
     private _vector3Factory: IVector3Factory = null

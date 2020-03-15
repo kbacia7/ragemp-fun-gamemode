@@ -3,13 +3,13 @@ import { IPlayerLoginValidatorFactory } from "core/DataValidator/PlayerLogin/IPl
 import { IPlayerRegiserData } from "core/PlayerRegister/IPlayerRegisterData"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { IPlayerHashPassword } from "../../core/PlayerHashPassword/IPlayerHashPassword"
-import { IPlayerHashPasswordFactory } from "../../core/PlayerHashPassword/IPlayerHashPasswordFactory"
-import { APIRequests } from "server/core/API/APIRequests"
 import { IncomingMessage } from "http"
+import { APIRequests } from "server/core/API/APIRequests"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { PlayerSaveResponses } from "server/core/API/PlayerSaveResponses"
 import { Player } from "server/entity/Player"
+import { IPlayerHashPassword } from "../../core/PlayerHashPassword/IPlayerHashPassword"
+import { IPlayerHashPasswordFactory } from "../../core/PlayerHashPassword/IPlayerHashPasswordFactory"
 
 export class PlayerRegister {
     private _apiManager: IAPIManager<Player> = null
@@ -40,8 +40,8 @@ export class PlayerRegister {
             } else {
                 this._apiManager.send(APIRequests.PLAYER_REGISTER, {
                     login: playerRegisterData.login,
-                    password:playerRegisterData.password,
-                    email: playerRegisterData.email
+                    password: playerRegisterData.password,
+                    email: playerRegisterData.email,
                 }).then((res: IncomingMessage) => {
                     let responseAsString: string = ""
                     res.on("data", (chunk) => {
@@ -49,13 +49,13 @@ export class PlayerRegister {
                     })
                     res.on("end", () => {
                         const response: number = parseInt(responseAsString)
-                        switch(response) {
+                        switch (response) {
                             case PlayerSaveResponses.ALL_OK: {
                                 player.call(PlayerRegisterEvent.CREATED)
                                 this._apiManager.send(APIRequests.PLAYER_LOGIN, {
                                     login: playerRegisterData.login,
                                 }).then((res: IncomingMessage) => {
-                                   if(res.statusCode !== 200) {
+                                   if (res.statusCode !== 200) {
                                     player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
                                    } else {
                                     let responseInJson = ""
@@ -67,7 +67,7 @@ export class PlayerRegister {
                                         player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
                                         mp.events.call("playerStartPlay", player, playerRegisterData.login, p)
                                     })
-                                
+
                                    }
                                 })
                                 mp.events.call("playerStartPlay", player, playerRegisterData.login)

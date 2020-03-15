@@ -1,4 +1,7 @@
 import { ActivePlayers } from "core/ActivePlayers/ActivePlayers"
+import { HTMLValidator } from "core/DataValidator/HTML/HTMLValidator"
+import { HTMLValidatorFactory } from "core/DataValidator/HTML/HTMLValidatorFactory.js"
+import { IHTMLValidatorFactory } from "core/DataValidator/HTML/IHTMLValidatorFactory.js"
 import { PlayerEmailValidatorFactory } from "core/DataValidator/PlayerEmail/PlayerEmailValidatorFactory"
 import { PlayerLoginValidatorFactory } from "core/DataValidator/PlayerLogin/PlayerLoginValidatorFactory"
 import { XMLFileRequest } from "core/FileRequest/XMLFileRequest"
@@ -74,9 +77,10 @@ const notificationSenderFactory = new NotificationSenderFactory()
 const playerDataLoader = new PlayerDataLoader(playerDataFactory)
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(playerApiManager, playerDataFactory)
-const chat: Chat = new Chat(playerDataFactory, notificationSenderFactory)
-const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const regExpFactory = new RegExpFactory()
+const htmlValidator = new HTMLValidator(regExpFactory)
+const chat: Chat = new Chat(playerDataFactory, notificationSenderFactory, htmlValidator)
+const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const playerEmailValidatorFactory = new PlayerEmailValidatorFactory(regExpFactory)
 const playerLoginValidatorFactory = new PlayerLoginValidatorFactory(regExpFactory)
 const automaticEventDataFactory = new AutomaticEventDataFactory()

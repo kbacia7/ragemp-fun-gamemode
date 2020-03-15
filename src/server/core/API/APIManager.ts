@@ -1,17 +1,17 @@
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import http, { IncomingMessage } from "http"
+import querystring from "querystring"
 import { IAPIManager } from "./IAPIManager"
 import { IAPISetting } from "./IAPISetting"
-import querystring from "querystring"
 
 export class APIManager<T> implements IAPIManager<T> {
     private _apiSetting: IAPISetting = null
     private _promiseFactory: IPromiseFactory<T[]> = null
     private _promiseFactoryForPosts: IPromiseFactory<IncomingMessage> = null
     constructor(
-        promiseFactory: IPromiseFactory<T[]>, 
+        promiseFactory: IPromiseFactory<T[]>,
         promiseFactoryForPosts: IPromiseFactory<IncomingMessage>,
-        apiSetting: IAPISetting
+        apiSetting: IAPISetting,
     ) {
         this._promiseFactory = promiseFactory
         this._promiseFactoryForPosts = promiseFactoryForPosts
@@ -21,17 +21,17 @@ export class APIManager<T> implements IAPIManager<T> {
         return this._promiseFactory.create((resolve) => {
             const options = {
                 hostname: this._apiSetting.host,
+                method: "GET",
+                path,
                 port: this._apiSetting.port,
-                path: path,
-                method: 'GET'
             }
             const r = http.request(options, (res) => {
-                res.on('data', (d: Buffer) => {
+                res.on("data", (d: Buffer) => {
                     const objByType: T = JSON.parse(d.toString())
                     resolve(objByType)
                 })
             })
-            r.on('error', (d) => {
+            r.on("error", (d) => {
                 console.log(d)
             })
             r.end()
@@ -41,22 +41,23 @@ export class APIManager<T> implements IAPIManager<T> {
         return this._promiseFactoryForPosts.create((resolve) => {
             const dataString = querystring.stringify(data)
             const options = {
-                hostname: this._apiSetting.host,
-                port: this._apiSetting.port,
-                path: path,
-                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Content-Length': Buffer.byteLength(dataString)
-                }
+                    "Content-Length": Buffer.byteLength(dataString),
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                hostname: this._apiSetting.host,
+                method: "POST",
+                path,
+                port: this._apiSetting.port,
+
             }
             const r = http.request(options, (res: IncomingMessage) => {
                 resolve(res)
             })
-            r.on('error', (d) => {
+            r.on("error", (d) => {
                 console.log(d)
             })
-            r.write(dataString)    
+            r.write(dataString)
             r.end()
         })
     }

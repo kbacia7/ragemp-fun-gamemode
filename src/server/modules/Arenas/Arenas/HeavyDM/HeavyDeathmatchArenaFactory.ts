@@ -1,14 +1,14 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
+import { HeavyDMArena } from "server/entity/HeavyDMArena"
 import { IArenaData } from "../../IArenaData"
 import { IArenaFactory } from "../../IArenaFactory"
 import { HeavyDeathmatchArena } from "./HeavyDeathmatchArena"
-import { HeavyDMArena } from "server/entity/HeavyDMArena"
-import { IAPIManager } from "server/core/API/IAPIManager"
 
 export class HeavyDeathmatchArenaFactory implements IArenaFactory {
     private _vector3Factory: IVector3Factory = null

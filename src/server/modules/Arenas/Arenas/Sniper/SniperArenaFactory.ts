@@ -1,11 +1,11 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
+import {SniperArena as SniperArenaEntity } from "server/entity/SniperArena"
 import { IArenaData } from "../../IArenaData"
 import { IArenaFactory } from "../../IArenaFactory"
 import { SniperArena } from "./SniperArena"
-import {SniperArena as SniperArenaEntity } from "server/entity/SniperArena"
-import { IAPIManager } from "server/core/API/IAPIManager"
 
 export class SniperArenaFactory implements IArenaFactory {
     private _vector3Factory: IVector3Factory = null

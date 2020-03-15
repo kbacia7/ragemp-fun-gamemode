@@ -4,12 +4,12 @@ import { IPlayerLoginData } from "core/PlayerRegister/IPlayerLoginData"
 import { IPlayerRegiserData } from "core/PlayerRegister/IPlayerRegisterData"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
+import { IncomingMessage } from "http"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
+import { Player } from "server/entity/Player"
 import { IPlayerHashPassword } from "../../core/PlayerHashPassword/IPlayerHashPassword"
 import { IPlayerHashPasswordFactory } from "../../core/PlayerHashPassword/IPlayerHashPasswordFactory"
-import { Player } from "server/entity/Player"
-import { APIRequests } from "server/core/API/APIRequests"
-import { IncomingMessage } from "http"
 
 export class PlayerLogin {
     private _apiManager: IAPIManager<Player> = null
@@ -33,7 +33,7 @@ export class PlayerLogin {
                 this._apiManager.send(APIRequests.PLAYER_LOGIN, {
                     login: playerLoginData.login,
                 }).then((res: IncomingMessage) => {
-                   if(res.statusCode !== 200) {
+                   if (res.statusCode !== 200) {
                     player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
                    } else {
                     let responseInJson = ""
@@ -42,16 +42,15 @@ export class PlayerLogin {
                     })
                     res.on("end", () => {
                         const p: Player = JSON.parse(responseInJson)
-                        if(playerHashPassword.compare(p.password, playerLoginData.password)) {
+                        if (playerHashPassword.compare(p.password, playerLoginData.password)) {
                             player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
                             mp.events.call("playerStartPlay", player, playerLoginData.login, p)
-                        }
-                        else {
+                        } else {
                             player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
                         }
-           
+
                     })
-                
+
                    }
                 })
             }

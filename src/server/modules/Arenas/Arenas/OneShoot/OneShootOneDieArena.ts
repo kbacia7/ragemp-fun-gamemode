@@ -2,6 +2,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -11,7 +12,6 @@ import { OneShootArenaSpawnPoint } from "server/entity/OneShootArenaSpawnPoint"
 import { OneShootArenaWeapon } from "server/entity/OneShootArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class OneShootOneDieArena extends Arena {
     private _apiManager: IAPIManager<OneShootArena> = null
@@ -36,7 +36,7 @@ export class OneShootOneDieArena extends Arena {
 
     public loadArena() {
         this._apiManager.query(APIRequests.ARENA_ONESHOOT).then((arenas: OneShootArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const oneShootArena: OneShootArena = arenas[0]
                 console.log(`Loaded arena: ${oneShootArena.name}`)
                 this._oneShootArena = oneShootArena

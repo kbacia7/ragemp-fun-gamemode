@@ -2,6 +2,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -11,7 +12,6 @@ import { HeavyDMArenaSpawnPoint } from "server/entity/HeavyDMArenaSpawnPoint"
 import { HeavyDMArenaWeapon } from "server/entity/HeavyDMArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class HeavyDeathmatchArena extends Arena {
     private _apiManager: IAPIManager<HeavyDMArena> = null
@@ -36,7 +36,7 @@ export class HeavyDeathmatchArena extends Arena {
 
     public loadArena() {
         this._apiManager.query(APIRequests.ARENA_HEAVYDM).then((arenas: HeavyDMArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const heavyDmArena: HeavyDMArena = arenas[0]
                 console.log(`Loaded arena: ${heavyDmArena.name}`)
                 this._heavyDmArena = heavyDmArena

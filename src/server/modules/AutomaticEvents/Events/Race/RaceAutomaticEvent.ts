@@ -7,6 +7,7 @@ import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import * as luxon from "luxon"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
@@ -15,6 +16,7 @@ import { INotificationSenderFactory } from "server/core/NotificationSender/INoti
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
 import { RaceArena } from "server/entity/RaceArena"
+import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 import { RaceArenaSpawnPoint } from "server/entity/RaceArenaSpawnPoint"
 import { PlayerQuitEvents } from "server/modules/PlayerSave/PlayerQuitEvents"
 import { PlayerSpawnManagerEvents } from "server/modules/PlayerSpawnManager/PlayerSpawnManagerEvents"
@@ -27,8 +29,6 @@ import { IRaceData } from "./IRaceData"
 import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEventEndPlayerReasons } from "./RaceAutomaticEventEndPlayerReasons"
 import { RaceAutomaticEventPageEvents } from "./RaceAutomaticEventPageEvents"
-import { APIRequests } from "server/core/API/APIRequests"
-import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
     private _apiManager: IAPIManager<RaceArena> = null
@@ -125,7 +125,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._playersRaceData = []
         this._startTime = 0
         this._apiManager.query(APIRequests.EVENT_RACE).then((arenas: RaceArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const raceArena: RaceArena = arenas[0]
                 this._raceArena = raceArena
                 console.log(`Loaded arena: ${raceArena.name}`)

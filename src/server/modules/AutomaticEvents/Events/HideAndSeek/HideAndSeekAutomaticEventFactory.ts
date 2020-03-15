@@ -1,12 +1,12 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
+import { HideAndSeekArena } from "server/entity/HideAndSeekArena"
 import { AutomaticEventFactory } from "../../AutomaticEventFactory"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { HideAndSeekAutomaticEvent } from "./HideAndSeekAutomaticEvent"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { HideAndSeekArena } from "server/entity/HideAndSeekArena"
 
 export class HideAndSeekAutomaticEventFactory implements AutomaticEventFactory {
     private _apiManager: IAPIManager<HideAndSeekArena> = null

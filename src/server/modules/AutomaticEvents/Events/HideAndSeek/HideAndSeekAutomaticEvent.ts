@@ -7,6 +7,7 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -22,7 +23,6 @@ import { AutomaticEventManagerEvents } from "../../AutomaticEventManagerEvents"
 import { AutomaticEventType } from "../../AutomaticEventType"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { HideAndSeekAutomaticEventPageEvents } from "./HideAndSeekAutomaticEventPageEvents"
-import { APIRequests } from "server/core/API/APIRequests"
 export class HideAndSeekAutomaticEvent extends AutomaticEvent {
     private static TIME_TO_HIDE: number = 180000
     private static LOOKING_WEAPON: number = 0x476BF155
@@ -105,7 +105,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
         this._players = []
         this._playersAdded = false
         this._apiManager.query(APIRequests.EVENT_HIDEANDSEEK).then((arenas: HideAndSeekArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const hideAndSeekArena: HideAndSeekArena = arenas[0]
                 console.log(`Loaded arena: ${hideAndSeekArena.name}`)
                 this._hideAndSeekArena = hideAndSeekArena

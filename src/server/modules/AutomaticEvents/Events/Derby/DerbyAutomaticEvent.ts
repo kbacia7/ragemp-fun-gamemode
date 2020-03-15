@@ -6,6 +6,7 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
@@ -24,7 +25,6 @@ import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { DerbyAutomaticEventEndPlayerReasons } from "./DerbyAutomaticEventEndPlayerReasons"
 import { DerbyAutomaticEventPageEvents } from "./DerbyAutomaticEventPageEvents"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class DerbyAutomaticEvent extends AutomaticEvent {
     private _apiManager: IAPIManager<DerbyArena> = null
@@ -92,7 +92,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
         this._players = []
         this._playersAdded = false
         this._apiManager.query(APIRequests.EVENT_DERBY).then((arenas: DerbyArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const derbyArena: DerbyArena = arenas[0]
                 console.log(`Loaded arena: ${derbyArena.name}`)
                 this._derbyArena = derbyArena

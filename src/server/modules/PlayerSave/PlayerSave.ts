@@ -3,10 +3,10 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { PlayerQuitEvents } from "./PlayerQuitEvents"
-import { Player } from "server/entity/Player"
 import { APIRequests } from "server/core/API/APIRequests"
+import { IAPIManager } from "server/core/API/IAPIManager"
+import { Player } from "server/entity/Player"
+import { PlayerQuitEvents } from "./PlayerQuitEvents"
 
 export class PlayerSave {
     constructor(apiManager: IAPIManager<Player>, playerDataFactory: IPlayerDataFactory) {
@@ -16,7 +16,7 @@ export class PlayerSave {
                 apiManager.send(APIRequests.PLAYER_SAVE, {
                     deaths: playerData.deaths,
                     kills: playerData.kills,
-                    ped: playerData.ped
+                    ped: playerData.ped,
                 })
             }
             if (playerData.status === PlayerDataStatus.ON_EVENT) {

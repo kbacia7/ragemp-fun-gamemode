@@ -8,6 +8,8 @@ import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import { WeaponsNames } from "core/WeaponsNames/WeaponsNames"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -23,8 +25,6 @@ import { AutomaticEventType } from "../../AutomaticEventType"
 import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { TeamDeathmatchAutomaticEventPageEvents } from "./TeamDeathmatchAutomaticEventPageEvents"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
     private static MAX_PLAYERS_IN_TEAM: number = 10
@@ -111,7 +111,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         this._nextTeam = 0
         this._playersAdded = false
         this._apiManager.query(APIRequests.EVENT_TDM).then((arenas: TeamDeathmatchArena[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const tdmArena: TeamDeathmatchArena = arenas[0]
                 console.log(`Loaded arena: ${tdmArena.name}`)
                 this._teamDeathmatchArena = tdmArena

@@ -2,6 +2,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
@@ -12,7 +13,6 @@ import { SniperArenaSpawnPoint } from "server/entity/SniperArenaSpawnPoint"
 import { SniperArenaWeapon } from "server/entity/SniperArenaWeapon"
 import { Arena } from "../../Arena"
 import { IArenaData } from "../../IArenaData"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class SniperArena extends Arena {
     private _apiManager: IAPIManager<SniperArenaEntity> = null
@@ -37,7 +37,7 @@ export class SniperArena extends Arena {
 
     public loadArena() {
         this._apiManager.query(APIRequests.ARENA_SNIPER).then((arenas: SniperArenaEntity[]) => {
-            if(arenas.length > 0) {
+            if (arenas.length > 0) {
                 const sniperArena: SniperArenaEntity = arenas[0]
                 console.log(`Loaded arena: ${sniperArena.name}`)
                 this._sniperArena = sniperArena

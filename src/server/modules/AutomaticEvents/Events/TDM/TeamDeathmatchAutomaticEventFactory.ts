@@ -1,15 +1,15 @@
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { ICheckpointFactory } from "server/core/Checkpoint/ICheckpointFactory"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { IVehicleFactory } from "server/core/VehicleFactory/IVehicleFactory"
+import { TeamDeathmatchArena } from "server/entity/TeamDeathmatchArena"
 import { AutomaticEventFactory } from "../../AutomaticEventFactory"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { IAutomaticEventFactory } from "../../IAutomaticEventFactory"
 import { TeamDeathmatchAutomaticEvent } from "./TeamDeathmatchAutomaticEvent"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { TeamDeathmatchArena } from "server/entity/TeamDeathmatchArena"
 
 export class TeamDeathmatchAutomaticEventFactory implements AutomaticEventFactory {
     private _apiManager: IAPIManager<TeamDeathmatchArena> = null

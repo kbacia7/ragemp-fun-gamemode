@@ -2,19 +2,19 @@ import { ChangePlayerPedModuleEvents } from "client/modules/ChangePlayerPedModul
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import random from "random"
+import { APIRequests } from "server/core/API/APIRequests"
+import { IAPIManager } from "server/core/API/IAPIManager"
 import { Dimension } from "server/core/Dimension/Dimension"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { PlayerSpawn } from "server/entity/PlayerSpawn"
 import { PlayerSpawnManagerEvents } from "./PlayerSpawnManagerEvents"
-import { IAPIManager } from "server/core/API/IAPIManager"
-import { APIRequests } from "server/core/API/APIRequests"
 
 export class PlayerSpawnManager {
     private _spawns: PlayerSpawn[] = []
     constructor(
-        apiManager: IAPIManager<PlayerSpawn>, 
-        vector3Factory: IVector3Factory, 
-        playerDataFactory: IPlayerDataFactory
+        apiManager: IAPIManager<PlayerSpawn>,
+        vector3Factory: IVector3Factory,
+        playerDataFactory: IPlayerDataFactory,
     ) {
         apiManager.query(APIRequests.PLAYER_SPAWN).then((spawns: PlayerSpawn[]) => {
             this._spawns = spawns

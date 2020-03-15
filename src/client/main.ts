@@ -34,3 +34,4 @@ const changePlayerPedModule = new ChangePlayerPedModule(promiseBooleanFactory)
 const commandListenerModule = new CommandListenerModule(promiseBooleanFactory, activePlayersTableModuleFactory)
 notificationsModule.loadUI()
 mp.gui.chat.colors = true
+mp.gui.chat.safeMode = false
