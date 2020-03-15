@@ -27,6 +27,8 @@ import { IRaceData } from "./IRaceData"
 import { IRaceDataFactory } from "./IRaceDataFactory"
 import { RaceAutomaticEventEndPlayerReasons } from "./RaceAutomaticEventEndPlayerReasons"
 import { RaceAutomaticEventPageEvents } from "./RaceAutomaticEventPageEvents"
+import { APIRequests } from "server/core/API/APIRequests"
+import { RaceArenaCheckpoint } from "server/entity/RaceArenaCheckpoint"
 export class RaceAutomaticEvent extends AutomaticEvent {
     private static MAX_WINNERS: number = 3
     private _apiManager: IAPIManager<RaceArena> = null
@@ -122,65 +124,51 @@ export class RaceAutomaticEvent extends AutomaticEvent {
         this._winners = RaceAutomaticEvent.MAX_WINNERS
         this._playersRaceData = []
         this._startTime = 0
-        console.log("Load arena " + this._id)
-        /*RaceArena.query()
-            .select()
-            .orderByRaw("RAND()")
-            .limit(1)
-            .then((raceArenas: RaceArena[]) => {
-                if (raceArenas.length > 0) {
-                    const raceArena: RaceArena = raceArenas[0]
-                    console.log(`Loaded arena: ${raceArena.name}`)
-                    raceArena
-                        .$relatedQuery("checkpoints")
-                        .orderBy("id", "ASC")
-                        .then((raceArenaCheckpoints: RaceArenaCheckpoint[]) => {
-                            const checkpointColor: [number, number, number, number] = [
-                                Math.floor(Math.random() * 255) + 1,
-                                Math.floor(Math.random() * 255) + 1,
-                                Math.floor(Math.random() * 255) + 1,
-                                255,
-                            ]
-                            console.log("Loaded checkpoints: " + raceArenaCheckpoints.length)
-                            let index = 0
-                            raceArenaCheckpoints.forEach((raceArenaCheckpoint: RaceArenaCheckpoint) => {
-                                let nextPosition: Vector3Mp = null
-                                const nextIndex = index + 1
-                                if (raceArenaCheckpoints[nextIndex]) {
-                                    nextPosition = this._vector3Factory.create(
-                                        raceArenaCheckpoints[nextIndex].x,
-                                        raceArenaCheckpoints[nextIndex].y,
-                                        raceArenaCheckpoints[nextIndex].z,
-                                    )
-                                }
-                                const checkpointType = (nextPosition) ? 2 : 4
-                                const thisCheckpointVector: Vector3Mp = this._vector3Factory.create(
-                                    raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
-                                )
-                                this._checkpoints.push(
-                                    this._checkpointFactory.create(
-                                        checkpointType, thisCheckpointVector, 10, nextPosition,
-                                        checkpointColor, false, this._eventDimension,
-                                    ),
-                                )
-                                this._blips.push(
-                                    this._blipFactory.create(
-                                        103, thisCheckpointVector, undefined, undefined, undefined, undefined,
-                                        undefined, undefined, undefined, this._eventDimension,
-                                    ),
-                                )
-                                index++
-                            })
-                        })
-                    raceArena
-                        .$relatedQuery("spawns")
-                        .then((raceArenaSpawns: RaceArenaSpawnPoint[]) => {
-                            console.log("Max players on arena: " + raceArenaSpawns.length)
-                            this._raceArenaSpawns = raceArenaSpawns
-                        })
-                    this._raceArena = raceArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.EVENT_RACE).then((arenas: RaceArena[]) => {
+            if(arenas.length > 0) {
+                const raceArena: RaceArena = arenas[0]
+                this._raceArena = raceArena
+                console.log(`Loaded arena: ${raceArena.name}`)
+                console.log("Max players on arena: " + raceArena.spawns.length)
+                console.log("Loaded checkpoints: " + raceArena.checkpoints.length)
+
+                const checkpointColor: [number, number, number, number] = [
+                    Math.floor(Math.random() * 255) + 1,
+                    Math.floor(Math.random() * 255) + 1,
+                    Math.floor(Math.random() * 255) + 1,
+                    255,
+                ]
+                let index = 0
+                raceArena.checkpoints.forEach((raceArenaCheckpoint: RaceArenaCheckpoint) => {
+                    let nextPosition: Vector3Mp = null
+                    const nextIndex = index + 1
+                    if (raceArena.checkpoints[nextIndex]) {
+                        nextPosition = this._vector3Factory.create(
+                            raceArena.checkpoints[nextIndex].x,
+                            raceArena.checkpoints[nextIndex].y,
+                            raceArena.checkpoints[nextIndex].z,
+                        )
+                    }
+                    const checkpointType = (nextPosition) ? 2 : 4
+                    const thisCheckpointVector: Vector3Mp = this._vector3Factory.create(
+                        raceArenaCheckpoint.x, raceArenaCheckpoint.y, raceArenaCheckpoint.z,
+                    )
+                    this._checkpoints.push(
+                        this._checkpointFactory.create(
+                            checkpointType, thisCheckpointVector, 10, nextPosition,
+                            checkpointColor, false, this._eventDimension,
+                        ),
+                    )
+                    this._blips.push(
+                        this._blipFactory.create(
+                            103, thisCheckpointVector, undefined, undefined, undefined, undefined,
+                            undefined, undefined, undefined, this._eventDimension,
+                        ),
+                    )
+                    index++
+                })
+            }
+        })
     }
 
     public start() {

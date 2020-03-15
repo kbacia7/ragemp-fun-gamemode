@@ -22,6 +22,7 @@ import { AutomaticEventManagerEvents } from "../../AutomaticEventManagerEvents"
 import { AutomaticEventType } from "../../AutomaticEventType"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { HideAndSeekAutomaticEventPageEvents } from "./HideAndSeekAutomaticEventPageEvents"
+import { APIRequests } from "server/core/API/APIRequests"
 export class HideAndSeekAutomaticEvent extends AutomaticEvent {
     private static TIME_TO_HIDE: number = 180000
     private static LOOKING_WEAPON: number = 0x476BF155
@@ -103,22 +104,13 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
         this._eventDimension++
         this._players = []
         this._playersAdded = false
-        /*HideAndSeekArena.query()
-            .select()
-            .orderByRaw("RAND()")
-            .limit(1)
-            .then((hideAndSeekArenas: HideAndSeekArena[]) => {
-                if (hideAndSeekArenas.length > 0) {
-                    const hideAndSeekArena: HideAndSeekArena = hideAndSeekArenas[0]
-                    console.log(`Loaded arena: ${hideAndSeekArena.name}`)
-                    hideAndSeekArena
-                        .$relatedQuery("spawns")
-                        .then((hideAndSeekArenaSpawns: HideAndSeekArenaSpawnPoint[]) => {
-                            this._hideAndSeekArenaSpawns = hideAndSeekArenaSpawns
-                        })
-                    this._hideAndSeekArena = hideAndSeekArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.EVENT_HIDEANDSEEK).then((arenas: HideAndSeekArena[]) => {
+            if(arenas.length > 0) {
+                const hideAndSeekArena: HideAndSeekArena = arenas[0]
+                console.log(`Loaded arena: ${hideAndSeekArena.name}`)
+                this._hideAndSeekArena = hideAndSeekArena
+            }
+        })
     }
 
     public start() {

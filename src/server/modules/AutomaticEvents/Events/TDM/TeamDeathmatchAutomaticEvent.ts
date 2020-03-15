@@ -24,6 +24,7 @@ import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { TeamDeathmatchAutomaticEventPageEvents } from "./TeamDeathmatchAutomaticEventPageEvents"
 import { IAPIManager } from "server/core/API/IAPIManager"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
     private static MAX_PLAYERS_IN_TEAM: number = 10
@@ -109,36 +110,13 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         this._teams = 0
         this._nextTeam = 0
         this._playersAdded = false
-        /*TeamDeathmatchArena.query()
-            .select()
-            .orderByRaw("RAND()")
-            .limit(1)
-            .then((tdmArenas: TeamDeathmatchArena[]) => {
-                if (tdmArenas.length > 0) {
-                    const tdmArena: RaceArena = tdmArenas[0]
-                    console.log(`Loaded arena: ${tdmArena.name}`)
-                    tdmArena
-                        .$relatedQuery("weapons")
-                        .orderBy("id", "ASC")
-                        .then((tdmArenaWeapons: TeamDeathmatchArenaWeapon[]) => {
-                            this._teamDeathmatchArenaWeapons = tdmArenaWeapons
-                            console.log("Loaded weapons: " + tdmArenaWeapons.length)
-                        })
-
-                    tdmArena
-                        .$relatedQuery("spawns")
-                        .then((teamDeathmatchArenaSpawns: TeamDeathmatchArenaSpawnPoint[]) => {
-                            console.log("Max players on arena: " + teamDeathmatchArenaSpawns.length)
-                            this._teamDeathmatchArenaSpawns[0] = teamDeathmatchArenaSpawns.filter((tdmArenaSpawn) =>  {
-                                return tdmArenaSpawn.team === 1
-                            })
-                            this._teamDeathmatchArenaSpawns[1] = teamDeathmatchArenaSpawns.filter((tdmArenaSpawn) =>  {
-                                return tdmArenaSpawn.team === 2
-                            })
-                        })
-                    this._teamDeathmatchArena = tdmArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.EVENT_TDM).then((arenas: TeamDeathmatchArena[]) => {
+            if(arenas.length > 0) {
+                const tdmArena: TeamDeathmatchArena = arenas[0]
+                console.log(`Loaded arena: ${tdmArena.name}`)
+                this._teamDeathmatchArena = tdmArena
+            }
+        })
     }
 
     public start() {

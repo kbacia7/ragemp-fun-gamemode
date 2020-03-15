@@ -24,6 +24,7 @@ import { IAutomaticEvent } from "../../IAutomaticEvent"
 import { IAutomaticEventData } from "../../IAutomaticEventData"
 import { DerbyAutomaticEventEndPlayerReasons } from "./DerbyAutomaticEventEndPlayerReasons"
 import { DerbyAutomaticEventPageEvents } from "./DerbyAutomaticEventPageEvents"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class DerbyAutomaticEvent extends AutomaticEvent {
     private _apiManager: IAPIManager<DerbyArena> = null
@@ -90,23 +91,13 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
         this._loadedPlayers = 0
         this._players = []
         this._playersAdded = false
-       /* DerbyArena.query()
-            .select()
-            .orderByRaw("RAND()")
-            .limit(1)
-            .then((derbyArenas: DerbyArena[]) => {
-                if (derbyArenas.length > 0) {
-                    const derbyArena: DerbyArena = derbyArenas[0]
-                    console.log(`Loaded arena: ${derbyArena.name}`)
-                    derbyArena
-                        .$relatedQuery("spawns")
-                        .then((derbyArenaSpawns: DerbyArenaSpawnPoint[]) => {
-                            console.log("Max players on arena: " + derbyArenaSpawns.length)
-                            this._derbyArenaSpawns = derbyArenaSpawns
-                        })
-                    this._derbyArena = derbyArena
-                }
-            })*/
+        this._apiManager.query(APIRequests.EVENT_DERBY).then((arenas: DerbyArena[]) => {
+            if(arenas.length > 0) {
+                const derbyArena: DerbyArena = arenas[0]
+                console.log(`Loaded arena: ${derbyArena.name}`)
+                this._derbyArena = derbyArena
+            }
+        })
     }
 
     public start() {
