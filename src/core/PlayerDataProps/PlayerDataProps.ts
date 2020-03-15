@@ -1,5 +1,6 @@
 export enum PlayerDataProps {
     RANK = "rank",
+    RANK_NAME = "rankName",
     KILLS = "kills",
     DEATHS = "deaths",
     STATUS = "status",

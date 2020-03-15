@@ -1,10 +1,12 @@
+import { Rank } from "server/entity/Rank"
 import { ArenaType } from "server/modules/Arenas/ArenaType"
 import { AutomaticEventType } from "server/modules/AutomaticEvents/AutomaticEventType"
 import { PlayerDataStatus } from "./PlayerDataStatus"
 
 export interface IPlayerData {
     id: number,
-    rank: string,
+    rank: Rank,
+    rankName: string,
     kills: number,
     deaths: number,
     status: PlayerDataStatus,

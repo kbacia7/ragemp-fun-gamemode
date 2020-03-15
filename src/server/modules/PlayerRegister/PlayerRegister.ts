@@ -54,7 +54,6 @@ export class PlayerRegister {
                                 player.call(PlayerRegisterEvent.CREATED)
                                 this._apiManager.send(APIRequests.PLAYER_LOGIN, {
                                     login: playerRegisterData.login,
-                                    password: playerHashPassword.hash(playerRegisterData.password)
                                 }).then((res: IncomingMessage) => {
                                    if(res.statusCode !== 200) {
                                     player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)

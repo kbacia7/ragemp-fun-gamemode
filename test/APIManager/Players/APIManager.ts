@@ -156,7 +156,7 @@ describe("APIManager", () => {
             })
         })
 
-        it("should create new player, login him, return data (with 0 deaths) and code 200", () => {
+        it("should create new player, login him, return data (with 0 deaths and rank) and code 200", () => {
             const apiSetting: IAPISetting = {
                 host: 'localhost',
                 port: 8000
@@ -179,7 +179,6 @@ describe("APIManager", () => {
                     assert.equal(parseInt(response), PlayerSaveResponses.ALL_OK)
                     const dataForLogin = {
                         login: "ooo",
-                        password: "bbb"
                     }
                     return apiManager.send(APIRequests.PLAYER_LOGIN, dataForLogin).then((res: IncomingMessage) => {
                         let responseInJson = ""
@@ -189,6 +188,7 @@ describe("APIManager", () => {
                         res.on("end", () => {
                             const p: Player = JSON.parse(responseInJson)
                             assert.equal(p.deaths, 0)
+                            assert.notEqual(p.rank.name, "")
                         })
                         assert.equal(res.statusCode, 200)
                     })
@@ -252,7 +252,7 @@ describe("APIManager", () => {
             
         })
 
-        it("should create new player, login him and return code 422 (due to incorrect login/password)", () => {
+        it("should create new player, login him and return code 422 (due to empty login)", () => {
             const apiSetting: IAPISetting = {
                 host: 'localhost',
                 port: 8000
@@ -268,8 +268,6 @@ describe("APIManager", () => {
             return apiManager.send(APIRequests.PLAYER_REGISTER, data).then((res: IncomingMessage) => {
                 assert.equal(res.statusCode, 200)
                 const dataForLogin = {
-                    login: "ooo",
-                    password: "aaa"
                 }
                 apiManager.send(APIRequests.PLAYER_LOGIN, dataForLogin).then((res: IncomingMessage) => {
                     assert.equal(res.statusCode, 422)
