@@ -16,6 +16,7 @@ import { IArenaData } from "./IArenaData"
 import { IArenaDataFactory } from "./IArenaDataFactory"
 import { IArenaFactory } from "./IArenaFactory"
 import { Setting } from "server/entity/Setting"
+import { APIRequests } from "server/core/API/APIRequests"
 
 export class ArenaManager {
     private _apiManager: IAPIManager<Setting> = null
@@ -39,29 +40,26 @@ export class ArenaManager {
 
         arenasList.forEach((arenaName: string) => {
             this._playersOnArena[arenaName] = []
-            /*Setting.query()
-                .select()
-                .where("name", "LIKE", `${arenaName}_%`)
-                .then((settingsFromDb: Setting[]) => {
-                    if (settingsFromDb.length > 0) {
-                        console.log(`Load settings for ${arenaName} arena ${settingsFromDb.length}`)
-                        const mappedSettingsByName: { [name: string]: string } = Object.assign(
-                            {},
-                            ...(settingsFromDb.map((item) => ({ [item.name]: item.value }))),
-                        )
-                        const arenaData: IArenaData = arenaDataFactory.create(
-                            arenaName,
-                            mappedSettingsByName[`${arenaName}_display_name`],
-                            mappedNamesToTypes[arenaName],
-                            0,
-                            parseInt(mappedSettingsByName[`${arenaName}_max_players`], 10),
-                        )
-                        this._arenas[arenaName] =  mappedNamesToFactories[arenaName].create(
-                            arenaData,
-                        )
-                        this._arenas[arenaName].loadArena()
-                    }
-                })*/
+            this._apiManager.query(`${APIRequests.SETTINGS_PREFIX}/${arenaName}/`).then((settings: Setting[]) => {
+                if (settings.length > 0) {
+                    console.log(`Load settings for ${arenaName} arena ${settings.length}`)
+                    const mappedSettingsByName: { [name: string]: string } = Object.assign(
+                        {},
+                        ...(settings.map((item) => ({ [item.name]: item.value }))),
+                    )
+                    const arenaData: IArenaData = arenaDataFactory.create(
+                        arenaName,
+                        mappedSettingsByName[`${arenaName}_display_name`],
+                        mappedNamesToTypes[arenaName],
+                        0,
+                        parseInt(mappedSettingsByName[`${arenaName}_max_players`], 10),
+                    )
+                    this._arenas[arenaName] =  mappedNamesToFactories[arenaName].create(
+                        arenaData,
+                    )
+                    this._arenas[arenaName].loadArena()
+                }
+            })
         })
 
         mp.events.add(ArenaManagerEvents.GET_ARENAS, (playerMp: PlayerMp) => {
