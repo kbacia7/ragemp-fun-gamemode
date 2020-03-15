@@ -7,6 +7,7 @@ import { InternationalizationSettings } from "core/i18n/InternationalizationSett
 import { PlayerDataFactory } from "core/PlayerDataProps/PlayerDataFactory"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
+import { IncomingMessage } from "http"
 import _ from "lodash"
 import config from "./config.json"
 import { APIManager } from "./core/API/APIManager"
@@ -18,6 +19,17 @@ import { NotificationSenderFactory } from "./core/NotificationSender/Notificatio
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
 import { Vector3Factory } from "./core/Vector3Factory/Vector3Factory"
 import { VehicleFactory } from "./core/VehicleFactory/VehicleFactory"
+import { DerbyArena } from "./entity/DerbyArena"
+import { DMArena } from "./entity/DMArena"
+import { HeavyDMArena } from "./entity/HeavyDMArena"
+import { HideAndSeekArena } from "./entity/HideAndSeekArena"
+import { OneShootArena } from "./entity/OneShootArena"
+import { Player } from "./entity/Player"
+import { PlayerSpawn } from "./entity/PlayerSpawn"
+import { RaceArena } from "./entity/RaceArena"
+import { Setting } from "./entity/Setting"
+import { SniperArena } from "./entity/SniperArena"
+import { TeamDeathmatchArena } from "./entity/TeamDeathmatchArena"
 import { ArenaDataFactory } from "./modules/Arenas/ArenaDataFactory"
 import { ArenaManager } from "./modules/Arenas/ArenaManager"
 import { DeathmatchArenaFactory } from "./modules/Arenas/Arenas/DM/DeathmatchArenaFactory"
@@ -49,24 +61,14 @@ import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
-import { RaceArena } from "./entity/RaceArena"
-import { TeamDeathmatchArena } from "./entity/TeamDeathmatchArena"
-import { DerbyArena } from "./entity/DerbyArena"
-import { HideAndSeekArena } from "./entity/HideAndSeekArena"
-import { DMArena } from "./entity/DMArena"
-import { HeavyDMArena } from "./entity/HeavyDMArena"
-import { SniperArena } from "./entity/SniperArena"
-import { OneShootArena } from "./entity/OneShootArena"
-import { Player } from "./entity/Player"
-import { Setting } from "./entity/Setting"
-import { PlayerSpawn } from "./entity/PlayerSpawn"
 
 declare const _VERSION_: any
 console.log(`Script version: ${_VERSION_}`)
 
 const apiSetting: IAPISetting = config
-const playerPromiseFactory = new PromiseFactory<Player>()
-const playerApiManager = new APIManager<Player>(playerPromiseFactory, apiSetting)
+const playerPromiseFactory = new PromiseFactory<Player[]>()
+const promiseForApiPosts = new PromiseFactory<IncomingMessage>()
+const playerApiManager = new APIManager<Player>(playerPromiseFactory, promiseForApiPosts, apiSetting)
 const playerDataFactory = new PlayerDataFactory()
 const notificationSenderFactory = new NotificationSenderFactory()
 const playerDataLoader = new PlayerDataLoader(playerDataFactory)
@@ -84,11 +86,10 @@ const checkpointFactory = new CheckpointFactory()
 const blipFactory = new BlipFactory()
 const vector3Factory = new Vector3Factory()
 const raceDataFactory = new RaceDataFactory()
-
-const playerSpawnPromiseFactory = new PromiseFactory<PlayerSpawn>()
-const playerSpawnApiManager = new APIManager<PlayerSpawn>(playerSpawnPromiseFactory, apiSetting)
+const playerSpawnPromiseFactory = new PromiseFactory<PlayerSpawn[]>()
+const playerSpawnApiManager = new APIManager<PlayerSpawn>(playerSpawnPromiseFactory, promiseForApiPosts, apiSetting)
 const playerSpawnManager: PlayerSpawnManager = new PlayerSpawnManager(
-   playerSpawnApiManager, vector3Factory, playerDataFactory
+   playerSpawnApiManager, vector3Factory, playerDataFactory,
 )
 
 const playerHashPasswordFactory = new PlayerHashPasswordFactory()
@@ -110,8 +111,8 @@ const allCommands: ICommand[] = [
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
 ]
-const racePromiseFactory = new PromiseFactory<RaceArena>()
-const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, apiSetting)
+const racePromiseFactory = new PromiseFactory<RaceArena[]>()
+const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)
 
 const commandExecutor = new CommandExecutor(playerDataFactory)
 const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
@@ -119,45 +120,47 @@ const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
    notificationSenderFactory, playerDataFactory, raceDataFactory,
 )
 
-const tdmPromiseFactory = new PromiseFactory<TeamDeathmatchArena>()
-const tdmApiManager = new APIManager<TeamDeathmatchArena>(tdmPromiseFactory, apiSetting)
+const tdmPromiseFactory = new PromiseFactory<TeamDeathmatchArena[]>()
+const tdmApiManager = new APIManager<TeamDeathmatchArena>(tdmPromiseFactory, promiseForApiPosts, apiSetting)
 const tdmAutomaticEventFactory = new TeamDeathmatchAutomaticEventFactory(
    tdmApiManager, vector3Factory, blipFactory,
    notificationSenderFactory, playerDataFactory,
 )
 
-const derbyPromiseFactory = new PromiseFactory<DerbyArena>()
-const derbyApiManager = new APIManager<DerbyArena>(derbyPromiseFactory, apiSetting)
+const derbyPromiseFactory = new PromiseFactory<DerbyArena[]>()
+const derbyApiManager = new APIManager<DerbyArena>(derbyPromiseFactory, promiseForApiPosts, apiSetting)
 const derbyAutomaticEventFactory = new DerbyAutomaticEventFactory(
    derbyApiManager, vehicleFactory, vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
-const hideAndSeekPromiseFactory = new PromiseFactory<HideAndSeekArena>()
-const hideAndSeekApiManager = new APIManager<HideAndSeekArena>(hideAndSeekPromiseFactory, apiSetting)
+const hideAndSeekPromiseFactory = new PromiseFactory<HideAndSeekArena[]>()
+const hideAndSeekApiManager = new APIManager<HideAndSeekArena>(
+   hideAndSeekPromiseFactory, promiseForApiPosts, apiSetting,
+)
 const hideAndSeekAutomaticEventFactory = new HideAndSeekAutomaticEventFactory(
    hideAndSeekApiManager, vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
-const deathmatchPromiseFactory = new PromiseFactory<DMArena>()
-const deathmatchApiManager = new APIManager<DMArena>(deathmatchPromiseFactory, apiSetting)
+const deathmatchPromiseFactory = new PromiseFactory<DMArena[]>()
+const deathmatchApiManager = new APIManager<DMArena>(deathmatchPromiseFactory, promiseForApiPosts, apiSetting)
 const deathmatchArenaFactory = new DeathmatchArenaFactory(
    deathmatchApiManager, vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
-const heavyDMPromiseFactory = new PromiseFactory<HeavyDMArena>()
-const heavyDMApiManager = new APIManager<HeavyDMArena>(heavyDMPromiseFactory, apiSetting)
+const heavyDMPromiseFactory = new PromiseFactory<HeavyDMArena[]>()
+const heavyDMApiManager = new APIManager<HeavyDMArena>(heavyDMPromiseFactory, promiseForApiPosts, apiSetting)
 const heavyDeathmatchArenaFactory = new HeavyDeathmatchArenaFactory(
    heavyDMApiManager, vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
-const sniperPromiseFactory = new PromiseFactory<SniperArena>()
-const sniperApiManager = new APIManager<SniperArena>(sniperPromiseFactory, apiSetting)
+const sniperPromiseFactory = new PromiseFactory<SniperArena[]>()
+const sniperApiManager = new APIManager<SniperArena>(sniperPromiseFactory, promiseForApiPosts, apiSetting)
 const sniperArenaFactory = new SniperArenaFactory(
    sniperApiManager, vector3Factory, notificationSenderFactory, playerDataFactory,
 )
 
-const oneShootPromiseFactory = new PromiseFactory<OneShootArena>()
-const oneShootApiManager = new APIManager<OneShootArena>(oneShootPromiseFactory, apiSetting)
+const oneShootPromiseFactory = new PromiseFactory<OneShootArena[]>()
+const oneShootApiManager = new APIManager<OneShootArena>(oneShootPromiseFactory, promiseForApiPosts, apiSetting)
 const oneShootArenaFactory = new OneShootOneDieArenaFactory(
    oneShootApiManager, vector3Factory, notificationSenderFactory, playerDataFactory,
 )
@@ -176,8 +179,8 @@ const mappedArenasToTypes = {
    sniper: ArenaType.SNIPER,
 }
 
-const settingPromiseFactory = new PromiseFactory<Setting>()
-const settingApiManager = new APIManager<Setting>(settingPromiseFactory, apiSetting)
+const settingPromiseFactory = new PromiseFactory<Setting[]>()
+const settingApiManager = new APIManager<Setting>(settingPromiseFactory, promiseForApiPosts, apiSetting)
 
 const arenaManager = new ArenaManager(
    settingApiManager, notificationSenderFactory,
