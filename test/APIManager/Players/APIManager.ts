@@ -156,7 +156,7 @@ describe("APIManager", () => {
             })
         })
 
-        it("should create new player, login him and return code 200", () => {
+        it("should create new player, login him, return data (with 0 deaths) and code 200", () => {
             const apiSetting: IAPISetting = {
                 host: 'localhost',
                 port: 8000
@@ -175,13 +175,21 @@ describe("APIManager", () => {
                 res.on('data', (chunk) => {
                     response += chunk
                 })
-                res.on("end", () => {
+                return res.on("end", () => {
                     assert.equal(parseInt(response), PlayerSaveResponses.ALL_OK)
                     const dataForLogin = {
                         login: "ooo",
                         password: "bbb"
                     }
-                    apiManager.send(APIRequests.PLAYER_LOGIN, dataForLogin).then((res: IncomingMessage) => {
+                    return apiManager.send(APIRequests.PLAYER_LOGIN, dataForLogin).then((res: IncomingMessage) => {
+                        let responseInJson = ""
+                        res.on("data", (chunk) => {
+                            responseInJson += chunk
+                        })
+                        res.on("end", () => {
+                            const p: Player = JSON.parse(responseInJson)
+                            assert.equal(p.deaths, 0)
+                        })
                         assert.equal(res.statusCode, 200)
                     })
                 })
