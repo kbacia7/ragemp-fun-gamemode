@@ -28,7 +28,7 @@ const emailValidator = new PlayerEmailValidator(regExpFactory)
 const loginValidator = new PlayerLoginValidator(regExpFactory)
 const passwordValidator = new PlayerPasswordValidator()
 $(document).ready(() => {
-    i18nTranslator.loadTranslations("translations")
+    i18nTranslator.loadTranslations("/translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
       element.innerText =   i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
     })

@@ -15,7 +15,7 @@ const xmlFileRequest = new XMLFileRequest(promiseFactory)
 const internationalizationSettings = new InternationalizationSettings("pl_PL")
 const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
 $(document).ready(() => {
-    i18nTranslator.loadTranslations("translations")
+    i18nTranslator.loadTranslations("/translations")
 })
 
 const _global: any = (window || global) as any

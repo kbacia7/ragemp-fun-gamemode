@@ -7,7 +7,6 @@ const MergeJsonWebpackPlugin = require("merge-jsons-webpack-plugin")
 const CopyPlugin = require('copy-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const TerserPlugin = require('terser-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const childProcess = require('child_process')
 const versionString = childProcess.execSync('git rev-parse --short HEAD').toString().trim()
 
@@ -151,11 +150,25 @@ const configClient = {
    },
    plugins: [
       new CopyPlugin([
-         {from: './src/client/ui', to: './client_packages/ui', ignore: ['*.less', '*.ts']},
+         {from: './src/client/ui', to: './client_packages/ui', ignore: ['*.less', '*.ts', '*/translations/**/*']},
          {from: './assets', to: './client_packages/ui/assets'}
       ]),
       new webpack.DefinePlugin({
          _VERSION_: `"${require("./package.json").codeNameVersion} build ${versionString}"`
+      }),
+      new MergeJsonWebpackPlugin({
+         "encoding": "utf-8",
+         "output": {
+            "groupBy": [
+                  {
+                     "pattern": "./src/client/ui/**/translations/pl_PL.json", 
+                     "fileName": "./client_packages/ui/translations/pl_PL.json" 
+                  },
+            ]
+         },
+         "globOptions": {
+            "nosort": true
+         }
       })
    ]
 };
