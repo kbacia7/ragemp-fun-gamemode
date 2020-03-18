@@ -32,7 +32,7 @@ export class PlayerPlayAsGuest {
                         responseAsString += chunk
                     })
                     res.on("end", () => {
-                        const response: number = parseInt(responseAsString)
+                        const response: number = parseInt(responseAsString, 10)
                         switch (response) {
                             case PlayerPlayAsGuestResponses.ALL_OK: {
                                 player.call(PlayerRegisterEvent.PLAY_AS_GUEST_SUCCESS)
