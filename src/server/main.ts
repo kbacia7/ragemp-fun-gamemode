@@ -1,7 +1,11 @@
 import { ActivePlayers } from "core/ActivePlayers/ActivePlayers"
+import { ChatSpecialTabs } from "core/Chat/ChatSpecialTabs"
+import { EmojiList } from "core/Chat/EmojiList/EmojiList"
+import { HTMLEscapeCharacters } from "core/Chat/Escape/EscapeCharacters"
+import { ChatMessageValidator } from "core/DataValidator/ChatMessage/ChatMessageValidator"
 import { HTMLValidator } from "core/DataValidator/HTML/HTMLValidator"
-import { HTMLValidatorFactory } from "core/DataValidator/HTML/HTMLValidatorFactory.js"
-import { IHTMLValidatorFactory } from "core/DataValidator/HTML/IHTMLValidatorFactory.js"
+import { HTMLValidatorFactory } from "core/DataValidator/HTML/HTMLValidatorFactory"
+import { IHTMLValidatorFactory } from "core/DataValidator/HTML/IHTMLValidatorFactory"
 import { PlayerEmailValidatorFactory } from "core/DataValidator/PlayerEmail/PlayerEmailValidatorFactory"
 import { PlayerLoginValidatorFactory } from "core/DataValidator/PlayerLogin/PlayerLoginValidatorFactory"
 import { XMLFileRequest } from "core/FileRequest/XMLFileRequest"
@@ -12,6 +16,7 @@ import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
 import { IncomingMessage } from "http"
 import _ from "lodash"
+import {  Settings } from "luxon"
 import config from "./config.json"
 import { APIManager } from "./core/API/APIManager"
 import { IAPISetting } from "./core/API/IAPISetting"
@@ -52,6 +57,9 @@ import {
 } from "./modules/AutomaticEvents/Events/TDM/TeamDeathmatchAutomaticEventFactory"
 import { IAutomaticEventData } from "./modules/AutomaticEvents/IAutomaticEventData"
 import { Chat } from "./modules/Chat/Chat"
+import { GlobalTabSender } from "./modules/Chat/Senders/GlobalTabSender"
+import { LocalTabSender } from "./modules/Chat/Senders/LocalTabSender"
+import { NotificationTabSender } from "./modules/Chat/Senders/NotificationTabSender"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
 import { ICommand } from "./modules/Commands/ICommand"
@@ -73,13 +81,24 @@ const playerPromiseFactory = new PromiseFactory<Player[]>()
 const promiseForApiPosts = new PromiseFactory<IncomingMessage>()
 const playerApiManager = new APIManager<Player>(playerPromiseFactory, promiseForApiPosts, apiSetting)
 const playerDataFactory = new PlayerDataFactory()
-const notificationSenderFactory = new NotificationSenderFactory()
+const notificationTabSender = new NotificationTabSender()
+const notificationSenderFactory = new NotificationSenderFactory(notificationTabSender)
 const playerDataLoader = new PlayerDataLoader(playerDataFactory)
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(playerApiManager, playerDataFactory)
 const regExpFactory = new RegExpFactory()
 const htmlValidator = new HTMLValidator(regExpFactory)
-const chat: Chat = new Chat(playerDataFactory, notificationSenderFactory, htmlValidator, regExpFactory)
+const chatMessageValidator = new ChatMessageValidator(regExpFactory)
+const htmlEscapeCharacters = new HTMLEscapeCharacters()
+const emojiList = new EmojiList(regExpFactory)
+const injectedSendersForTabs = {
+   [ChatSpecialTabs.GLOBAL]: new GlobalTabSender(),
+   [ChatSpecialTabs.LOCAL]: new LocalTabSender(),
+}
+const chat: Chat = new Chat(
+   playerDataFactory, notificationSenderFactory, htmlValidator,
+   chatMessageValidator, htmlEscapeCharacters, emojiList, injectedSendersForTabs,
+)
 const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const playerEmailValidatorFactory = new PlayerEmailValidatorFactory(regExpFactory)
 const playerLoginValidatorFactory = new PlayerLoginValidatorFactory(regExpFactory)

@@ -1,0 +1,75 @@
+@import "../style.less";
+
+#chat-summary {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    .nav-item a {
+        color: #fff;
+    }
+}
+
+#chat {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 45%;
+    height: 28%;
+
+    .nav-item {
+        position: relative;
+        &:not(.disallow-sort) a {
+            color: #fff;
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+    
+            .active {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .disallow-sort {
+        color: #fff;
+    }
+
+    &-bottom-line {
+        margin: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    &-input {
+        background-color: #060606;
+        color: #fff;
+    }
+    
+    &-tab-sample {
+        display: none;    
+    }
+
+    .chat-active-tab {
+        font-weight: bold;
+    }
+    
+    .chat-content {
+        max-height: 85%;
+        height: 85%;
+        word-break: break-all;
+        overflow: hidden;
+
+        .chat-scrollable-content {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        
+        .message {
+            color: #fff;
+            margin:0;
+            margin-left: 0.5em;
+        }
+
+        .message-example {
+            display: none;
+        }
+    }
+
+
+}

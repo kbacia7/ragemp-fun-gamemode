@@ -1,63 +1,50 @@
+import { ChatModuleServerEvent } from "core/Chat/ChatModuleServerEvent"
+import { ChatSpecialTabs } from "core/Chat/ChatSpecialTabs"
+import { IEmojiList } from "core/Chat/EmojiList/IEmojiList"
+import { IEscapeCharacters } from "core/Chat/Escape/IEscapeCharacters"
+import { IChatMessageData } from "core/Chat/MessageData/IChatMessageData"
+import { IChatMessageDataClient } from "core/Chat/MessageData/IChatMessageDataClient"
 import { HTMLValidator } from "core/DataValidator/HTML/HTMLValidator"
 import { IHTMLValidatorFactory } from "core/DataValidator/HTML/IHTMLValidatorFactory"
+import { IDataValidator } from "core/DataValidator/IDataValidator"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
-import emojiEssential from "emoji-essential"
+import { IRegExpFactory } from "core/RegExpFactory/IRegExpFactory"
+import * as luxon from "luxon"
+import random from "random"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
-import twemoji from "twemoji"
-import { IRegExpFactory } from "core/RegExpFactory/IRegExpFactory"
+import { IChatSpecialTabSender } from "./Senders/IChatSpecialTabSender"
+
 export class Chat {
     constructor(
         playerDataFactory: IPlayerDataFactory, notificationSenderFactory: INotificationSenderFactory,
-        htmlValidator: HTMLValidator, regexpFactory: IRegExpFactory
+        htmlValidator: IDataValidator, chatMessageValidator: IDataValidator,
+        htmlEscapeCharacters: IEscapeCharacters, emojiList: IEmojiList,
+        injectedSenders: {[tab: string]: IChatSpecialTabSender},
     ) {
-        mp.events.add("playerChat", (player: PlayerMp, message: string) => {
+
+        mp.events.add(ChatModuleServerEvent.SEND, (player: PlayerMp, messageClientDataAsJson: string) => {
+            const messageClientData: IChatMessageDataClient = JSON.parse(messageClientDataAsJson)
             const playerData: IPlayerData = playerDataFactory.create().load(player)
             if (playerData.isLogged) {
-                const senderColor: string = playerData.nameColor
-                const senderName: string = playerData.name
-                if (!message.includes("!{") && !htmlValidator.validate(message)) {
-                    const name2emoji = {}
-                    const regexToRemoveEmojis = regexpFactory.create([
-                        "([\\u2700-\\u27BF]|[\\uE000-\\uF8FF]|\\uD83C[\\uDC00-\\uDFFF]|\\uD83D[\\uDC00-\\uDFFF]",
-                        "|[\\u2011-\\u26FF]|\\uD83E[\\uDD10-\\uDDFF])"
-                    ].join(), "g")
-                    Object.keys(emojiEssential).forEach((group) => {
-                        Object.keys(emojiEssential[group]).forEach((sub) => {
-                            Object.keys(emojiEssential[group][sub]).forEach((emoji) => {
-                                let key = emojiEssential[group][sub][emoji].replace(regexToRemoveEmojis, '').trimStart().replace(/[ :]+/g, "_")
-                                key = `:${key}:`
-                                name2emoji[key] = emoji
-                                name2emoji[emoji] = key
-                            })
-                        })
-                    })
-                    const matches = message.match(/:[A-Z_a-z]+:/gm)
-                    if (matches && matches.length > 0) {
-                        matches.forEach((toReplace: string) => {
-                            if (name2emoji[toReplace]) {
-                                message = message.replace(toReplace, name2emoji[toReplace])
-                            }
-                        })
-                    }
-                    const newMessage = twemoji.parse(message, {
-                        size: 72,
-                    })
-                    if (newMessage.length !== message.length) {
-                        message = newMessage
-                        message = message.replace(/\"/g, "'")
-                        message = message.replace("draggable", "style='width:16px;height:16px' draggable")
-                    }
-                    message = message.replace(regexToRemoveEmojis, '').trim()
-                    if(message.length > 0) {
-                        mp.players.forEach((sendMessageTo: PlayerMp) => {
-                            console.log(message)
-                            sendMessageTo.outputChatBox(`!{${senderColor}}${senderName}!{#FFFFFF}: ${message}`)
-                        })
+                let message = messageClientData.message
+                message = htmlEscapeCharacters.escape(message)
+                if (!message.includes("!{") && !htmlValidator.validate(message) &&
+                chatMessageValidator.validate(message)) {
+                    message = emojiList.replaceEmoji(message)
+                    if (message.length > 0) {
+                        const messageId = random.int(1000000, 10000000).toString() +
+                            luxon.DateTime.local().toMillis().toString()
+                        const messageData: IChatMessageData = {
+                            id: messageId, message, playerData, tab: messageClientData.tab,
+                        }
+                        if (messageClientData.tab in injectedSenders) {
+                            injectedSenders[messageClientData.tab].send(player, messageData)
+                        }
                     }
                 } else {
                     notificationSenderFactory.create().send(

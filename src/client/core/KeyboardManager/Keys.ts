@@ -2,4 +2,5 @@ export enum Keys {
     F2 = 0x71,
     F = 0x46,
     E = 0x45,
+    T = 0x54,
 }
