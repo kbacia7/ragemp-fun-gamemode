@@ -137,17 +137,23 @@ const configClient = {
             ],
          },
          {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader']
+         },
+         {
             test: /\.(png|svg|jpg|gif)$/,
-            use: [
-               'file-loader'
-            ]
+            loader: 'file-loader',
+            options: {
+               name: '/assets/[name].[ext]'
+            }
          }
       ],
    },
    plugins: [
       new CleanWebpackPlugin(),
       new CopyPlugin([
-         {from: './src/client/ui', to: './client_packages/ui', ignore: ['*.less', '*.ts']}
+         {from: './src/client/ui', to: './client_packages/ui', ignore: ['*.less', '*.ts']},
+         {from: './assets', to: './client_packages/ui/assets'}
       ]),
       new webpack.DefinePlugin({
          _VERSION_: `"${require("./package.json").codeNameVersion} build ${versionString}"`
