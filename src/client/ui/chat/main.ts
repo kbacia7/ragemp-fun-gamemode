@@ -26,7 +26,7 @@ const specialTabs = [
     ChatSpecialTabs.GLOBAL, ChatSpecialTabs.LOCAL, ChatSpecialTabs.NOTIFICATIONS,
 ]
 $(document).ready(() => {
-    i18nTranslator.loadTranslations("translations")
+    i18nTranslator.loadTranslations("/translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
         element.innerText =   i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
     })
@@ -218,7 +218,11 @@ const showChat = () => {
         _global.setTabActive(tab)
     }
 }
-_global.addMesageToTab = (tabName: string, author: string, color: string, message: string, id: string) => {
+_global.addMesageToTab = (
+    tabName: string, author: string, color: string,
+    message: string, dateTime: string, id: string, serverMessage: boolean,
+    args: string,
+) => {
     const chatContent = $(`[data-chat-tab$='tab-${tabName}']`)
     if (chatContent) {
         const chatScrollableContent = chatContent.find(".chat-scrollable-content")
@@ -227,15 +231,24 @@ _global.addMesageToTab = (tabName: string, author: string, color: string, messag
         newMessage.removeClass("message-example")
         newMessage.attr("id", id)
 
-        newMessage.find(".message").html(decodeEntities(message))
-        if (author && author.length > 0) {
+        if (!serverMessage) {
             newMessage.find(".author").text(author)
             newMessage.find(".author").css("color", color)
         } else {
             newMessage.find(".author").remove()
             newMessage.find(".message").css("color", color)
             newMessage.find(".message").css("font-weight", "bold")
+            message = i18nTranslator.translate(message)
+            message = `[${dateTime}] ${message}`
+            let arrayOfArgs: string[] = []
+            if (args.length > 2) {
+                arrayOfArgs = JSON.parse(args)
+            }
+            if (arrayOfArgs.length > 0)  {
+                message = vsprintf(message, arrayOfArgs)
+            }
         }
+        newMessage.find(".message").html(decodeEntities(message))
 
         chatScrollableContent.append(newMessage)
         if (getActiveTab() === tabName && !$("#chat").hasClass("d-none")) {

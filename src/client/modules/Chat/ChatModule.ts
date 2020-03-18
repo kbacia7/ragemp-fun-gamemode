@@ -51,13 +51,17 @@ export class ChatModule extends Module {
                 this._addMessage(
                     messageData.playerData.name,
                     messageData.playerData.nameColor,
-                    messageData.message, messageData.tab, messageData.id,
+                    messageData.message,
+                    messageData.sendDateTime, messageData.tab, messageData.id, false,
+                    "",
                 )
             } else {
                 this._addMessage(
                     "",
                     messageData.color,
-                    messageData.message, messageData.tab, messageData.id,
+                    messageData.message,
+                    messageData.sendDateTime, messageData.tab, messageData.id, true,
+                    messageData.extraParams,
                 )
             }
 
@@ -87,7 +91,12 @@ export class ChatModule extends Module {
         this._currentWindow.execute(`toggleInput()`)
     }
 
-    private _addMessage(author: string, color: string, message: string, tab: string, id: string) {
-        this._currentWindow.execute(`addMesageToTab('${tab}', '${author}', '${color}', "${message}", '${id}') `)
+    private _addMessage(
+        author: string, color: string, message: string, dateTime: string,
+        tab: string, id: string, serverMessage: boolean, args: string,
+    ) {
+        this._currentWindow.execute(
+            `addMesageToTab('${tab}', '${author}', '${color}', "${message}", '${dateTime}', '${id}', ${serverMessage}, '${args}')`,
+        )
     }
 }

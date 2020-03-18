@@ -32,10 +32,14 @@ export class NotificationSender implements INotificationSender {
         }
         const time: string = luxon.DateTime.local().toLocaleString(luxon.DateTime.DATETIME_SHORT_WITH_SECONDS)
         if (type in typesToColors) {
-            const message: string = `[${time}]: ${label}`
+            const message: string = label
             const messageData: IChatMessageData = {
-                color: typesToColors[type], id: messageId,
-                message, playerData: null, tab: ChatSpecialTabs.NOTIFICATIONS,
+                color: typesToColors[type],
+                extraParams:  JSON.stringify(extraParams),
+                id: messageId,
+                message, playerData: null,
+                sendDateTime:  time,
+                tab: ChatSpecialTabs.NOTIFICATIONS,
             }
             this._notificationTabSender.send(toPlayer, messageData)
         }

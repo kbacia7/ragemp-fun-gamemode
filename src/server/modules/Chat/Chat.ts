@@ -40,7 +40,11 @@ export class Chat {
                         const messageId = random.int(1000000, 10000000).toString() +
                             luxon.DateTime.local().toMillis().toString()
                         const messageData: IChatMessageData = {
-                            id: messageId, message, playerData, tab: messageClientData.tab,
+                            id: messageId, message, playerData,
+                            sendDateTime:  luxon.DateTime.local().toLocaleString(
+                                luxon.DateTime.DATETIME_SHORT_WITH_SECONDS,
+                            ),
+                            tab: messageClientData.tab,
                         }
                         if (messageClientData.tab in injectedSenders) {
                             injectedSenders[messageClientData.tab].send(player, messageData)
