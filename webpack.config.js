@@ -150,7 +150,6 @@ const configClient = {
       ],
    },
    plugins: [
-      new CleanWebpackPlugin(),
       new CopyPlugin([
          {from: './src/client/ui', to: './client_packages/ui', ignore: ['*.less', '*.ts']},
          {from: './assets', to: './client_packages/ui/assets'}
