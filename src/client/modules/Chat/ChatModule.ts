@@ -6,6 +6,7 @@ import { IChatMessageData } from "core/Chat/MessageData/IChatMessageData"
 import { IChatMessageDataClient } from "core/Chat/MessageData/IChatMessageDataClient"
 import { HTMLValidator } from "core/DataValidator/HTML/HTMLValidator"
 import { IDataValidator } from "core/DataValidator/IDataValidator"
+import { INotificationData } from "core/Notification/INotificationData"
 import { NotificationEvent } from "core/Notification/NotificationEvent"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
@@ -33,12 +34,26 @@ export class ChatModule extends Module {
             (message: string, tab: string) => {
                 message = htmlEscapeCharacters.escape(message)
                 if (htmlValidator.validate(message)) {
-                    mp.events.call(NotificationEvent.SEND,
-                        "CHAT_MESSAGE_INVALID", NotificationType.ERROR, NotificationTimeout.LONG, [],
+                    const notificationData: INotificationData = {
+                        extraParams: [],
+                        label: "CHAT_MESSAGE_INVALID",
+                        timeout: NotificationTimeout.LONG,
+                        type: NotificationType.ERROR,
+
+                    }
+                    mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
+                        JSON.stringify(notificationData),
                     )
                 } else if (!chatMessageValidator.validate(message)) {
-                    mp.events.call(NotificationEvent.SEND,
-                        "CHAT_MESSAGE_TOO_LONG", NotificationType.ERROR, NotificationTimeout.LONG, [],
+                    const notificationData: INotificationData = {
+                        extraParams: [],
+                        label: "CHAT_MESSAGE_TOO_LONG",
+                        timeout: NotificationTimeout.LONG,
+                        type: NotificationType.ERROR,
+
+                    }
+                    mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
+                        JSON.stringify(notificationData),
                     )
                 } else {
                     const chatMessageLocal: IChatMessageDataClient = {tab, message}

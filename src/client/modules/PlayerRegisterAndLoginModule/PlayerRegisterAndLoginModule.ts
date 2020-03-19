@@ -1,6 +1,7 @@
 import { notDeepEqual } from "assert"
 import { IActivePlayersLoader } from "client/core/ActivePlayersLoader/IActivePlayersLoader"
 import { Keys } from "client/core/KeyboardManager/Keys"
+import { INotificationData } from "core/Notification/INotificationData"
 import { NotificationEvent } from "core/Notification/NotificationEvent"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
@@ -63,19 +64,39 @@ export class PlayerRegisterAndLoginModule extends Module {
         })
 
         mp.events.add(PlayerRegisterEvent.CREATED, () => {
-            mp.events.call(NotificationEvent.SEND,
-                "ACCOUNT_CREATED", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
+            const notificationDataAccountCreate: INotificationData = {
+                extraParams: [],
+                label: "ACCOUNT_CREATED",
+                timeout: NotificationTimeout.LONG,
+                type: NotificationType.SUCCESS,
+            }
+            const notificationDataEmailSended: INotificationData = {
+                extraParams: [],
+                label: "EMAIL_SENDED",
+                timeout: NotificationTimeout.LONG,
+                type: NotificationType.SUCCESS,
+            }
+            mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
+                JSON.stringify(notificationDataAccountCreate),
             )
-            mp.events.call(NotificationEvent.SEND,
-                "EMAIL_SENDED", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
+            mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
+                JSON.stringify(notificationDataEmailSended),
             )
             mp.events.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
         })
 
         mp.events.add(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT, () => {
-            mp.events.call(NotificationEvent.SEND,
-                "SUCCESS_LOGIN", NotificationType.SUCCESS, NotificationTimeout.LONG, [],
+            const notificationData: INotificationData = {
+                extraParams: [],
+                label: "SUCCESS_LOGIN",
+                timeout: NotificationTimeout.LONG,
+                type: NotificationType.SUCCESS,
+            }
+
+            mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
+                JSON.stringify(notificationData),
             )
+
             if (this._currentWindow) {
                 this._currentWindow.execute(`removeModal()`)
                 mp.gui.cursor.show(false, false)
@@ -85,9 +106,17 @@ export class PlayerRegisterAndLoginModule extends Module {
         })
 
         mp.events.add(PlayerRegisterEvent.PLAY_AS_GUEST_SUCCESS, () => {
-            mp.events.call(NotificationEvent.SEND,
-                "PLAY_AS_GUEST", NotificationType.WARNING, NotificationTimeout.LONG, [],
+            const notificationData: INotificationData = {
+                extraParams: [],
+                label: "PLAY_AS_GUEST",
+                timeout: NotificationTimeout.LONG,
+                type: NotificationType.WARNING,
+            }
+
+            mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
+                JSON.stringify(notificationData),
             )
+
             if (this._currentWindow) {
                 this._currentWindow.execute(`removeModal()`)
                 mp.gui.cursor.show(false, false)
