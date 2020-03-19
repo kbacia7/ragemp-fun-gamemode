@@ -47,10 +47,12 @@ export class ActionsMenuModule extends Module {
 
     public destroyUI() {
         return this._promiseFactory.create((resolve) => {
+            if (this._enableMenu) {
             mp.gui.cursor.show(false, false)
             super.destroyUI().then((loaded) => {
                 resolve(loaded)
             })
+            }
         })
     }
 }

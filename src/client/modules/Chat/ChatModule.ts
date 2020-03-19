@@ -16,6 +16,8 @@ import { Module } from "./../Module"
 import { ChatModuleEvent } from "./ChatModuleEvent"
 
 export class ChatModule extends Module {
+    private _enabledChat: boolean = false
+    private _mainUiLoaded: boolean = false
     constructor(promiseFactory: IPromiseFactory<boolean>,
                 htmlValidator: IDataValidator,
                 chatMessageValidator: IDataValidator,
@@ -52,6 +54,18 @@ export class ChatModule extends Module {
 
         mp.events.add(ChatModuleEvent.ENABLE_ACTION_MENU , () => {
             mp.events.call(ActionsMenuModuleEvents.ENABLE_MENU)
+            this.loadUI()
+        })
+
+        mp.events.add(ChatModuleEvent.ENABLE_CHAT, () => {
+            this._enabledChat = true
+            if (!this._mainUiLoaded) {
+                this.loadUI()
+            }
+        })
+
+        mp.events.add(ChatModuleEvent.DISABLE_CHAT, () => {
+            this._enabledChat = false
         })
 
         mp.events.add(ChatModuleServerEvent.ADD_MESSAGE, (messageDataAsJson: string) => {
@@ -80,24 +94,34 @@ export class ChatModule extends Module {
 
     public loadUI() {
         return this._promiseFactory.create((resolve) => {
-            super.loadUI().then((loaded) => {
-                resolve(loaded)
-            })
+            if (this._enabledChat) {
+                super.loadUI().then((loaded) => {
+                    resolve(loaded)
+                })
+                this._mainUiLoaded = true
+            }
+
         })
 
     }
 
     public destroyUI() {
         return this._promiseFactory.create((resolve) => {
-            super.destroyUI().then((result) => {
-                resolve(result)
-            })
+            if (this._enabledChat) {
+                super.destroyUI().then((result) => {
+                    resolve(result)
+                })
+                this._mainUiLoaded = false
+            }
         })
     }
 
     public showChatInput() {
-        mp.gui.cursor.show(true, true)
-        this._currentWindow.execute(`showInput()`)
+        if (this._enabledChat) {
+            mp.gui.cursor.show(true, true)
+            this._currentWindow.execute(`showInput()`)
+        }
+
     }
 
     private _addMessage(
