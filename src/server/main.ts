@@ -24,6 +24,7 @@ import { BlipFactory } from "./core/BlipFactory/BlipFactory"
 import { CheckpointFactory } from "./core/Checkpoint/CheckpointFactory"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
 import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
+import { NotificationSenderFromClient } from "./core/NotificationSender/NotificationSenderFromClient"
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
 import { Vector3Factory } from "./core/Vector3Factory/Vector3Factory"
 import { VehicleFactory } from "./core/VehicleFactory/VehicleFactory"
@@ -83,6 +84,7 @@ const playerApiManager = new APIManager<Player>(playerPromiseFactory, promiseFor
 const playerDataFactory = new PlayerDataFactory()
 const notificationTabSender = new NotificationTabSender()
 const notificationSenderFactory = new NotificationSenderFactory(notificationTabSender)
+const notificationSenderFromClient = new NotificationSenderFromClient(notificationSenderFactory)
 const playerDataLoader = new PlayerDataLoader(playerDataFactory)
 const activePlayers: ActivePlayers = new ActivePlayers(playerDataFactory)
 const playerLoader: PlayerLoader = new PlayerLoader(playerApiManager, playerDataFactory)

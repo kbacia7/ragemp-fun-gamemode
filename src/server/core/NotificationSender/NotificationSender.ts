@@ -1,5 +1,6 @@
 import { ChatSpecialTabs } from "core/Chat/ChatSpecialTabs"
 import { IChatMessageData } from "core/Chat/MessageData/IChatMessageData"
+import { INotificationData } from "core/Notification/INotificationData"
 import { NotificationEvent } from "core/Notification/NotificationEvent"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
@@ -44,6 +45,10 @@ export class NotificationSender implements INotificationSender {
             this._notificationTabSender.send(toPlayer, messageData)
         }
 
-        toPlayer.call(NotificationEvent.SEND, [label, type, timeout, JSON.stringify(extraParams)])
+        const notificationData: INotificationData = {
+            extraParams,
+            label, timeout, type,
+        }
+        toPlayer.call(NotificationEvent.SEND, [JSON.stringify(notificationData)])
     }
 }

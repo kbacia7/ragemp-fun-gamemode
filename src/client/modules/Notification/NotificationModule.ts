@@ -1,5 +1,6 @@
 import { IActivePlayersLoader } from "client/core/ActivePlayersLoader/IActivePlayersLoader"
 import { Keys } from "client/core/KeyboardManager/Keys"
+import { INotificationData } from "core/Notification/INotificationData"
 import { NotificationEvent } from "core/Notification/NotificationEvent"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
@@ -12,12 +13,12 @@ export class NotificationModule extends Module {
         super(promiseFactory)
         this._name = "notifications"
         mp.events.add(NotificationEvent.SEND, (
-            label: string,
-            type: NotificationType,
-            timeout: NotificationTimeout,
-            args: string,
+            notificationDataAsJson: string,
         ) => {
-            this._sendNotification(label, type, timeout, args)
+            const notificationData: INotificationData = JSON.parse(notificationDataAsJson)
+            this._sendNotification(
+                notificationData.label, notificationData.type, notificationData.timeout, notificationData.extraParams,
+            )
         })
     }
 
@@ -38,7 +39,7 @@ export class NotificationModule extends Module {
         })
     }
 
-    private _sendNotification(label: string, type: NotificationType, timeout: NotificationTimeout, args: string) {
-        this._currentWindow.execute(`sendNotification('${label}', '${type}', ${timeout}, '${args}')`)
+    private _sendNotification(label: string, type: NotificationType, timeout: NotificationTimeout, args: string[]) {
+        this._currentWindow.execute(`sendNotification('${label}', '${type}', ${timeout}, '${JSON.stringify(args)}')`)
     }
 }
