@@ -42,7 +42,7 @@ $(document).ready(() => {
                 }
                 $("#chat-input").val("")
                 $("#chat-input").blur()
-                $("#chat-input-container").addClass("d-none")
+                hideInput()
               }
         }
     })
@@ -108,7 +108,7 @@ $(document).ready(() => {
         minHeight: 250,
         minWidth: 290,
         start: () => {
-            $("#chat-input-container").addClass("d-none")
+            hideInput()
         },
         stop: () => {
             $("#chat-input-container").removeClass("d-none")
@@ -129,7 +129,7 @@ const closeTab = (name: string) => {
         if (tab) {
             _global.setTabActive(tab.attr("data-chat-id"))
         } else {
-            $("#chat-input-container").addClass("d-none")
+            hideInput()
             mp.trigger(ChatModuleEvent.FAILED_SHOW_INPUT)
         }
     }
@@ -137,11 +137,17 @@ const closeTab = (name: string) => {
 
 const _global: any = (window || global) as any
 
-_global.toggleInput = () => {
+const hideInput = () => {
+    $("#chat-input-container").addClass("d-none")
+    mp.trigger(ChatModuleEvent.ENABLE_ACTION_MENU)
+}
+
+_global.showInput = () => {
     if ($("[data-chat-id]") && $("[data-chat-id]").length > 0 && !$("#chat").hasClass("d-none")) {
         if ($("#chat-input-container").hasClass("d-none")) {
             $("#chat-input-container").removeClass("d-none")
             $("#chat-input").focus()
+            mp.trigger(ChatModuleEvent.DISABLE_ACTION_MENU)
         }
     } else {
         mp.trigger(ChatModuleEvent.FAILED_SHOW_INPUT)
@@ -178,13 +184,15 @@ const createChatContentForTab = (name: string) => {
             $(el).on("click", () => {
                 const clickedTab = name
                 const action = $(el).attr("data-tab-action")
-                newTab.find(".dropdown-menu").dropdown("hide")
                 switch (action) {
                     case "close":
                         closeTab(clickedTab)
                         break
                     case "mute":
-                        closeTab(clickedTab)
+                        muteTab(clickedTab)
+                        break
+                    case "unmute":
+                        unmuteTab(clickedTab)
                         break
                 }
             })
@@ -198,6 +206,20 @@ const createChatContentForTab = (name: string) => {
     return newChatContent
 }
 
+const muteTab = (tab: string) => {
+    const tabLink =  $(`[data-chat-id='${tab}']`)
+    tabLink.attr("data-tab-muted", "true")
+    tabLink.next(".dropdown-menu").find(`[data-tab-action="unmute"]`).removeClass("d-none")
+    tabLink.next(".dropdown-menu").find(`[data-tab-action="mute"]`).addClass("d-none")
+}
+
+const unmuteTab = (tab: string) => {
+    const tabLink =  $(`[data-chat-id='${tab}']`)
+    tabLink.attr("data-tab-muted", "false")
+    tabLink.next(".dropdown-menu").find(`[data-tab-action="unmute"]`).addClass("d-none")
+    tabLink.next(".dropdown-menu").find(`[data-tab-action="mute"]`).removeClass("d-none")
+}
+
 const getActiveTab = () => {
     return $(".chat-active-tab").attr("data-chat-id")
 }
@@ -205,7 +227,7 @@ const getActiveTab = () => {
 const hideChat = () => {
     $("#chat").addClass("d-none")
     $("#chat-summary").removeClass("d-none")
-    $("#chat-input-container").addClass("d-none")
+    hideInput()
     mp.trigger(ChatModuleEvent.FAILED_SHOW_INPUT)
     sumChatsForSummary()
 }
@@ -257,12 +279,16 @@ _global.addMesageToTab = (
             }
             chatScrollableContent.scrollTop(chatScrollableContent[0].scrollHeight)
         } else {
-            const badge = $(`[data-chat-id='${tabName}']`).find(".chat-tab-name").next(".badge")
-            const actualText = badge.text()
-            if (!actualText || actualText.length <= 0) {
-                badge.text("1")
-            } else {
-                badge.text(parseInt(actualText, 10) + 1)
+            const muted = $(`[data-chat-id='${tabName}']`).attr("data-tab-muted") === "true"
+
+            if (!muted) {
+                const badge = $(`[data-chat-id='${tabName}']`).find(".chat-tab-name").next(".badge")
+                const actualText = badge.text()
+                if (!actualText || actualText.length <= 0) {
+                    badge.text("1")
+                } else {
+                    badge.text(parseInt(actualText, 10) + 1)
+                }
             }
         }
         sumChatsForSummary()
@@ -273,8 +299,10 @@ _global.addMesageToTab = (
 const sumChatsForSummary = () => {
     let c: number = 0
     $(".chat-counter:not(#chat-summary-counter)").each((index, el) => {
-        if ($(el).text().length > 0) {
-            c += parseInt($(el).text(), 10)
+        if ($(el).closest(".nav-link").attr("data-tab-muted") !== "true") {
+            if ($(el).text().length > 0) {
+                c += parseInt($(el).text(), 10)
+            }
         }
     })
     if (c <= 0) {

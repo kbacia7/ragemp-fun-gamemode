@@ -16,12 +16,14 @@
   <div id="chat">
     <ul class="nav" id="chat-tabs">
       <li class="nav-item" id="chat-tab-sample">
-        <a class="nav-link" href="#"><span class="chat-tab-name"></span><span
+        <a class="nav-link" data-tab-muted="false" href="#"><span class="chat-tab-name"></span><span
             class="chat-counter badge badge-primary"></span></a>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" tabindex="-1" data-tab-action="close" data-i18n-translate="TAB_CLOSE"
               href="#"></a></li>
           <li><a class="dropdown-item" tabindex="-1" data-tab-action="mute" data-i18n-translate="TAB_MUTE" href="#"></a>
+          </li>
+          <li><a class="dropdown-item d-none" tabindex="-1" data-tab-action="unmute" data-i18n-translate="TAB_UNMUTE" href="#"></a>
           </li>
         </ul>
       </li>
