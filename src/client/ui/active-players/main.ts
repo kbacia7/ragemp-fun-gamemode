@@ -13,7 +13,7 @@ const xmlFileRequest = new XMLFileRequest(promiseFactory)
 const internationalizationSettings = new InternationalizationSettings("pl_PL")
 const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
 $(document).ready(() => {
-    i18nTranslator.loadTranslations("translations")
+    i18nTranslator.loadTranslations("/translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
       element.innerText =   i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
     })

@@ -39,30 +39,30 @@ export class PlayerRegister {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             } else {
                 this._apiManager.send(APIRequests.PLAYER_REGISTER, {
+                    email: playerRegisterData.email,
                     login: playerRegisterData.login,
                     password: playerRegisterData.password,
-                    email: playerRegisterData.email,
                 }).then((res: IncomingMessage) => {
                     let responseAsString: string = ""
                     res.on("data", (chunk) => {
                         responseAsString += chunk
                     })
                     res.on("end", () => {
-                        const response: number = parseInt(responseAsString)
+                        const response: number = parseInt(responseAsString, 10)
                         switch (response) {
                             case PlayerSaveResponses.ALL_OK: {
                                 player.call(PlayerRegisterEvent.CREATED)
                                 this._apiManager.send(APIRequests.PLAYER_LOGIN, {
                                     login: playerRegisterData.login,
-                                }).then((res: IncomingMessage) => {
-                                   if (res.statusCode !== 200) {
+                                }).then((resFromPost: IncomingMessage) => {
+                                   if (resFromPost.statusCode !== 200) {
                                     player.call(PlayerRegisterEvent.LOGIN_INCORRECT_DATA)
                                    } else {
                                     let responseInJson = ""
-                                    res.on("data", (chunk) => {
+                                    resFromPost.on("data", (chunk) => {
                                         responseInJson += chunk
                                     })
-                                    res.on("end", () => {
+                                    resFromPost.on("end", () => {
                                         const p: Player = JSON.parse(responseInJson)
                                         player.call(PlayerRegisterEvent.LOGGED_INTO_ACCOUNT)
                                         mp.events.call("playerStartPlay", player, playerRegisterData.login, p)

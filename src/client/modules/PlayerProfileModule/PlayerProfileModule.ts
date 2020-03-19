@@ -14,7 +14,6 @@ export class PlayerProfileModule extends Module {
         })
 
         mp.events.add(PlayerDataLoaderEvents.PROVIDE_PLAYER_DATA, (playerDataInJson: string) => {
-            mp.events.callRemote("debug", playerDataInJson)
             this._currentWindow.execute(`loadPlayerData('${playerDataInJson}')`)
         })
     }

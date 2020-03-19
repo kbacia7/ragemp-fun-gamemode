@@ -2,6 +2,7 @@ import { IActionsMenuModuleFactory } from "client/modules/ActionsMenuModule/IAct
 import {
     IActivePlayersTableModuleFactory,
 } from "client/modules/ActivePlayersTableModule/IActivePlayersTableModuleFactory"
+import { ChatModule } from "client/modules/Chat/ChatModule"
 import { Module } from "client/modules/Module"
 import { IActivePlayersLoader } from "../ActivePlayersLoader/IActivePlayersLoader"
 import { Keys } from "./Keys"
@@ -12,6 +13,7 @@ export class KeyboardManager {
     constructor(
         activePlayersTableModuleFactory: IActivePlayersTableModuleFactory,
         actionsMenuModuleFactory: IActionsMenuModuleFactory,
+        chatModule: ChatModule,
     ) {
         this._activePlayersTableModule = activePlayersTableModuleFactory.create()
         mp.keys.bind(Keys.F2, true, () => {
@@ -28,5 +30,10 @@ export class KeyboardManager {
         mp.keys.bind(Keys.E, false, () => {
             this._actionsMenuModule.destroyUI()
         })
+
+        mp.keys.bind(Keys.T, true, () => {
+            chatModule.showChatInput()
+        })
+
     }
 }

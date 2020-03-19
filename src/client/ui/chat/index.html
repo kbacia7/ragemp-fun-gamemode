@@ -1,0 +1,58 @@
+<html>
+
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cyborg/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="index.js"></script>
+</head>
+
+<body style="background: none !important">
+  <div class="d-none" id="chat-summary">
+    <a id="chat-show"><i class="material-icons">keyboard_arrow_right</i><span id="chat-summary-counter"
+        class="chat-counter badge badge-primary"></span></a>
+  </div>
+  <div id="chat">
+    <ul class="nav" id="chat-tabs">
+      <li class="nav-item" id="chat-tab-sample">
+        <a class="nav-link" data-tab-muted="false" href="#"><span class="chat-tab-name"></span><span
+            class="chat-counter badge badge-primary"></span></a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" tabindex="-1" data-tab-action="close" data-i18n-translate="TAB_CLOSE"
+              href="#"></a></li>
+          <li><a class="dropdown-item" tabindex="-1" data-tab-action="mute" data-i18n-translate="TAB_MUTE" href="#"></a>
+          </li>
+          <li><a class="dropdown-item d-none" tabindex="-1" data-tab-action="unmute" data-i18n-translate="TAB_UNMUTE" href="#"></a>
+          </li>
+        </ul>
+      </li>
+      <li id="add-tab-button" class="nav-item disallow-sort">
+        <a class="nav-link" data-toggle="dropdown"><i class="material-icons">add</i></a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" tabindex="-1" data-tab-add-id="global" data-i18n-translate="GLOBAL_TAB"
+              href="#"></a></li>
+          <li><a class="dropdown-item" tabindex="-1" data-tab-add-id="local" data-i18n-translate="LOCAL_TAB"
+              href="#"></a></li>
+          <li><a class="dropdown-item" tabindex="-1" data-tab-add-id="local" data-i18n-translate="NOTIFICATIONS_TAB"
+                href="#"></a></li>
+        </ul>
+      </li>
+      <li class="nav-item disallow-sort ml-auto">
+        <a id="chat-hide" class="nav-link"><i class="material-icons">keyboard_arrow_left</i></a>
+      </li>
+    </ul>
+    <hr id="chat-bottom-line" />
+    <div class="chat-content d-none" data-chat-tab="chat-tab-sample">
+      <div class="chat-scrollable-content">
+        <p class="message-example" id="chat-meesage-id"><span style="font-weight: bold;"
+            class="author">[USERNAME]:</span> <span class="message">[MESSAGE]</span></p>
+      </div>
+    </div>
+  </div>
+  <div id="chat-input-container" class="input-group input-group-sm mb-3 d-none">
+    <input type="text" id="chat-input" class="form-control" aria-label="Small"
+      aria-describedby="inputGroup-sizing-sm">
+  </div>
+</body>
+</html>

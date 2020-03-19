@@ -48,12 +48,12 @@ export class AutomaticEventManager {
             this._playersOnEvent[evName] = []
             this._activeEvents[evName] = false
             this._waitForEnd[evName] = false
-            this._apiManager.query(`${APIRequests.SETTINGS_PREFIX}/${evName}/`).then((settings: Setting[]) => {
-                if (settings.length > 0) {
-                    console.log(`Load settings for ${evName} event ${settings.length}`)
+            this._apiManager.query(`${APIRequests.SETTINGS_PREFIX}/${evName}/`).then((settingsFromDb: Setting[]) => {
+                if (settingsFromDb.length > 0) {
+                    console.log(`Load settings for ${evName} event ${settingsFromDb.length}`)
                     const mappedSettingsByName: { [name: string]: string } = Object.assign(
                         {},
-                        ...(settings.map((item) => ({ [item.name]: item.value }))),
+                        ...(settingsFromDb.map((item) => ({ [item.name]: item.value }))),
                     )
                     const automaticEventData: IAutomaticEventData = automaticEventDataFactory.create(
                         evName,
