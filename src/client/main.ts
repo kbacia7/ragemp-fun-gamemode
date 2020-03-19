@@ -45,5 +45,4 @@ const keyboardManager: KeyboardManager = new KeyboardManager(
    activePlayersTableModuleFactory, actionsMenuModuleFactory, chatModule,
 )
 notificationsModule.loadUI()
-chatModule.loadUI()
 mp.gui.chat.show(false)

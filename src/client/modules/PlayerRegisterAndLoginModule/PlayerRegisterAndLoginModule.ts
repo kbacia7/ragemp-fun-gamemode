@@ -10,6 +10,8 @@ import { IPlayerRegiserData } from "core/PlayerRegister/IPlayerRegisterData"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import _ from "lodash"
+import { ActionsMenuModuleEvents } from "../ActionsMenuModule/ActionsMenuModuleEvents"
+import { ChatModuleEvent } from "../Chat/ChatModuleEvent"
 import { Module } from "./../Module"
 import { PlayerRegisterAndLoginModuleEvent } from "./PlayerRegisterAndLoginModuleEvent"
 
@@ -112,6 +114,9 @@ export class PlayerRegisterAndLoginModule extends Module {
             super.loadUI().then((loaded) => {
                 resolve(loaded)
             })
+            mp.events.call(ActionsMenuModuleEvents.DISABLE_MENU)
+            mp.events.call(ChatModuleEvent.DISABLE_CHAT)
+
         })
 
     }
@@ -121,6 +126,8 @@ export class PlayerRegisterAndLoginModule extends Module {
             super.destroyUI().then((result) => {
                 resolve(result)
             })
+            mp.events.call(ActionsMenuModuleEvents.ENABLE_MENU)
+            mp.events.call(ChatModuleEvent.ENABLE_CHAT)
         })
     }
 }
