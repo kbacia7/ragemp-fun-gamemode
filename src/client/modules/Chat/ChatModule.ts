@@ -11,6 +11,7 @@ import { NotificationTimeout } from "core/Notification/NotificationTimeout"
 import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
+import { ActionsMenuModuleEvents } from "../ActionsMenuModule/ActionsMenuModuleEvents"
 import { Module } from "./../Module"
 import { ChatModuleEvent } from "./ChatModuleEvent"
 
@@ -44,6 +45,14 @@ export class ChatModule extends Module {
                 }
             },
         )
+
+        mp.events.add(ChatModuleEvent.DISABLE_ACTION_MENU , () => {
+            mp.events.call(ActionsMenuModuleEvents.DISABLE_MENU)
+        })
+
+        mp.events.add(ChatModuleEvent.ENABLE_ACTION_MENU , () => {
+            mp.events.call(ActionsMenuModuleEvents.ENABLE_MENU)
+        })
 
         mp.events.add(ChatModuleServerEvent.ADD_MESSAGE, (messageDataAsJson: string) => {
             const messageData: IChatMessageData = JSON.parse(messageDataAsJson)
@@ -86,9 +95,9 @@ export class ChatModule extends Module {
         })
     }
 
-    public toggleChatInput() {
+    public showChatInput() {
         mp.gui.cursor.show(true, true)
-        this._currentWindow.execute(`toggleInput()`)
+        this._currentWindow.execute(`showInput()`)
     }
 
     private _addMessage(

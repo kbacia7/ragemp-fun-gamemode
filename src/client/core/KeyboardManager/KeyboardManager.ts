@@ -32,7 +32,7 @@ export class KeyboardManager {
         })
 
         mp.keys.bind(Keys.T, true, () => {
-            chatModule.toggleChatInput()
+            chatModule.showChatInput()
         })
 
     }
