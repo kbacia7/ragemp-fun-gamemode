@@ -18,6 +18,7 @@ import { ChangePlayerPedModule } from "./modules/ChangePlayerPedModule/ChangePla
 import { ChatModule } from "./modules/Chat/ChatModule"
 import { CommandListenerModule } from "./modules/CommandListener/CommandListenerModule"
 import { FreezePlayerModule } from "./modules/FreezePlayerModule/FreezePlayerModule"
+import { GlobalShopModule } from "./modules/GlobalShopModule/GlobalShopModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
 import { PlayerProfileModule } from "./modules/PlayerProfileModule/PlayerProfileModule"
 import { PlayerRegisterAndLoginModule } from "./modules/PlayerRegisterAndLoginModule/PlayerRegisterAndLoginModule"
@@ -30,6 +31,7 @@ const activePlayersTableModuleFactory: ActivePlayersTableModuleFactory = new Act
 )
 const actionsMenuModuleFactory: IActionsMenuModuleFactory = new ActionsMenuModuleFactory(promiseBooleanFactory)
 const notificationsModule = new NotificationModule(promiseBooleanFactory)
+const globalShopModule = new GlobalShopModule(promiseBooleanFactory)
 const playerProfileModule: PlayerProfileModule = new PlayerProfileModule(promiseBooleanFactory)
 const automaticEventsTableModule: AutomaticEventsTableModule = new AutomaticEventsTableModule(promiseBooleanFactory)
 const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBooleanFactory)
