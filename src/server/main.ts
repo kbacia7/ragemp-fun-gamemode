@@ -37,6 +37,7 @@ import { Player } from "./entity/Player"
 import { PlayerSpawn } from "./entity/PlayerSpawn"
 import { RaceArena } from "./entity/RaceArena"
 import { Setting } from "./entity/Setting"
+import { ShopTabData } from "./entity/ShopTabData"
 import { SniperArena } from "./entity/SniperArena"
 import { TeamDeathmatchArena } from "./entity/TeamDeathmatchArena"
 import { ArenaDataFactory } from "./modules/Arenas/ArenaDataFactory"
@@ -66,6 +67,7 @@ import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
 import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
+import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
@@ -82,6 +84,9 @@ const playerPromiseFactory = new PromiseFactory<Player[]>()
 const promiseForApiPosts = new PromiseFactory<IncomingMessage>()
 const playerApiManager = new APIManager<Player>(playerPromiseFactory, promiseForApiPosts, apiSetting)
 const playerDataFactory = new PlayerDataFactory()
+
+const shopDataPromiseFactory = new PromiseFactory<ShopTabData[]>()
+const shopDataApiManager = new APIManager<ShopTabData>(shopDataPromiseFactory, promiseForApiPosts, apiSetting)
 const notificationTabSender = new NotificationTabSender()
 const notificationSenderFactory = new NotificationSenderFactory(notificationTabSender)
 const notificationSenderFromClient = new NotificationSenderFromClient(notificationSenderFactory)
@@ -135,6 +140,7 @@ const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
+   new ShopCommand(shopDataApiManager),
 ]
 const racePromiseFactory = new PromiseFactory<RaceArena[]>()
 const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)
@@ -203,10 +209,8 @@ const mappedArenasToTypes = {
    oneshoot: ArenaType.ONESHOOT,
    sniper: ArenaType.SNIPER,
 }
-
 const settingPromiseFactory = new PromiseFactory<Setting[]>()
 const settingApiManager = new APIManager<Setting>(settingPromiseFactory, promiseForApiPosts, apiSetting)
-
 const arenaManager = new ArenaManager(
    settingApiManager, notificationSenderFactory,
    ["dm", "heavydm", "sniper", "oneshoot"],
