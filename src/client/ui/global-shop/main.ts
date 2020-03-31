@@ -164,9 +164,6 @@ const setFilterActive = (filterName: string) => {
 }
 
 const loadDataForTab = (tabName: string, data: ShopTabData) => {
-  // tslint:disable: no-console
-  console.log(tabName)
-  console.log(data)
   const tab = $(`[data-shop-tab-name="${tabName}"]`)
   const columnSize = data.column_size
   const isCustomSize = !columnSize.toString().includes(".0")
@@ -200,8 +197,6 @@ const loadDataForTab = (tabName: string, data: ShopTabData) => {
     let loaded = 0
     let rowToAppend = null
     filter.entities.forEach((entity: ShopEntity) => {
-      console.log(entity)
-      console.log(loaded * columnSize % maxRowSize)
       if (loaded * columnSize % maxRowSize === 0) {
         if (rowToAppend) {
           tab.append(rowToAppend)
