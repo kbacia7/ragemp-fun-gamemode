@@ -70,7 +70,6 @@ export class PlayerRegister {
 
                                    }
                                 })
-                                mp.events.call("playerStartPlay", player, playerRegisterData.login)
                                 break
                             }
                             case PlayerSaveResponses.EMAIL_TAKEN: {
