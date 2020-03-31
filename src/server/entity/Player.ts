@@ -1,6 +1,7 @@
 import { Rank } from "./Rank"
 
 export class Player {
+  public readonly id: number
   public readonly login: string
   public readonly password: string
   public readonly email: string
@@ -8,4 +9,6 @@ export class Player {
   public readonly kills: number
   public readonly deaths: number
   public readonly ped: number
+  public readonly money: number
+  public readonly diamonds: number
 }

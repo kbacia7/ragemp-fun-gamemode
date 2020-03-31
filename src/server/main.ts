@@ -37,6 +37,7 @@ import { Player } from "./entity/Player"
 import { PlayerSpawn } from "./entity/PlayerSpawn"
 import { RaceArena } from "./entity/RaceArena"
 import { Setting } from "./entity/Setting"
+import { ShopTabData } from "./entity/ShopTabData"
 import { SniperArena } from "./entity/SniperArena"
 import { TeamDeathmatchArena } from "./entity/TeamDeathmatchArena"
 import { ArenaDataFactory } from "./modules/Arenas/ArenaDataFactory"
@@ -66,6 +67,7 @@ import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
 import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
+import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
@@ -73,6 +75,11 @@ import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
+import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
+import { VehicleSpawnBuyAction } from "./modules/ShopManager/BuyActions/VehicleSpawnBuyAction"
+import { WeaponOnceSpawnBuyAction } from "./modules/ShopManager/BuyActions/WeaponOnceSpawnBuyAction"
+import { IShopManager } from "./modules/ShopManager/IShopManager"
+import { ShopManager } from "./modules/ShopManager/ShopManager"
 
 declare const _VERSION_: any
 console.log(`Script version: ${_VERSION_}`)
@@ -82,6 +89,9 @@ const playerPromiseFactory = new PromiseFactory<Player[]>()
 const promiseForApiPosts = new PromiseFactory<IncomingMessage>()
 const playerApiManager = new APIManager<Player>(playerPromiseFactory, promiseForApiPosts, apiSetting)
 const playerDataFactory = new PlayerDataFactory()
+
+const shopDataPromiseFactory = new PromiseFactory<ShopTabData[]>()
+const shopDataApiManager = new APIManager<ShopTabData>(shopDataPromiseFactory, promiseForApiPosts, apiSetting)
 const notificationTabSender = new NotificationTabSender()
 const notificationSenderFactory = new NotificationSenderFactory(notificationTabSender)
 const notificationSenderFromClient = new NotificationSenderFromClient(notificationSenderFactory)
@@ -131,10 +141,28 @@ const playerPlayAsGuest: PlayerPlayAsGuest = new PlayerPlayAsGuest(
 const playerSave: PlayerSave = new PlayerSave(
    playerApiManager, playerDataFactory,
 )
+
+const promiseShopTabDataFactory = new PromiseFactory<ShopTabData[]>()
+const promiseForShopInitialize = new PromiseFactory<[ShopTabData, ShopTabData[]]>()
+const promiseSingleShopTabDataFactory = new PromiseFactory<ShopTabData>()
+const shopTabDataApiManager = new APIManager<ShopTabData>(promiseShopTabDataFactory, promiseForApiPosts, apiSetting)
+const shopManager: IShopManager = new ShopManager(
+   shopTabDataApiManager,
+   promiseForShopInitialize,
+   promiseSingleShopTabDataFactory,
+   playerDataFactory,
+   notificationSenderFactory,
+   {
+      "skins-once": new SkinOnceChangeBuyAction(),
+      "vehicles-spawn": new VehicleSpawnBuyAction(vehicleFactory),
+      "weapons-once": new WeaponOnceSpawnBuyAction(),
+   },
+)
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
+   new ShopCommand(shopDataApiManager, shopManager),
 ]
 const racePromiseFactory = new PromiseFactory<RaceArena[]>()
 const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)
@@ -203,10 +231,8 @@ const mappedArenasToTypes = {
    oneshoot: ArenaType.ONESHOOT,
    sniper: ArenaType.SNIPER,
 }
-
 const settingPromiseFactory = new PromiseFactory<Setting[]>()
 const settingApiManager = new APIManager<Setting>(settingPromiseFactory, promiseForApiPosts, apiSetting)
-
 const arenaManager = new ArenaManager(
    settingApiManager, notificationSenderFactory,
    ["dm", "heavydm", "sniper", "oneshoot"],

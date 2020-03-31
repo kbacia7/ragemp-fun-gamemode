@@ -1,0 +1,73 @@
+@import "../style.less";
+
+.global-shop-width {
+    width: 80vw;
+}
+
+.global-shop-modal-fix-center {
+    margin-left: -25vw;
+}
+
+#global-shop {
+    #shop-tabs-main-list {
+        .nav-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);;
+    
+            a {
+                color: #fff;
+                
+                &.active-tab {
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .nav-item:last-child {
+            border-bottom: none;
+        }
+    }
+
+
+
+
+    .shop-item-info {
+        width: calc(100% - 30px);
+        height: 12%;
+        border-top: 1px solid #fff;
+        background: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        padding: inherit;
+        bottom: 0;
+
+        img {
+            width: 16px;
+            height: 16px;
+        }
+
+        p {
+            color: #fff;
+            font-weight:  bold;
+        }
+    }
+
+    .buy-diamonds:hover, .buy-cash:hover {
+        font-size: 15px;
+        font-weight: 900;
+    }
+
+    .tab-filters {
+        .nav-item {
+            a {
+                color: #fff;
+
+                &.active{
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .column-sample, .row-sample, .filter-sample, #tab-shop-tab-sample, .subcategory-sample {
+        display: none;
+    }
+}

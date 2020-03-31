@@ -14,4 +14,6 @@ export enum APIRequests {
     PLAY_AS_GUEST = "/players/play_as_guest/",
     SETTINGS_FOR_TESTS = "/settings/test/",
     SETTINGS_PREFIX = "/settings",
+    SHOP_DATA_PREFIX = "/shop",
+    BUY_ITEM = "/buy/",
 }
