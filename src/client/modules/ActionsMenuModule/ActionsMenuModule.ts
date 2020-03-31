@@ -26,6 +26,10 @@ export class ActionsMenuModule extends Module {
             this._enableMenu = true
         })
 
+        mp.events.add(ActionsMenuModuleEvents.HIDE_MENU, () => {
+            this.destroyUI()
+        })
+
         mp.events.add(ActionsMenuModuleEvents.DISABLE_MENU, () => {
             this._enableMenu = false
         })
