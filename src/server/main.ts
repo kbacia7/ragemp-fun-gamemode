@@ -76,6 +76,7 @@ import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
 import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
+import { VehicleSpawnBuyAction } from "./modules/ShopManager/BuyActions/VehicleSpawnBuyAction"
 import { IShopManager } from "./modules/ShopManager/IShopManager"
 import { ShopManager } from "./modules/ShopManager/ShopManager"
 
@@ -152,6 +153,7 @@ const shopManager: IShopManager = new ShopManager(
    notificationSenderFactory,
    {
       "skins-once": new SkinOnceChangeBuyAction(),
+      "vehicles-spawn": new VehicleSpawnBuyAction(vehicleFactory),
    },
 )
 const allCommands: ICommand[] = [

@@ -3,6 +3,7 @@
     "SHOP_TAB_SKINS": "Skiny",
     "SHOP_TAB_WEAPONS": "Bronie",
     "SHOP_TAB_VEHICLES": "Pojazdy",
+    "SHOP_TAB_VEHICLES_SPAWN": "Spawn",
     "SHOP_TAB_FILTER_A": "Kat. A",
     "SHOP_TAB_FILTER_B": "Kat. B",
     "SHOP_TAB_FILTER_C": "Kat. C",
@@ -12,10 +13,14 @@
     "SHOP_TAB_SKINS_SPAWN_TITLE": "Skiny na spawn",
     "SHOP_TAB_SKINS_ONCE_DESCRIPTION": "Zakupiony skin zmieni się od razu, jednorazowo",
     "SHOP_TAB_SKINS_ONCE_TITLE": "Jednorazowa zmiana skina",
+    "SHOP_TAB_VEHICLES_SPAWN_TITLE": "Spawn pojazdu",
+    "SHOP_TAB_VEHICLES_SPAWN_DESCRIPTION": "Jednorazowy spawn pojazdu",
     "SHOP_ITEM_BUYED_SKINS_SPAWNS_IN_DIAMONDS": "Zakupiłeś skin na spawn za %s diamentów",
     "SHOP_ITEM_BUYED_SKINS_SPAWNS_IN_MONEY": "Zakupiłeś skin na spawn za %s$",
     "SHOP_ITEM_BUYED_SKINS_ONCE_IN_DIAMONDS": "Zakupiłeś jednorazową zmianę skina za %s diamentów",
     "SHOP_ITEM_BUYED_SKINS_ONCE_IN_MONEY": "Zakupiłeś jednorazową zmianę skina za %s$",
+    "SHOP_ITEM_BUYED_VEHICLES_SPAWN_IN_DIAMONDS": "Zakupiłeś pojazd za %s diamentów",
+    "SHOP_ITEM_BUYED_VEHICLES_SPAWN_IN_MONEY": "Zakupiłeś pojazd za %s$",
     "SHOP_NOT_ENOUGH_MONEY": "Posiadasz niewystarczającą ilość pieniędzy by dokonać tego zakupu",
     "SHOP_NOT_ENOUGH_DIAMONDS": "Posiadasz niewystarczającą ilość diamentów by dokonać tego zakupu"
 }
