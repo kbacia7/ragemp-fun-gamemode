@@ -5,10 +5,13 @@ import { PlayerDataStatus } from "./PlayerDataStatus"
 
 export interface IPlayerData {
     id: number,
+    databaseId: number,
     rank: Rank,
     rankName: string,
     kills: number,
     deaths: number,
+    diamonds: number,
+    money: number,
     status: PlayerDataStatus,
     ping: number,
     name: string,

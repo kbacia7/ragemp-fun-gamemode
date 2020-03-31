@@ -11,6 +11,10 @@ export class PlayerData implements IPlayerData {
         return this._id
     }
 
+    private _databaseId: number
+    get databaseId() {
+        return this._databaseId
+    }
     private _rank: Rank
     get rank() {
         return this._rank
@@ -29,6 +33,16 @@ export class PlayerData implements IPlayerData {
     private _deaths: number
     public get deaths() {
         return this._deaths
+    }
+
+    private _money: number
+    public get money() {
+        return this._money
+    }
+
+    private _diamonds: number
+    public get diamonds() {
+        return this._diamonds
     }
 
     private _status: PlayerDataStatus
@@ -85,6 +99,7 @@ export class PlayerData implements IPlayerData {
         this._rankName = "Gracz"
         this._kills = 0
         this._id = player.id
+        this._databaseId = 0
         this._deaths = 0
         this._status = PlayerDataStatus.ACTIVE
         this._ping = player.ping
@@ -93,6 +108,8 @@ export class PlayerData implements IPlayerData {
         this._playAsGuest = false
         this._savedOnEvents = []
         this._ped = 0
+        this._money = 0
+        this._diamonds = 0
         this._onEvent = AutomaticEventType.NOTHING
         this._onArena = ArenaType.NOTHING
         this._nameColor = this._getRandomColor()
@@ -112,6 +129,9 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.PED, this._ped)
+        player.setVariable(PlayerDataProps.MONEY, this._money)
+        player.setVariable(PlayerDataProps.DIAMONDS, this._diamonds)
+        player.setVariable(PlayerDataProps.DATABASE_ID, this._databaseId)
 
     }
 
@@ -129,12 +149,15 @@ export class PlayerData implements IPlayerData {
         this._ping = player.ping
         this._name = player.getVariable(PlayerDataProps.NAME)
         this._isLogged = player.getVariable(PlayerDataProps.ISLOGGED)
+        this._diamonds = player.getVariable(PlayerDataProps.DIAMONDS)
+        this._money = player.getVariable(PlayerDataProps.MONEY)
         this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
         this._onEvent = player.getVariable(PlayerDataProps.ON_EVENT)
         this._onArena = player.getVariable(PlayerDataProps.ON_ARENA)
         this._savedOnEvents = player.getVariable(PlayerDataProps.SAVED_ON_EVENTS)
         this._id = player.id
+        this._databaseId = player.getVariable(PlayerDataProps.DATABASE_ID)
         this._ped = player.getVariable(PlayerDataProps.PED)
     }
 
@@ -147,6 +170,8 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.STATUS] = this._status
         obj[PlayerDataProps.PING] = this._ping
         obj[PlayerDataProps.NAME] = this._name
+        obj[PlayerDataProps.MONEY] = this._money
+        obj[PlayerDataProps.DIAMONDS] = this._diamonds
         obj[PlayerDataProps.ID] = this._id
         obj[PlayerDataProps.ISLOGGED] = this._isLogged
         obj[PlayerDataProps.PLAY_AS_GUEST] = this._playAsGuest

@@ -8,4 +8,6 @@ export class Player {
   public readonly kills: number
   public readonly deaths: number
   public readonly ped: number
+  public readonly money: number
+  public readonly diamonds: number
 }
