@@ -75,6 +75,9 @@ import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
+import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
+import { IShopManager } from "./modules/ShopManager/IShopManager"
+import { ShopManager } from "./modules/ShopManager/ShopManager"
 
 declare const _VERSION_: any
 console.log(`Script version: ${_VERSION_}`)
@@ -136,11 +139,26 @@ const playerPlayAsGuest: PlayerPlayAsGuest = new PlayerPlayAsGuest(
 const playerSave: PlayerSave = new PlayerSave(
    playerApiManager, playerDataFactory,
 )
+
+const promiseShopTabDataFactory = new PromiseFactory<ShopTabData[]>()
+const promiseForShopInitialize = new PromiseFactory<[ShopTabData, ShopTabData[]]>()
+const promiseSingleShopTabDataFactory = new PromiseFactory<ShopTabData>()
+const shopTabDataApiManager = new APIManager<ShopTabData>(promiseShopTabDataFactory, promiseForApiPosts, apiSetting)
+const shopManager: IShopManager = new ShopManager(
+   shopTabDataApiManager,
+   promiseForShopInitialize,
+   promiseSingleShopTabDataFactory,
+   playerDataFactory,
+   notificationSenderFactory,
+   {
+      "skins-once": new SkinOnceChangeBuyAction(),
+   },
+)
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
-   new ShopCommand(shopDataApiManager),
+   new ShopCommand(shopDataApiManager, shopManager),
 ]
 const racePromiseFactory = new PromiseFactory<RaceArena[]>()
 const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)

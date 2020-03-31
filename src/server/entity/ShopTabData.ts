@@ -8,4 +8,7 @@ export class ShopTabData {
     public readonly name: string
     public readonly display_name: string
     public readonly subcategories: ShopTabData[]
+    public readonly parent: number
+    public readonly title_display_name: string
+    public readonly description_display_name: string
 }

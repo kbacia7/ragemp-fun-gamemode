@@ -15,4 +15,5 @@ export enum APIRequests {
     SETTINGS_FOR_TESTS = "/settings/test/",
     SETTINGS_PREFIX = "/settings",
     SHOP_DATA_PREFIX = "/shop",
+    BUY_ITEM = "/buy/",
 }

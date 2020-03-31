@@ -6,34 +6,23 @@ import $ from "jquery"
 import "bootstrap"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import "./style.less"
-import { NotificationType } from "core/Notification/NotificationType"
-import { NotificationTimeout } from "core/Notification/NotificationTimeout"
-import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
-import {
-    PlayerRegisterAndLoginModuleEvent,
-} from "client/modules/PlayerRegisterAndLoginModule/PlayerRegisterAndLoginModuleEvent"
-import { IPlayerRegiserData } from "core/PlayerRegister/IPlayerRegisterData"
-import { stringify } from "querystring"
-import { PlayerEmailValidator } from "core/DataValidator/PlayerEmail/PlayerEmailValidator"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
-import { PlayerLoginValidator } from "core/DataValidator/PlayerLogin/PlayerLoginValidator"
-import { PlayerPasswordValidator } from "core/DataValidator/PlayerPassword/PlayerPasswordValidator"
 import { ShopTabData } from "server/entity/ShopTabData"
 import { ShopTabFilterData } from "server/entity/ShopTabFilterData"
 import { ShopEntity } from "server/entity/ShopEntity"
+import { GlobalShopModuleEvent } from "client/modules/GlobalShopModule/GlobalShopModuleEvent"
+import { Currency } from "server/modules/ShopManager/Currency"
 
 const regExpFactory = new RegExpFactory()
 const promiseFactory = new PromiseFactory<string>()
 const xmlFileRequest = new XMLFileRequest(promiseFactory)
 const internationalizationSettings = new InternationalizationSettings("pl_PL")
 const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
-const emailValidator = new PlayerEmailValidator(regExpFactory)
-const loginValidator = new PlayerLoginValidator(regExpFactory)
-const passwordValidator = new PlayerPasswordValidator()
+const providedTabDataForTabs: {[name: string]: ShopTabData}  = {}
 $(document).ready(() => {
     i18nTranslator.loadTranslations("/translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
-      element.innerText =   i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
+      element.innerText = i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
     })
     $("[data-i18n-translate-placeholder]").toArray().forEach((element: HTMLElement) => {
         element.setAttribute(
@@ -42,8 +31,6 @@ $(document).ready(() => {
         )
       })
     $("#global-shop").modal({backdrop: "static", keyboard: false})
-    // tslint:disable-next-line: no-console
-
     $(document).on("click", ".tab-filter, .tab-filter-link", (ev) => {
       let clickedFilter = $(ev.target).attr("data-shop-tab-filter")
       if (!clickedFilter || clickedFilter.length <= 0) {
@@ -51,7 +38,38 @@ $(document).ready(() => {
       }
       setFilterActive(clickedFilter)
     })
+    $(document).on("click", ".buy-diamonds, .buy-cash", (ev) => {
+      let el = $(ev.target)
+      let itemId = el.attr("data-shop-item-id")
+      if (!itemId) {
+        el = $(ev.target).parent()
+        itemId = el.attr("data-shop-item-id")
+      }
+      const currency = el.hasClass("buy-diamonds") ? Currency.DIAMONDS : Currency.MONEY
+      mp.trigger(GlobalShopModuleEvent.BUY, parseInt(itemId, 10), currency)
+    })
 
+    $(document).on("click", ".close-shop", () => {
+      mp.trigger(GlobalShopModuleEvent.CLOSE)
+
+    })
+
+    $(document).on("click", "[data-shop-tab-for]", (ev) => {
+      const clickedLink = $(ev.target)
+      const dropdown = clickedLink.next(".dropdown-menu")
+      const haveMenu = dropdown && dropdown.length > 0
+      if (!haveMenu) {
+        const tabName = clickedLink.attr("data-shop-tab-for")
+
+        if (providedTabDataForTabs[tabName]) {
+            return _global.provideTabData(JSON.stringify(providedTabDataForTabs[tabName]))
+          } else {
+            return mp.trigger(GlobalShopModuleEvent.NEED_DATA_FOR_TAB, tabName)
+          }
+
+        }
+
+    })
 })
 
 const _global: any = (window || global) as any
@@ -65,9 +83,24 @@ const setTabActive = (tabName: string) => {
 
 _global.provideTabData = (tabDataAsJson: string) => {
   const tabData: ShopTabData = JSON.parse(tabDataAsJson)
-  loadDataForTab(tabData.name, tabData)
-  setTabActive(tabData.name)
-  setFilterActive(tabData.filters[0].name)
+  if (tabData) {
+    setTabActive(tabData.name)
+    if (!providedTabDataForTabs[tabData.name]) {
+      providedTabDataForTabs[tabData.name] = tabData
+      loadDataForTab(tabData.name, tabData)
+    }
+    if (tabData.subcategories.length > 0) {
+      tabData.subcategories.forEach((subTab: ShopTabData) => {
+        if (!providedTabDataForTabs[subTab.name]) {
+          providedTabDataForTabs[subTab.name] = subTab
+        }
+      })
+    }
+    if (tabData.filters.length > 0) {
+      setFilterActive(tabData.filters[0].name)
+    }
+
+  }
 }
 
 _global.provideTabs = (tabsAsJson: string) => {
@@ -81,12 +114,38 @@ _global.provideTabs = (tabsAsJson: string) => {
     link.text(
       i18nTranslator.translate(tabData.display_name),
     )
-    $("#shop-tabs-main-list").append(newTab)
+    if (tabData.subcategories.length > 0) {
+      tabData.subcategories.forEach((subtab: ShopTabData) => {
+        const submenu = newTab.find(".dropdown-menu")
+        const newSubcategory = submenu.find(".subcategory-sample").clone()
+        newSubcategory.removeClass("subcategory-sample")
+        newSubcategory.text(
+          i18nTranslator.translate(subtab.display_name),
+        )
+        newSubcategory.attr("data-shop-tab-for", subtab.name)
+        submenu.append(newSubcategory)
+        const newSubContent = $("#shop-tab-content-sample").clone()
+        newSubContent.removeAttr("id")
+        newSubContent.attr("data-shop-tab-name", subtab.name)
+        newSubContent.find(".tab-title").text(
+          i18nTranslator.translate(subtab.title_display_name),
+        )
+        newSubContent.find(".tab-description").text(
+          i18nTranslator.translate(subtab.description_display_name),
+        )
+        $("#shop-container").append(newSubContent)
 
+      })
+    } else {
+      link.next(".dropdown-menu").remove()
+      link.removeClass("dropdown-toggle")
+      newTab.removeClass("dropright")
+    }
     const newContent = $("#shop-tab-content-sample").clone()
     newContent.removeAttr("id")
     newContent.attr("data-shop-tab-name", tabData.name)
     $("#shop-container").append(newContent)
+    $("#shop-tabs-main-list").append(newTab)
   })
 }
 
@@ -96,8 +155,6 @@ const getActiveTab = () => {
 
 const setFilterActive = (filterName: string) => {
   const tabName: string = getActiveTab()
-  // tslint:disable-next-line: no-console
-  console.log(tabName)
   const tab = $(`[data-shop-tab-name='${tabName}']`)
   tab.find(".row").addClass("d-none")
   tab.find(`[data-shop-tab-row-for-filter='${filterName}']`).removeClass("d-none")
@@ -149,12 +206,15 @@ const loadDataForTab = (tabName: string, data: ShopTabData) => {
         rowToAppend.removeClass("row-sample")
       }
       const newColumn = columnSample.clone()
-      newColumn.find(`.item-cost-money`).text(entity.money)
-      newColumn.find(`.item-cost-diamonds`).text(entity.diamonds)
+      newColumn.find(".buy-diamonds").attr("data-shop-item-id", entity.id)
+      newColumn.find(".buy-cash").attr("data-shop-item-id", entity.id)
+      const money = entity.money && entity.money > 0 ? entity.money : data.money
+      const diamonds = entity.diamonds && entity.diamonds > 0 ? entity.diamonds : data.diamonds
+      newColumn.find(`.item-cost-money`).text(money)
+      newColumn.find(`.item-cost-diamonds`).text(diamonds)
 
       const image = newColumn.find(`.column-image`)
       let src = image.attr("src")
-      src = src.replace("[TAB_NAME]", data.name)
       src = src.replace("[FILTER_NAME]", filter.name)
       src = src.replace("[FILENAME]", entity.filename)
       newColumn.removeClass("column-sample")

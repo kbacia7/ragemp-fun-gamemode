@@ -13,7 +13,10 @@ import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { ShopTabData } from "server/entity/ShopTabData"
+import { Currency } from "server/modules/ShopManager/Currency"
+import { ShopManagerEvents } from "server/modules/ShopManager/ShopManagerEvents"
 import { ActionsMenuModuleEvents } from "../ActionsMenuModule/ActionsMenuModuleEvents"
+import { ChatModuleEvent } from "../Chat/ChatModuleEvent"
 import { Module } from "./../Module"
 import { GlobalShopModuleEvent } from "./GlobalShopModuleEvent"
 
@@ -32,6 +35,23 @@ export class GlobalShopModule extends Module {
                 }
             })
         })
+
+        mp.events.add(GlobalShopModuleEvent.BUY, (itemId: number, currency: Currency) => {
+            mp.events.callRemote(ShopManagerEvents.BUY, itemId, currency)
+        })
+
+        mp.events.add(GlobalShopModuleEvent.NEED_DATA_FOR_TAB, (tabName: string) => {
+            mp.events.callRemote(ShopManagerEvents.NEED_DATA_FOR_TAB, tabName)
+        })
+
+        mp.events.add(GlobalShopModuleEvent.PROVIDE_DATA_FOR_TAB, (tabDataAsJson: string) => {
+            const shopData: ShopTabData = JSON.parse(tabDataAsJson)
+            this._provideTabData(shopData)
+        })
+
+        mp.events.add(GlobalShopModuleEvent.CLOSE, () => {
+            this.destroyUI()
+        })
     }
 
     public loadUI() {
@@ -39,7 +59,10 @@ export class GlobalShopModule extends Module {
             super.loadUI().then((loaded) => {
                 resolve(loaded)
             })
+            mp.events.call(ActionsMenuModuleEvents.HIDE_MENU)
             mp.events.call(ActionsMenuModuleEvents.DISABLE_MENU)
+            mp.events.call(ChatModuleEvent.DISABLE_CHAT)
+            mp.gui.cursor.show(true, true)
         })
 
     }
@@ -50,6 +73,8 @@ export class GlobalShopModule extends Module {
                 resolve(result)
             })
             mp.events.call(ActionsMenuModuleEvents.ENABLE_MENU)
+            mp.events.call(ChatModuleEvent.ENABLE_CHAT)
+            mp.gui.cursor.show(false, false)
         })
     }
 
