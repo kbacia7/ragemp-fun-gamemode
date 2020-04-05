@@ -1,6 +1,7 @@
 export enum PlayerDataProps {
     RANK = "rank",
     RANK_NAME = "rankName",
+    ITEMS = "items",
     KILLS = "kills",
     DEATHS = "deaths",
     STATUS = "status",
@@ -10,7 +11,6 @@ export enum PlayerDataProps {
     NAMECOLOR = "nameColor",
     ISLOGGED = "isLogged",
     PLAY_AS_GUEST = "playAsGuest",
-    PED = "ped",
     SAVED_ON_EVENTS = "savedOnEvents",
     ON_EVENT = "onEvent",
     ON_ARENA = "onArena",

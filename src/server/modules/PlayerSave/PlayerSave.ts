@@ -16,7 +16,6 @@ export class PlayerSave {
                 apiManager.send(APIRequests.PLAYER_SAVE, {
                     deaths: playerData.deaths,
                     kills: playerData.kills,
-                    ped: playerData.ped,
                 })
             }
             if (playerData.status === PlayerDataStatus.ON_EVENT) {

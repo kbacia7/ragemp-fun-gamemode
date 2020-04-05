@@ -32,5 +32,6 @@
     "SHOP_ITEM_BUYED_WEAPONS_ONCE_IN_DIAMONDS": "Zakupiłeś jednorazowy spawn broni za %s diamentów",
     "SHOP_ITEM_BUYED_WEAPONS_ONCE_IN_MONEY": "Zakupiłeś jednorazowy spawn broni za %s$",
     "SHOP_NOT_ENOUGH_MONEY": "Posiadasz niewystarczającą ilość pieniędzy by dokonać tego zakupu",
-    "SHOP_NOT_ENOUGH_DIAMONDS": "Posiadasz niewystarczającą ilość diamentów by dokonać tego zakupu"
+    "SHOP_NOT_ENOUGH_DIAMONDS": "Posiadasz niewystarczającą ilość diamentów by dokonać tego zakupu",
+    "SHOP_ALREADY_HAVE_ITEM": "Aktualnie posiadasz ten przedmiot w ekwipunku"
 }

@@ -66,8 +66,16 @@ export class ShopManager implements IShopManager {
                              )
                         }
                         if (Object.keys(buyActionsForTabs).includes(shopResponse.tab_name)) {
-                            buyActionsForTabs[shopResponse.tab_name].buy(playerMp, shopResponse.ragemp_item_id)
+                            buyActionsForTabs[shopResponse.tab_name].buy(playerMp, shopResponse.ragemp_item_id ?
+                                shopResponse.ragemp_item_id : shopResponse.item_id)
                         }
+                       }
+
+                       const alreadyHaveItemCallback = () => {
+                        notificationSender.send(
+                            playerMp, `SHOP_ALREADY_HAVE_ITEM`,
+                            NotificationType.ERROR, NotificationTimeout.LONG,
+                        )
                        }
 
                        const notEnoughCurrencyCallback = () => {
@@ -96,6 +104,10 @@ export class ShopManager implements IShopManager {
                                     notEnoughCurrencyCallback()
                                 }
                             }
+                            break
+                           }
+                           case ShopResponses.ALREADY_HAVE: {
+                            alreadyHaveItemCallback()
                             break
                            }
                            case ShopResponses.NOT_ENOUGH_CURRENCY: {

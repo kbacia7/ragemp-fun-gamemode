@@ -63,20 +63,24 @@ import { GlobalTabSender } from "./modules/Chat/Senders/GlobalTabSender"
 import { LocalTabSender } from "./modules/Chat/Senders/LocalTabSender"
 import { NotificationTabSender } from "./modules/Chat/Senders/NotificationTabSender"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
+import { EqCommand } from "./modules/Commands/EqCommand/EqCommand"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
 import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
 import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
+import { PlayerEquipManager } from "./modules/PlayerEquipManager/PlayerEquipManager"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
+import { SkinItemBuyAction } from "./modules/ShopManager/BuyActions/SkinItemBuyAction"
 import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
 import { VehicleSpawnBuyAction } from "./modules/ShopManager/BuyActions/VehicleSpawnBuyAction"
+import { WeaponItemBuyAction } from "./modules/ShopManager/BuyActions/WeaponItemBuyAction"
 import { WeaponOnceSpawnBuyAction } from "./modules/ShopManager/BuyActions/WeaponOnceSpawnBuyAction"
 import { IShopManager } from "./modules/ShopManager/IShopManager"
 import { ShopManager } from "./modules/ShopManager/ShopManager"
@@ -154,15 +158,19 @@ const shopManager: IShopManager = new ShopManager(
    notificationSenderFactory,
    {
       "skins-once": new SkinOnceChangeBuyAction(),
+      "skins-spawns": new SkinItemBuyAction(playerApiManager, playerDataFactory),
       "vehicles-spawn": new VehicleSpawnBuyAction(vehicleFactory),
       "weapons-once": new WeaponOnceSpawnBuyAction(),
+      "weapons-spawns": new WeaponItemBuyAction(playerApiManager, playerDataFactory),
    },
 )
+const playerEquipManager = new PlayerEquipManager(playerApiManager, playerDataFactory)
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
    new ShopCommand(shopDataApiManager, shopManager),
+   new EqCommand(playerDataFactory),
 ]
 const racePromiseFactory = new PromiseFactory<RaceArena[]>()
 const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)

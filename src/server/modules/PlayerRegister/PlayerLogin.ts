@@ -29,7 +29,6 @@ export class PlayerLogin {
             if (!this._playerLoginValidatorFactory.create().validate(playerLoginData.login)) {
                 player.call(PlayerRegisterEvent.UNKNOWN_ERROR)
             } else {
-                console.log(playerLoginData.login)
                 this._apiManager.send(APIRequests.PLAYER_LOGIN, {
                     login: playerLoginData.login,
                 }).then((res: IncomingMessage) => {
