@@ -71,6 +71,13 @@ export class ShopManager implements IShopManager {
                         }
                        }
 
+                       const alreadyHaveItemCallback = () => {
+                        notificationSender.send(
+                            playerMp, `SHOP_ALREADY_HAVE_ITEM`,
+                            NotificationType.ERROR, NotificationTimeout.LONG,
+                        )
+                       }
+
                        const notEnoughCurrencyCallback = () => {
                         notificationSender.send(
                             playerMp, `SHOP_NOT_ENOUGH_${currency}`,
@@ -97,6 +104,10 @@ export class ShopManager implements IShopManager {
                                     notEnoughCurrencyCallback()
                                 }
                             }
+                            break
+                           }
+                           case ShopResponses.ALREADY_HAVE: {
+                            alreadyHaveItemCallback()
                             break
                            }
                            case ShopResponses.NOT_ENOUGH_CURRENCY: {

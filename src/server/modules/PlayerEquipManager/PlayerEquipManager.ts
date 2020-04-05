@@ -22,8 +22,6 @@ export class PlayerEquipManager {
                     responseInJson += chunk
                 })
                 response.on("end", () => {
-                    console.log("response read!")
-                    console.log(responseInJson)
                     const newItems: PlayerItem[] = JSON.parse(responseInJson)
                     if (newItems.length > 0) {
                         playerMp.setVariable(PlayerDataProps.ITEMS, newItems)
