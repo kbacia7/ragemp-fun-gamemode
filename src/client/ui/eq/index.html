@@ -1,0 +1,76 @@
+<html>
+
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cyborg/bootstrap.min.css"
+    crossorigin="anonymous">
+  <script src="index.js"></script>
+</head>
+
+<body style="background: none !important">
+  <div class="fade-background"></div>
+  <div class="d-flex align-items-center min-vh-100">
+    <div id="eq" class="container-fluid p-0 d-flex flex-column">
+      <div class="row">
+        <div class="col-3">
+          <div class="row">
+            <div data-eq-card-name="skin_spawn" class="eq-card col-12">
+              <div class="p-3 bg-secondary">
+                <h5 class="m-0" data-i18n-translate="EQ_SKIN_SPAWN"></h5>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div data-eq-card-name="weapon" class="eq-card col-12">
+              <div class="p-3 bg-secondary">
+                <h5 class="m-0" data-i18n-translate="EQ_WEAPONS_SPAWN"></h5>
+                <p  class="m-0"><span class="font-weight-bold text-success" data-i18n-translate="EQ_ACTUAL"></span>:<span class="equipped"></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div data-eq-card-name="utils" class="eq-card col-12">
+              <div class="p-3 bg-secondary">
+                <h5 class="m-0" data-i18n-translate="EQ_UTILS"></h5>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <button type="button" id="eq-close" class="btn btn-info p-3 w-100" data-i18n-translate="EQ_CLOSE"></button>
+            </div>
+          </div>
+        </div>
+        <div id="eq-select" class="col-8 d-none">
+          <div class="row">
+            <div class="col-6">
+              <div id="eq-select-container" class="container-fluid bg-secondary">
+                <div id="eq-select-example-row" class="row">
+         
+                </div>
+                <div id="eq-select-example-item" class="eq-select-item col-2">
+                  <img class="item-image img-fluid" src="/assets/shop/weapons/weapon_item_empty.png" />
+                </div>
+              </div>
+            </div>
+            <div class="col-5">
+              <div id="eq-item-description" data-eq-item-id="" class="container-fluid bg-secondary d-none">
+                <div>
+                  <h3 id="eq-item-title" class="text-center"></h3>
+                  <p  id="eq-item-description-content"></p>
+                </div>
+                <div class="row">
+                  <div class="col text-center">
+                    <button type="button" id="eq-item-description-equip-button" class="btn btn-success" data-i18n-translate="EQ_EQUIP"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

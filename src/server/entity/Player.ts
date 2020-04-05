@@ -1,7 +1,10 @@
+import { Item } from "./Item"
+import { PlayerItem } from "./PlayerItem"
 import { Rank } from "./Rank"
 
 export class Player {
   public readonly id: number
+  public readonly player_items: PlayerItem[]
   public readonly login: string
   public readonly password: string
   public readonly email: string

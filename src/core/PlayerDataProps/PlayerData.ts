@@ -1,3 +1,5 @@
+import { Item } from "server/entity/Item"
+import { PlayerItem } from "server/entity/PlayerItem"
 import { Rank } from "server/entity/Rank"
 import { ArenaType } from "server/modules/Arenas/ArenaType"
 import { AutomaticEventType } from "server/modules/AutomaticEvents/AutomaticEventType"
@@ -23,6 +25,11 @@ export class PlayerData implements IPlayerData {
     private _rankName: string
     get rankName() {
         return this._rankName
+    }
+
+    private _items: PlayerItem[]
+    get items() {
+        return this._items
     }
 
     private _kills: number
@@ -109,6 +116,7 @@ export class PlayerData implements IPlayerData {
         this._savedOnEvents = []
         this._ped = 0
         this._money = 0
+        this._items = []
         this._diamonds = 0
         this._onEvent = AutomaticEventType.NOTHING
         this._onArena = ArenaType.NOTHING
@@ -130,6 +138,7 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.PED, this._ped)
         player.setVariable(PlayerDataProps.MONEY, this._money)
+        player.setVariable(PlayerDataProps.ITEMS, this._items)
         player.setVariable(PlayerDataProps.DIAMONDS, this._diamonds)
         player.setVariable(PlayerDataProps.DATABASE_ID, this._databaseId)
 
@@ -158,6 +167,7 @@ export class PlayerData implements IPlayerData {
         this._savedOnEvents = player.getVariable(PlayerDataProps.SAVED_ON_EVENTS)
         this._id = player.id
         this._databaseId = player.getVariable(PlayerDataProps.DATABASE_ID)
+        this._items = player.getVariable(PlayerDataProps.ITEMS)
         this._ped = player.getVariable(PlayerDataProps.PED)
     }
 
@@ -179,6 +189,7 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.ON_EVENT] = this._onEvent
         obj[PlayerDataProps.ON_ARENA] = this._onArena
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
+        obj[PlayerDataProps.ITEMS] = this._items
         obj[PlayerDataProps.PED] = this._ped
         return obj
     }

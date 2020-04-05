@@ -63,12 +63,14 @@ import { GlobalTabSender } from "./modules/Chat/Senders/GlobalTabSender"
 import { LocalTabSender } from "./modules/Chat/Senders/LocalTabSender"
 import { NotificationTabSender } from "./modules/Chat/Senders/NotificationTabSender"
 import { CommandExecutor } from "./modules/Commands/CommandExecutor"
+import { EqCommand } from "./modules/Commands/EqCommand/EqCommand"
 import { HpCommand } from "./modules/Commands/HpCommand/HpCommand"
 import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
 import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
+import { PlayerEquipManager } from "./modules/PlayerEquipManager/PlayerEquipManager"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
@@ -158,11 +160,13 @@ const shopManager: IShopManager = new ShopManager(
       "weapons-once": new WeaponOnceSpawnBuyAction(),
    },
 )
+const playerEquipManager = new PlayerEquipManager(playerApiManager, playerDataFactory)
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
    new SetCommand(playerDataFactory),
    new ShopCommand(shopDataApiManager, shopManager),
+   new EqCommand(playerDataFactory),
 ]
 const racePromiseFactory = new PromiseFactory<RaceArena[]>()
 const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)

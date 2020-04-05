@@ -17,6 +17,7 @@ import { AutomaticEventsTableModule } from "./modules/AutomaticEventsTableModule
 import { ChangePlayerPedModule } from "./modules/ChangePlayerPedModule/ChangePlayerPedModule"
 import { ChatModule } from "./modules/Chat/ChatModule"
 import { CommandListenerModule } from "./modules/CommandListener/CommandListenerModule"
+import { EquipmentModule } from "./modules/EquipmentModule/EquipmentModule"
 import { FreezePlayerModule } from "./modules/FreezePlayerModule/FreezePlayerModule"
 import { GlobalShopModule } from "./modules/GlobalShopModule/GlobalShopModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
@@ -37,6 +38,7 @@ const automaticEventsTableModule: AutomaticEventsTableModule = new AutomaticEven
 const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBooleanFactory)
 const freezePlayerModule = new FreezePlayerModule(promiseBooleanFactory)
 const changePlayerPedModule = new ChangePlayerPedModule(promiseBooleanFactory)
+const equipmentModule = new EquipmentModule(promiseBooleanFactory)
 const regexpFactory = new RegExpFactory()
 const htmlValidator = new HTMLValidator(regexpFactory)
 const chatMessageValidator = new ChatMessageValidator(regexpFactory)

@@ -14,6 +14,7 @@ export class PlayerLoader {
         })
 
         mp.events.add("playerStartPlay", (playerMp: PlayerMp, login: string, data: Player) => {
+            console.log(data)
             if (data) {
                 playerMp.setVariable(PlayerDataProps.KILLS, data.kills)
                 playerMp.setVariable(PlayerDataProps.DEATHS, data.deaths)
@@ -21,6 +22,7 @@ export class PlayerLoader {
                 playerMp.setVariable(PlayerDataProps.RANK_NAME, data.rank.name)
                 playerMp.setVariable(PlayerDataProps.MONEY, data.money)
                 playerMp.setVariable(PlayerDataProps.DIAMONDS, data.diamonds)
+                playerMp.setVariable(PlayerDataProps.ITEMS, data.player_items)
                 playerMp.setVariable(PlayerDataProps.PED, data.ped)
                 playerMp.setVariable(PlayerDataProps.DATABASE_ID, data.id)
             } else {
@@ -34,6 +36,8 @@ export class PlayerLoader {
             playerMp.setVariable(PlayerDataProps.NAME, login)
             playerMp.setVariable(PlayerDataProps.ISLOGGED, true)
             const playerData: IPlayerData = playerDataFactory.create().load(playerMp)
+            console.log("p")
+            console.log(playerData)
             playerMp.call("playerStartPlay", [JSON.stringify(playerData)])
             mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
         })
