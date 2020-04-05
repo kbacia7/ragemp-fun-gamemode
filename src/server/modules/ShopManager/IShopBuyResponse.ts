@@ -4,5 +4,6 @@ export interface IShopBuyResponse {
     code: ShopResponses,
     tab_name: string
     cost: number,
-    ragemp_item_id: number
+    ragemp_item_id: number | null,
+    item_id: number | null
 }

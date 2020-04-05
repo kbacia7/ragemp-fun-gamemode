@@ -79,6 +79,7 @@ import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
 import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
 import { VehicleSpawnBuyAction } from "./modules/ShopManager/BuyActions/VehicleSpawnBuyAction"
+import { WeaponItemBuyAction } from "./modules/ShopManager/BuyActions/WeaponItemBuyAction"
 import { WeaponOnceSpawnBuyAction } from "./modules/ShopManager/BuyActions/WeaponOnceSpawnBuyAction"
 import { IShopManager } from "./modules/ShopManager/IShopManager"
 import { ShopManager } from "./modules/ShopManager/ShopManager"
@@ -158,6 +159,7 @@ const shopManager: IShopManager = new ShopManager(
       "skins-once": new SkinOnceChangeBuyAction(),
       "vehicles-spawn": new VehicleSpawnBuyAction(vehicleFactory),
       "weapons-once": new WeaponOnceSpawnBuyAction(),
+      "weapons-spawns": new WeaponItemBuyAction(playerApiManager, playerDataFactory),
    },
 )
 const playerEquipManager = new PlayerEquipManager(playerApiManager, playerDataFactory)

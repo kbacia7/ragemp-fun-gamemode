@@ -6,5 +6,6 @@
    "EQ_ITEM_WEAPON_TEST": "Testowy pistolet", 
    "EQ_EQUIP": "Załóż",
    "EQ_UNEQUIP": "Zdejmij",
-   "EQ_CLOSE": "Zamknij"
+   "EQ_CLOSE": "Zamknij",
+   "EQ_TEST_WEAPON_TITLE": "Jakaś broń"
 }

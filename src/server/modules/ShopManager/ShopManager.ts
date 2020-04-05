@@ -66,7 +66,8 @@ export class ShopManager implements IShopManager {
                              )
                         }
                         if (Object.keys(buyActionsForTabs).includes(shopResponse.tab_name)) {
-                            buyActionsForTabs[shopResponse.tab_name].buy(playerMp, shopResponse.ragemp_item_id)
+                            buyActionsForTabs[shopResponse.tab_name].buy(playerMp, shopResponse.ragemp_item_id ?
+                                shopResponse.ragemp_item_id : shopResponse.item_id)
                         }
                        }
 
