@@ -26,8 +26,6 @@ $(document).ready(() => {
     $(document).on("click", ".eq-card", (ev) => {
       let target = ev.target
       let section = $(target).attr("data-eq-card-name")
-      // tslint:disable: no-console
-      console.log(target)
       if (!section) {
         target = $(target).closest("[data-eq-card-name]")
         section = $(target).attr("data-eq-card-name")
@@ -40,8 +38,6 @@ $(document).ready(() => {
       mp.trigger(EquipmentModuleEvent.HIDE_EQ)
     })
     $(document).on("click", "#eq-item-description-equip-button", () => {
-      console.log("cliic")
-      console.log(itemsBySection)
       let thisPlayerItem: PlayerItem = null
       Object.keys(itemsBySection).forEach((section) => {
         itemsBySection[section].forEach((playerItem: PlayerItem) => {
