@@ -46,7 +46,16 @@ export class PlayerSpawnManager {
                     playerItem.item.section.name === ItemsSectionsNames.WEAPON && playerItem.equipped,
             ).map((playerItem) => playerItem.item.ragemp_item_id)
 
-            playerMp.call(ChangePlayerPedModuleEvents.CHANGE_PED, [playerData.ped])
+            const skinOnSpawn: number[] = playerData.items.filter(
+                (playerItem: PlayerItem) =>
+                    playerItem.item.section.name === ItemsSectionsNames.SKIN && playerItem.equipped,
+            ).map((playerItem) => playerItem.item.ragemp_item_id)
+
+            let ped = 0x0DE9A30A
+            if (skinOnSpawn.length > 0) {
+                ped = skinOnSpawn[0]
+            }
+            playerMp.call(ChangePlayerPedModuleEvents.CHANGE_PED, [ped])
             weaponsOnSpawn.forEach((weaponId) => {
                 playerMp.giveWeapon(weaponId, 99999999)
             })

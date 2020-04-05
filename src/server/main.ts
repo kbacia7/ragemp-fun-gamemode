@@ -77,6 +77,7 @@ import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
+import { SkinItemBuyAction } from "./modules/ShopManager/BuyActions/SkinItemBuyAction"
 import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
 import { VehicleSpawnBuyAction } from "./modules/ShopManager/BuyActions/VehicleSpawnBuyAction"
 import { WeaponItemBuyAction } from "./modules/ShopManager/BuyActions/WeaponItemBuyAction"
@@ -157,6 +158,7 @@ const shopManager: IShopManager = new ShopManager(
    notificationSenderFactory,
    {
       "skins-once": new SkinOnceChangeBuyAction(),
+      "skins-spawns": new SkinItemBuyAction(playerApiManager, playerDataFactory),
       "vehicles-spawn": new VehicleSpawnBuyAction(vehicleFactory),
       "weapons-once": new WeaponOnceSpawnBuyAction(),
       "weapons-spawns": new WeaponItemBuyAction(playerApiManager, playerDataFactory),

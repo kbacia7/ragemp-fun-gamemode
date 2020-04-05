@@ -6,7 +6,6 @@ import { IBuyAction } from "./IBuyAction"
 
 export class SkinOnceChangeBuyAction implements IBuyAction {
     public buy(buyer: PlayerMp, value: number) {
-        buyer.setVariable(PlayerDataProps.PED, value)
         buyer.call(ChangePlayerPedModuleEvents.CHANGE_PED, [value])
     }
 }

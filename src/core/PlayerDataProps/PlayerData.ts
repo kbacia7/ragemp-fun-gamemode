@@ -96,12 +96,6 @@ export class PlayerData implements IPlayerData {
     public get nameColor() {
         return this._nameColor
     }
-
-    private _ped: number
-    public get ped() {
-        return this._ped
-    }
-
     public initialize(player: PlayerMp) {
         this._rankName = "Gracz"
         this._kills = 0
@@ -114,7 +108,6 @@ export class PlayerData implements IPlayerData {
         this._isLogged = false
         this._playAsGuest = false
         this._savedOnEvents = []
-        this._ped = 0
         this._money = 0
         this._items = []
         this._diamonds = 0
@@ -136,7 +129,6 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.ON_ARENA, this._onArena)
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
-        player.setVariable(PlayerDataProps.PED, this._ped)
         player.setVariable(PlayerDataProps.MONEY, this._money)
         player.setVariable(PlayerDataProps.ITEMS, this._items)
         player.setVariable(PlayerDataProps.DIAMONDS, this._diamonds)
@@ -168,7 +160,6 @@ export class PlayerData implements IPlayerData {
         this._id = player.id
         this._databaseId = player.getVariable(PlayerDataProps.DATABASE_ID)
         this._items = player.getVariable(PlayerDataProps.ITEMS)
-        this._ped = player.getVariable(PlayerDataProps.PED)
     }
 
     public toJSON() {
@@ -190,7 +181,6 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.ON_ARENA] = this._onArena
         obj[PlayerDataProps.NAMECOLOR] = this._nameColor
         obj[PlayerDataProps.ITEMS] = this._items
-        obj[PlayerDataProps.PED] = this._ped
         return obj
     }
 

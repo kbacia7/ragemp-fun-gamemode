@@ -24,7 +24,6 @@ export interface IPlayerData {
     onEvent: AutomaticEventType,
     onArena: ArenaType,
     items: PlayerItem[],
-    ped: number,
     initialize: (player: PlayerMp) => void
     load: (player: PlayerMp) => IPlayerData
     sync: (player: PlayerMp) => void
