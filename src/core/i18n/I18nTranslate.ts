@@ -25,7 +25,7 @@ export class I18nTranslate {
          throw new I18nTranslationsNotLoadedException()
       }
       if (!this.i18nObject[toLanguage][label]) {
-         throw new I18nLabelNotFoundException()
+         return label
       }
       return this.i18nObject[toLanguage][label]
 
