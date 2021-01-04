@@ -10,6 +10,7 @@ import { INotificationSender } from "server/core/NotificationSender/INotificatio
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
 import { Setting } from "server/entity/Setting"
 import { PlayerQuitEvents } from "../PlayerSave/PlayerQuitEvents"
+import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
 import { Arena } from "./Arena"
 import { ArenaManagerEvents } from "./ArenaManagerEvents"
 import { ArenaType } from "./ArenaType"
@@ -42,7 +43,6 @@ export class ArenaManager {
             this._playersOnArena[arenaName] = []
             this._apiManager.query(`${APIRequests.SETTINGS_PREFIX}/${arenaName}/`).then((settings: Setting[]) => {
                 if (settings.length > 0) {
-                    console.log(`Load settings for ${arenaName} arena ${settings.length}`)
                     const mappedSettingsByName: { [name: string]: string } = Object.assign(
                         {},
                         ...(settings.map((item) => ({ [item.name]: item.value }))),
@@ -86,6 +86,7 @@ export class ArenaManager {
 
         mp.events.add(ArenaManagerEvents.PLAYER_QUIT_ARENA, (playerMp: PlayerMp, arenaName: string) => {
             this._playerSignOff(playerMp, arenaName)
+            mp.events.call(PlayerSpawnManagerEvents.FORCE_RESPAWN, playerMp)
         })
 
         mp.events.add(PlayerQuitEvents.PLAYER_QUIT_ON_ARENA, (playerData: IPlayerData) => {
