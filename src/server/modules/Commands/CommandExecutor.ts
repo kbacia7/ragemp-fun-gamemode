@@ -4,23 +4,23 @@ import { ICommand } from "./ICommand"
 
 export class CommandExecutor {
     private _playerDataFactory: IPlayerDataFactory = null
+    private _allRegisteredCommands: {} = {}
     constructor(playerDataFactory: IPlayerDataFactory) {
         this._playerDataFactory = playerDataFactory
+        this._allRegisteredCommands = {}
     }
 
     public addCommands(commands: ICommand[]) {
         commands.forEach((command) => {
             command.alias.forEach((commandAlias) => {
-                mp.events.addCommand(commandAlias, (player: PlayerMp, text: string) => {
-                    const playerData: IPlayerData = this._playerDataFactory.create().load(player)
-                    if (playerData.isLogged) {
-                        if (!text) {
-                            text = ""
-                        }
-                        command.execute(player, text.split(" "))
-                    }
-                })
+                this._allRegisteredCommands[commandAlias] = command
             })
         })
+    }
+
+    public executeCommand(player: PlayerMp, alias: string, args: string[]) {
+        if (alias in this._allRegisteredCommands) {
+            this._allRegisteredCommands[alias].execute(player, args)
+        }
     }
 }

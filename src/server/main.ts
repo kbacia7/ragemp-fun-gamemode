@@ -111,9 +111,10 @@ const injectedSendersForTabs = {
    [ChatSpecialTabs.GLOBAL]: new GlobalTabSender(),
    [ChatSpecialTabs.LOCAL]: new LocalTabSender(),
 }
+const commandExecutor = new CommandExecutor(playerDataFactory)
 const chat: Chat = new Chat(
    playerDataFactory, notificationSenderFactory, htmlValidator,
-   chatMessageValidator, htmlEscapeCharacters, emojiList, injectedSendersForTabs,
+   chatMessageValidator, htmlEscapeCharacters, emojiList, commandExecutor, injectedSendersForTabs,
 )
 const promiseBooleanFactory: PromiseFactory<boolean> = new PromiseFactory<boolean>()
 const playerEmailValidatorFactory = new PlayerEmailValidatorFactory(regExpFactory)
@@ -175,7 +176,6 @@ const allCommands: ICommand[] = [
 const racePromiseFactory = new PromiseFactory<RaceArena[]>()
 const raceApiManager = new APIManager<RaceArena>(racePromiseFactory, promiseForApiPosts, apiSetting)
 
-const commandExecutor = new CommandExecutor(playerDataFactory)
 const raceAutomaticEventFactory = new RaceAutomaticEventFactory(
    raceApiManager, vehicleFactory, vector3Factory, checkpointFactory, blipFactory,
    notificationSenderFactory, playerDataFactory, raceDataFactory,

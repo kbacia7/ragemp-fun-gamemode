@@ -17,6 +17,7 @@ import * as luxon from "luxon"
 import random from "random"
 import { INotificationSender } from "server/core/NotificationSender/INotificationSender"
 import { INotificationSenderFactory } from "server/core/NotificationSender/INotificationSenderFactory"
+import { CommandExecutor } from "../Commands/CommandExecutor"
 import { IChatSpecialTabSender } from "./Senders/IChatSpecialTabSender"
 
 export class Chat {
@@ -24,6 +25,7 @@ export class Chat {
         playerDataFactory: IPlayerDataFactory, notificationSenderFactory: INotificationSenderFactory,
         htmlValidator: IDataValidator, chatMessageValidator: IDataValidator,
         htmlEscapeCharacters: IEscapeCharacters, emojiList: IEmojiList,
+        commandExecutor: CommandExecutor,
         injectedSenders: {[tab: string]: IChatSpecialTabSender},
     ) {
 
@@ -32,6 +34,13 @@ export class Chat {
             const playerData: IPlayerData = playerDataFactory.create().load(player)
             if (playerData.isLogged) {
                 let message = messageClientData.message
+                if (message.startsWith("!")) {
+                    const commandArgs = message.split(" ")
+                    const commandName = commandArgs[0].replace("!", "")
+                    commandArgs.shift()
+                    commandExecutor.executeCommand(player, commandName, commandArgs)
+                    return
+                }
                 message = htmlEscapeCharacters.escape(message)
                 if (!message.includes("!{") && !htmlValidator.validate(message) &&
                 chatMessageValidator.validate(message)) {
