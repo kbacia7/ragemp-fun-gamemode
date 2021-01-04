@@ -25,7 +25,7 @@
     "DERBY_EVENT_MAP_START": "Mecz derby się rozpoczął!",
     "DERBY_EVENT_MAP_TOO_MANY_PLAYERS": "Upsss... Wygląda na to, że załadowana mapa nie ma miejsc na tyle graczy (mapa: %s)",
     "DERBY_EVENT_MAP_INFO": "Załadowana mapa to %s stworzona przez %s",
-    "DERBY_EVENT_YOU_WIN": "Wygrałeś derby! Wygrałeś %s$ i $s expa!",
+    "DERBY_EVENT_YOU_WIN": "Wygrałeś derby! Wygrałeś %s$ i %s$ expa!",
     "DERBY_EVENT_WINNER": "%s wygrał derby!",
     "DERBY_EVENT_LOOSE": "Odpadłeś z derby!",
     "HIDE_AND_SEEK_EVENT_MAP_START": "Zabawa rozpoczęta, za 3 minuty szukający zacznie szukać!",
@@ -37,5 +37,10 @@
     "ARENA_JOIN": "Dołączyłeś na arenę %s",
     "ARENA_EXIT": "Opuściłes arenę %s",
     "ARENA_CANT_JOIN": "Nie możesz dołączyć aktualnie na arenę",
-    "DM_ARENA_MAP_INFO": "Aktualna mapa na DM to %s (stworzona przez %s)"
+    "DM_ARENA_MAP_INFO": "Aktualna mapa na DM to %s (stworzona przez %s)",
+    "HEAVYDM_ARENA_MAP_INFO": "Aktualna mapa na HeavyDM to %s (stworzona przez %s)",
+    "SNIPER_ARENA_MAP_INFO": "Aktualna mapa na Sniper to %s (stworzona przez %s)",
+    "ONESHOOT_ARENA_MAP_INFO": "Aktualna mapa na HeavyDM to %s (stworzona przez %s)"
+
+
 }
