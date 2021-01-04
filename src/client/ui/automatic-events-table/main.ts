@@ -23,9 +23,13 @@ const xmlFileRequest = new XMLFileRequest(promiseFactory)
 const internationalizationSettings = new InternationalizationSettings("pl_PL")
 const i18nTranslator = new I18nTranslate(internationalizationSettings, xmlFileRequest)
 $(document).ready(() => {
-    i18nTranslator.loadTranslations("translations")
+    i18nTranslator.loadTranslations("/translations")
     $("[data-i18n-translate]").toArray().forEach((element: HTMLElement) => {
         element.innerText = i18nTranslator.translate(element.getAttribute("data-i18n-translate"))
+    })
+
+    $(document).on("mousedown", "button", (e) => {
+        e.preventDefault()
     })
 
     $("#automatic-event-table-tabs").on("click", "[id^=tabs]", (event) => {
@@ -52,6 +56,8 @@ _global.setEventsInTable = (automaticEventsDatasStr: string) => {
         el.find(".automatic-events-table-row-title").text(
             `${automaticEventData.displayName} (${automaticEventData.actualPlayers}/${automaticEventData.maxPlayers})`,
         )
+        el.removeClass("d-none")
+        el.prependTo("#events-page")
         const clickedButton = el.find(".automatic-events-table-row-save-button")
         clickedButton.on("click", () => {
             if (clickedButton.hasClass("automatic-event-saved")) {
@@ -61,16 +67,15 @@ _global.setEventsInTable = (automaticEventsDatasStr: string) => {
                 clickedButton.addClass("btn-primary")
                 clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
             } else {
+
                 mp.trigger(AutomaticEventsTableModuleEvents.PLAYER_SAVE_ON_EVENT, automaticEventData.name)
                 clickedButton.removeClass("btn-primary")
                 clickedButton.addClass("btn-info")
                 clickedButton.addClass("automatic-event-saved")
-                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVED"))
+                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_EVENT_SAVED"))
             }
 
         })
-        el.removeClass("d-none")
-        el.prependTo("#events-page")
     })
 }
 
@@ -82,25 +87,25 @@ _global.setArenasInTable = (arenasDatasStr: string) => {
         el.find(".arenas-table-row-title").text(
             `${arenaData.displayName} (${arenaData.actualPlayers}/${arenaData.maxPlayers})`,
         )
-        const clickedButton = el.find(".arenas-table-row-save-button")
+        el.removeClass("d-none")
+        el.prependTo("#arenas-page")
+        const clickedButton = el.find(".automatic-events-table-row-save-button")
         clickedButton.on("click", () => {
-            if (clickedButton.hasClass("arenas-saved")) {
-                mp.trigger(AutomaticEventsTableModuleEvents.QUIT_ARENA, arenaData.name)
-                clickedButton.removeClass("arenas-saved")
-                clickedButton.removeClass("btn-info")
-                clickedButton.addClass("btn-primary")
-                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
+                 if (clickedButton.hasClass("arenas-saved")) {
+                    mp.trigger(AutomaticEventsTableModuleEvents.QUIT_ARENA, arenaData.name)
+                    clickedButton.removeClass("arenas-saved")
+                    clickedButton.removeClass("btn-info")
+                    clickedButton.addClass("btn-primary")
+                    clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVE"))
             } else {
-                mp.trigger(AutomaticEventsTableModuleEvents.JOIN_ARENA, arenaData.name)
-                clickedButton.removeClass("btn-primary")
-                clickedButton.addClass("btn-info")
-                clickedButton.addClass("arenas-saved")
-                clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVED"))
+                       mp.trigger(AutomaticEventsTableModuleEvents.JOIN_ARENA, arenaData.name)
+                       clickedButton.removeClass("btn-primary")
+                       clickedButton.addClass("btn-info")
+                       clickedButton.addClass("arenas-saved")
+                       clickedButton.text(i18nTranslator.translate("AUTOMATIC_EVENTS_ARENA_SAVED"))
             }
 
         })
-        el.removeClass("d-none")
-        el.prependTo("#arenas-page")
     })
 }
 
