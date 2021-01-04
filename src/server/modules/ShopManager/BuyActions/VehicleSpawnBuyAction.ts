@@ -16,6 +16,6 @@ export class VehicleSpawnBuyAction implements IBuyAction {
             [random.int(0, 255), random.int(0, 255), random.int(0, 255)],
             [random.int(0, 255), random.int(0, 255), random.int(0, 255)],
         ], false, true, buyer.dimension)
-        buyer.putIntoVehicle(v, -1)
+        buyer.putIntoVehicle(v, 0)
     }
 }
