@@ -210,15 +210,19 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 Math.floor(Math.random() * 255) + 1,
                 Math.floor(Math.random() * 255) + 1,
             ]
+            const spawnPos = this._vector3Factory.create(raceArenaSpawn.x,  raceArenaSpawn.y,  raceArenaSpawn.z)
             this._vehicles.push(this._vehicleFactory.create(
                 raceArenaSpawn.vehicle_model,
-                this._vector3Factory.create(raceArenaSpawn.x,  raceArenaSpawn.y,  raceArenaSpawn.z),
+                spawnPos,
                 raceArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
                 true, true, this._eventDimension,
             ))
             const vehicleForSpawn = this._vehicles[this._vehicles.length - 1]
             playerMp.dimension = this._eventDimension
-            playerMp.putIntoVehicle(vehicleForSpawn, -1)
+            playerMp.position = spawnPos
+            setTimeout(() => {
+                playerMp.putIntoVehicle(vehicleForSpawn, 0)
+            }, 500)
             playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
             this._checkpoints.forEach((checkPoint: CheckpointMp) => {
                 checkPoint.hideFor(playerMp)
