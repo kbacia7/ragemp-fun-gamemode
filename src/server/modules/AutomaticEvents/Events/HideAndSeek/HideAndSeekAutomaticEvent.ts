@@ -78,26 +78,6 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
                 }
             }
         })
-
-        const evName = this._automaticEventData.name
-        /*Setting.query()
-                .select()
-                .where("name", "LIKE", `${evName}_%`)
-                .then((settingsFromDb: Setting[]) => {
-                    if (settingsFromDb.length > 0) {
-                        console.log(`Load settings for ${evName} event ${settingsFromDb.length}`)
-                        const mappedSettingsByName: { [name: string]: string } = Object.assign(
-                            {},
-                            ...(settingsFromDb.map((item) => ({ [item.name]: item.value }))),
-                        )
-                        this._lookingWaitRoom = this._vector3Factory.create(
-                            parseFloat(mappedSettingsByName.hideandseek_looking_wait_room_x),
-                            parseFloat(mappedSettingsByName.hideandseek_looking_wait_room_y),
-                            parseFloat(mappedSettingsByName.hideandseek_looking_wait_room_z),
-                        )
-                    }
-                })*/
-
     }
 
     public loadArena() {
@@ -115,18 +95,33 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
 
     public start() {
         setTimeout(() => {
+            this._looking = this._players[random.int(0, this._players.length)]
+
             this._players.forEach((player: PlayerMp) => {
-                player.call(HideAndSeekAutomaticEventPageEvents.DISPLAY_PAGE, [
-                    this.automaticEventData.name, this.automaticEventData.displayName,
-                ])
+                if (player.id !== this._looking.id) {
+                    const hideAndSeekArenaSpawn: HideAndSeekArenaSpawnPoint =
+                    this._hideAndSeekArena.spawns[random.int(0, this._hideAndSeekArena.spawns.length - 1)]
+                    player.position = this._vector3Factory.create(
+                        hideAndSeekArenaSpawn.x, hideAndSeekArenaSpawn.y, hideAndSeekArenaSpawn.z,
+                    )
+
+                    player.call(HideAndSeekAutomaticEventPageEvents.DISPLAY_PAGE, [
+                        this.automaticEventData.name, this.automaticEventData.displayName,
+                    ])
+                } else {
+                    player.position = this._lookingWaitRoom
+                }
                 player.call(FreezePlayerModuleEvents.UNFREEZE_PLAYER)
                 this._notificationSender.send(
                     player, "HIDE_AND_SEEK_EVENT_MAP_START", NotificationType.INFO, NotificationTimeout.VERY_LONG,
                 )
             })
+            this._notificationSender.send(
+                this._looking, "HIDE_AND_SEEK_EVENT_YOU_LOOKING", NotificationType.INFO, NotificationTimeout.LONG,
+            )
             setTimeout(() => {
                 const hideAndSeekArenaSpawn: HideAndSeekArenaSpawnPoint =
-                    this._hideAndSeekArena[random.int(0, this._hideAndSeekArena.spawns.length - 1)]
+                    this._hideAndSeekArena.spawns[random.int(0, this._hideAndSeekArena.spawns.length - 1)]
                 this._looking.position  = this._vector3Factory.create(
                     hideAndSeekArenaSpawn.x, hideAndSeekArenaSpawn.y, hideAndSeekArenaSpawn.z,
                 )
@@ -144,21 +139,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
 
     public preparePlayer(playerMp: PlayerMp) {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
-            const isLooking = random.int(0, 100) % 2 === 0 && !this._looking
-            const hideAndSeekArenaSpawn: HideAndSeekArenaSpawnPoint =
-                this._hideAndSeekArena.spawns[random.int(0, this._hideAndSeekArena.spawns.length - 1)]
             playerMp.dimension = this._eventDimension
-            if (isLooking) {
-                this._looking = playerMp
-                this._notificationSender.send(
-                    playerMp, "HIDE_AND_SEEK_EVENT_YOU_LOOKING", NotificationType.INFO, NotificationTimeout.LONG,
-                )
-                playerMp.position = this._lookingWaitRoom
-            } else {
-                playerMp.position = this._vector3Factory.create(
-                    hideAndSeekArenaSpawn.x, hideAndSeekArenaSpawn.y, hideAndSeekArenaSpawn.z,
-                )
-            }
             playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
             this._notificationSender.send(
                 playerMp, "HIDE_AND_SEEK_EVENT_MAP_INFO", NotificationType.INFO, NotificationTimeout.LONG,
@@ -191,7 +172,7 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
         this._eventDimension = this._startedDimension
         const automaticEventData: IAutomaticEventData = this._automaticEventData
 
-        if (this._looking === null) {
+        if (!this._looking.doesExist()) {
             this._players.forEach((playerMp: PlayerMp) => {
                 this._notificationSender.send(
                     playerMp, "HIDE_AND_SEEK_EVENT_LOOKING_LEAVE", NotificationType.INFO, NotificationTimeout.LONG,
