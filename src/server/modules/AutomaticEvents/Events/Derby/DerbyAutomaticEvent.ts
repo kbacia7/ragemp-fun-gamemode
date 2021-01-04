@@ -105,7 +105,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
             this._players.forEach((player: PlayerMp) => {
                 player.call(DerbyAutomaticEventPageEvents.DISPLAY_PAGE, [
                     this.automaticEventData.name, this.automaticEventData.displayName,
-                    this._getPlayersNames(),
+                    JSON.stringify(this._getPlayersNames()),
 
                 ])
                 player.call(FreezePlayerModuleEvents.UNFREEZE_PLAYER)
@@ -118,7 +118,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
 
         this._playersLooseInterval = setInterval(() => {
             this._checkPlayersDropOverMap()
-        }, 1000)
+        }, 3000)
 
     }
 
@@ -135,9 +135,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
         this._players.forEach((playerMp: PlayerMp) => {
             if (playerMp.vehicle) {
                 this._vehicles.forEach((vehicleMp: VehicleMp) => {
-                    if (vehicleMp.id === playerMp.vehicle.id) {
-                        playerMp.removeFromVehicle()
-                        vehicleMp.destroy()
+                    if (vehicleMp.id === playerMp.vehicle.id && vehicleMp.position.z < this._derbyArena.height_limit) {
                         this._endDerbyForPlayer(playerMp)
                     }
                 })
@@ -160,15 +158,20 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
                 random.int(1, 255),
                 random.int(1, 255),
             ]
+            const spawnPos = this._vector3Factory.create(derbyArenaSpawn.x,  derbyArenaSpawn.y,  derbyArenaSpawn.z)
             this._vehicles.push(this._vehicleFactory.create(
                 this._derbyArena.vehicle_model,
-                this._vector3Factory.create(derbyArenaSpawn.x,  derbyArenaSpawn.y,  derbyArenaSpawn.z),
+                spawnPos,
                 derbyArenaSpawn.rotation, undefined, undefined, [randomColor, randomColor],
                 true, true, this._eventDimension,
             ))
             const vehicleForSpawn = this._vehicles[this._vehicles.length - 1]
             playerMp.dimension = this._eventDimension
-            playerMp.putIntoVehicle(vehicleForSpawn, -1)
+            playerMp.position = spawnPos
+
+            setTimeout(() => {
+                playerMp.putIntoVehicle(vehicleForSpawn, 0)
+            }, 500)
             playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
             this._notificationSender.send(
                 playerMp, "DERBY_EVENT_MAP_INFO", NotificationType.INFO, NotificationTimeout.LONG,
@@ -212,7 +215,7 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
         })
         this._players.forEach((playerOnDerby: PlayerMp) => {
             playerOnDerby.call(DerbyAutomaticEventPageEvents.UPDATE_PAGE, [
-                this._getPlayersNames(),
+                JSON.stringify(this._getPlayersNames()),
             ])
 
         })
