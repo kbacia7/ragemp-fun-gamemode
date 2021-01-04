@@ -44,6 +44,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
     private _playersAdded: boolean = false
     private _mappedTeamNames: {[team: number]: string} = {}
     private _mappedSkins: {[team: number]: number[]} = {}
+    private _arenaSpawns: {[team: number]: TeamDeathmatchArenaSpawnPoint[]} = {}
 
     constructor(
         automaticEventData: IAutomaticEventData,
@@ -101,6 +102,7 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         this._loadedPlayers[0] = 0
         this._loadedPlayers[1] = 0
         this._playersInTeams = {}
+        this._arenaSpawns = {0: [], 1: []}
         this._playersInTeams[0] = []
         this._playersInTeams[1] = []
         this._allPlayersInTeams = {}
@@ -115,6 +117,10 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
                 const tdmArena: TeamDeathmatchArena = arenas[0]
                 console.log(`Loaded arena: ${tdmArena.name}`)
                 this._teamDeathmatchArena = tdmArena
+                tdmArena.spawns.forEach((spawn: TeamDeathmatchArenaSpawnPoint) => {
+                    this._arenaSpawns[spawn.team].push(spawn)
+
+                })
             }
         })
     }
@@ -141,7 +147,8 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
 
     public preparePlayer(playerMp: PlayerMp) {
         const team = this._nextTeam % 2
-        if (this._loadedPlayers[team] > this._teamDeathmatchArena.spawns[team].length - 1) {
+
+        if (this._loadedPlayers[team] > this._arenaSpawns[team].length - 1) {
             this._notificationSender.send(
                 playerMp, "TDM_EVENT_MAP_TOO_MANY_PLAYERS", NotificationType.ERROR, NotificationTimeout.VERY_LONG,
                 [this._teamDeathmatchArena.name],
@@ -150,19 +157,16 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         } else {
             const playerData: IPlayerData = this._playerDataFactory.create().load(playerMp)
             const tdmArenaSpawn: TeamDeathmatchArenaSpawnPoint =
-                this._teamDeathmatchArena.spawns[team][this._loadedPlayers[team]]
+                this._arenaSpawns[team][this._loadedPlayers[team]]
             playerMp.dimension = this._eventDimension
-            playerMp.position = this._vector3Factory.create(tdmArenaSpawn.x, tdmArenaSpawn.y, tdmArenaSpawn.z)
+            const v = this._vector3Factory.create(tdmArenaSpawn.x, tdmArenaSpawn.y, tdmArenaSpawn.z)
+            playerMp.position = v
             playerMp.call(ChangePlayerPedModuleEvents.CHANGE_PED, [
                 this._mappedSkins[team][random.int(0, this._mappedSkins[team].length - 1)],
             ])
             playerMp.removeAllWeapons()
             this._teamDeathmatchArena.weapons.forEach((weapon: TeamDeathmatchArenaWeapon) => {
-                let ammo = weapon.ammo
-                if (ammo === 0) {
-                    ammo = 9999
-                }
-                playerMp.giveWeapon(weapon.weapon_id, ammo)
+                playerMp.giveWeapon(weapon.weapon_id, weapon.ammo)
             })
             playerMp.call(FreezePlayerModuleEvents.FREEZE_PLAYER)
             this._notificationSender.send(

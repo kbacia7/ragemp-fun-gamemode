@@ -5,7 +5,7 @@ export class TeamDeathmatchArena {
   public readonly id!: number
   public readonly name: string
   public readonly author: string
-  public readonly spawns: {[teamdId: number]: TeamDeathmatchArenaSpawnPoint[]}
+  public readonly spawns: TeamDeathmatchArenaSpawnPoint[]
   public readonly weapons: TeamDeathmatchArenaWeapon[]
 
 }
