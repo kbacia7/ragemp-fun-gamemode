@@ -44,16 +44,7 @@ describe("I18nTranslate", () => {
             i18nTranslator.translate("L__TEST_MESSAGE")
          }, I18nTranslationsNotLoadedException)
       })
-      it("should throw I18nLabelNotFoundException when label to translate doesn't exists", () => {
-         const promiseFactory = new PromiseFactory<string>()
-         const fileSystemRequest = new FileSystemRequest(promiseFactory)         
-         const internationalizationSettings = new InternationalizationSettings("en_US")
-         const i18nTranslator = new I18nTranslate(internationalizationSettings, fileSystemRequest)
-         i18nTranslator.loadTranslations("../test/i18n/translations")
-         assert.throw(() => {
-            i18nTranslator.translate("L__TEST_MESSAGE_DOESNT_EXISTS")
-         }, I18nLabelNotFoundException)
-      })
+
       it("should throw I18nFileNotFoundException when IInternationalizationSettings passed in constructor point to language which doesn't exists", () => {
          const promiseFactory = new PromiseFactory<string>()
          const fileSystemRequest = new FileSystemRequest(promiseFactory)         

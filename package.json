@@ -6,7 +6,7 @@
   "description": "",
   "scripts": {
     "build": "rm -rf dist/ && node_modules/.bin/tslint -c src/core/tslint.json 'src/core/**/*.ts' --fix && node_modules/.bin/tslint -c src/client/tslint.json 'src/client/**/*.ts' --fix  && node_modules/.bin/tslint -c src/server/entity/tslint.json 'src/server/entity/*.ts' --fix  && node_modules/.bin/tslint -c src/server/tslint.json 'src/server/main.ts' --fix && node_modules/.bin/tslint -c src/server/tslint.json 'src/server/core/**/*.ts' --fix && node_modules/.bin/tslint -c src/server/tslint.json 'src/server/modules/**/*.ts' --fix && \"./node_modules/.bin/webpack\"",
-    "test": "node_modules/mocha/bin/mocha -r ts-node/register -r tsconfig-paths/register test/**/*.ts"
+    "test": "node_modules/mocha/bin/mocha --recursive -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\""
   },
   "repository": {
     "type": "git",

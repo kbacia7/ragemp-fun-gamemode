@@ -7,6 +7,8 @@
    "EQ_EQUIP": "Załóż",
    "EQ_UNEQUIP": "Zdejmij",
    "EQ_CLOSE": "Zamknij",
+   "EQ_TEST_LOOTBOX_TITLE": "Jakieś pudełko czy coś",
    "EQ_TEST_WEAPON_TITLE": "Jakaś broń",
-   "EQ_TEST_SKIN_TITLE": "Jakiś skin"
+   "EQ_TEST_SKIN_TITLE": "Jakiś skin",
+   "EQ_OPEN": "Otwórz"
 }

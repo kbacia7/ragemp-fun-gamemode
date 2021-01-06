@@ -17,5 +17,7 @@ export enum APIRequests {
     SETTINGS_FOR_TESTS = "/settings/test/",
     SETTINGS_PREFIX = "/settings",
     SHOP_DATA_PREFIX = "/shop",
+    LOOTBOX_OPEN = "/lootboxes/open",
+    LOOTBOX_LIST_ITEMS = "/lootboxes/list",
     BUY_ITEM = "/buy/",
 }

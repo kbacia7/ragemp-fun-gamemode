@@ -32,6 +32,8 @@ import { DerbyArena } from "./entity/DerbyArena"
 import { DMArena } from "./entity/DMArena"
 import { HeavyDMArena } from "./entity/HeavyDMArena"
 import { HideAndSeekArena } from "./entity/HideAndSeekArena"
+import { Item } from "./entity/Item"
+import { Lootbox } from "./entity/Lootbox"
 import { OneShootArena } from "./entity/OneShootArena"
 import { Player } from "./entity/Player"
 import { PlayerSpawn } from "./entity/PlayerSpawn"
@@ -69,6 +71,7 @@ import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
 import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
+import { LootboxManager } from "./modules/LootboxManager/LootboxManager"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
 import { PlayerEquipManager } from "./modules/PlayerEquipManager/PlayerEquipManager"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
@@ -166,6 +169,13 @@ const shopManager: IShopManager = new ShopManager(
    },
 )
 const playerEquipManager = new PlayerEquipManager(playerApiManager, playerDataFactory)
+
+const lootboxPromiseFactory = new PromiseFactory<Lootbox[]>()
+const lootboxApiManager = new APIManager<Lootbox>(lootboxPromiseFactory, promiseForApiPosts, apiSetting)
+const itemPromiseFactory = new PromiseFactory<Item[]>()
+const itemApiManager = new APIManager<Item>(itemPromiseFactory, promiseForApiPosts, apiSetting)
+const lootboxManager = new LootboxManager(lootboxApiManager, itemApiManager, playerDataFactory)
+
 const allCommands: ICommand[] = [
    new HpCommand(),
    new PlayersCommand(),
