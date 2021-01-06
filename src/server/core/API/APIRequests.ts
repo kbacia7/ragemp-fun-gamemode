@@ -20,4 +20,7 @@ export enum APIRequests {
     LOOTBOX_OPEN = "/lootboxes/open",
     LOOTBOX_LIST_ITEMS = "/lootboxes/list",
     BUY_ITEM = "/buy/",
+    LOAD_OBJECTS = "/objects/load/",
+    LOAD_VEHICLES = "/vehicles/load/",
+
 }
