@@ -20,6 +20,7 @@ import { CommandListenerModule } from "./modules/CommandListener/CommandListener
 import { EquipmentModule } from "./modules/EquipmentModule/EquipmentModule"
 import { FreezePlayerModule } from "./modules/FreezePlayerModule/FreezePlayerModule"
 import { GlobalShopModule } from "./modules/GlobalShopModule/GlobalShopModule"
+import { LootboxPlayerModule } from "./modules/LootboxPlayerModule/LootboxPlayerModule"
 import { NotificationModule } from "./modules/Notification/NotificationModule"
 import { PlayerProfileModule } from "./modules/PlayerProfileModule/PlayerProfileModule"
 import { PlayerRegisterAndLoginModule } from "./modules/PlayerRegisterAndLoginModule/PlayerRegisterAndLoginModule"
@@ -39,6 +40,7 @@ const playerRegisterAndLoginModule = new PlayerRegisterAndLoginModule(promiseBoo
 const freezePlayerModule = new FreezePlayerModule(promiseBooleanFactory)
 const changePlayerPedModule = new ChangePlayerPedModule(promiseBooleanFactory)
 const equipmentModule = new EquipmentModule(promiseBooleanFactory)
+const lootboxModule = new LootboxPlayerModule(promiseBooleanFactory)
 const regexpFactory = new RegExpFactory()
 const htmlValidator = new HTMLValidator(regexpFactory)
 const chatMessageValidator = new ChatMessageValidator(regexpFactory)

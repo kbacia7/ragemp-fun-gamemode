@@ -1,0 +1,41 @@
+<html>
+
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cyborg/bootstrap.min.css"
+    crossorigin="anonymous">
+  <script src="index.js"></script>
+</head>
+
+<body style="background: none !important">
+  <div class="fade-background"></div>
+  <div class="d-flex align-items-center min-vh-100">
+    <div id="lootbox" class="container-fluid p-0 d-flex flex-column">
+      <div class="row justify-content-center">
+        <div id="lootbox-select" class="col-8 d-none">
+          <div class="row">
+            <div class="col-12">
+              <div id="lootbox-container" class="container-fluid bg-secondary">
+                <div id="lootbox-example-row" class="row">
+         
+                </div>
+                <div id="lootbox-example-item" class="lootbox-item col">
+                  <div class="lootbox-item-fade">&nbsp;</div>
+                  <img class="item-image" src="/assets/shop/weapons/weapon_item_empty.png" />
+                  <h4 class="lootbox-chance"></h4>
+                </div>
+              </div>
+              <div class="d-flex flex-row">
+                <button type="button" id="lootbox-open" class="btn btn-success w-50" data-i18n-translate="LOOTBOX_OPEN"></button>
+                <button type="button" id="lootbox-close" class="btn btn-danger w-50" data-i18n-translate="LOOTBOX_CLOSE"></button>
+              </div>
+          
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

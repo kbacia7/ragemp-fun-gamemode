@@ -18,6 +18,7 @@ import { Currency } from "server/modules/ShopManager/Currency"
 import { ShopManagerEvents } from "server/modules/ShopManager/ShopManagerEvents"
 import { ActionsMenuModuleEvents } from "../ActionsMenuModule/ActionsMenuModuleEvents"
 import { ChatModuleEvent } from "../Chat/ChatModuleEvent"
+import { LootboxPlayerModuleEvents } from "../LootboxPlayerModule/LootboxPlayerModuleEvents"
 import { Module } from "./../Module"
 import { EquipmentModuleEvent } from "./EquipmentModuleEvent"
 
@@ -38,6 +39,10 @@ export class EquipmentModule extends Module {
 
         mp.events.add(EquipmentModuleEvent.TRY_EQUIP_ITEM, (itemId: number) => {
             mp.events.callRemote(PlayerEquipManagerEvents.EQUIP_ITEM, itemId)
+        })
+
+        mp.events.add(EquipmentModuleEvent.TRY_OPEN_LOOTBOX, (itemId: number) => {
+            mp.events.call(LootboxPlayerModuleEvents.OPEN_LOOTBOX_LIST_ITEMS, itemId)
         })
 
         mp.events.add(EquipmentModuleEvent.RELOAD_ITEMS, (playerItemsAsJson: string) => {

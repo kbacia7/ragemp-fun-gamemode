@@ -1,0 +1,51 @@
+@import "../style.less";
+
+.fade-background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#lootbox {
+
+    #lootbox-container {
+        .lootbox-item  {
+            border-right: 1px solid #fff;
+            &:last-child {
+                border-right: none;
+            }
+        }
+
+        .row {
+            border-bottom: 1px solid #fff;
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+
+    .lootbox-item-fade {
+        position: absolute;
+        margin-left:-15px;
+        width: 100%;
+        height: 100%;
+        background-color: rgb(0, 0, 0);
+        opacity: 0;
+    }
+    .lootbox-chance {
+        text-align: center;
+        padding-top: 15px;
+    }
+    .lootbox-card {
+        border-bottom: 1px solid #fff;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    #lootbox-example-item, #lootbox-example-row {
+        display: none;
+    }
+}

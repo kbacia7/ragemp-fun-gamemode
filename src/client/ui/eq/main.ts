@@ -46,21 +46,32 @@ $(document).ready(() => {
           }
         })
       })
-      const equipped: boolean = thisPlayerItem.equipped
+      if (thisPlayerItem.item.sub_section !== "lootbox") {
+        const equipped: boolean = thisPlayerItem.equipped
 
-      if (equipped) {
+        if (equipped) {
+          $("#eq-item-description-equip-button").text(
+            i18nTranslator.translate(
+              "EQ_UNEQUIP",
+            ),
+          )
+        } else {
+          i18nTranslator.translate(
+            "EQ_EQUIP",
+          )
+        }
+        mp.trigger(EquipmentModuleEvent.TRY_EQUIP_ITEM, thisPlayerItem.item.id)
+      } else {
         $("#eq-item-description-equip-button").text(
           i18nTranslator.translate(
-            "EQ_UNEQUIP",
+            "EQ_OPEN",
           ),
         )
-      } else {
-        i18nTranslator.translate(
-          "EQ_EQUIP",
-        )
+        mp.trigger(EquipmentModuleEvent.TRY_OPEN_LOOTBOX, thisPlayerItem.item.id)
+
       }
+
       $("#eq-select").addClass("d-none")
-      mp.trigger(EquipmentModuleEvent.TRY_EQUIP_ITEM, thisPlayerItem.item.id)
     })
     updateEquippedItems()
 })
@@ -77,11 +88,19 @@ const displayItemInformations = (playerItem: PlayerItem) => {
   )
   $("#eq-item-description").removeClass("d-none")
   $("#eq-item-description-content").text(item.description)
-  $("#eq-item-description-equip-button").text(
-    i18nTranslator.translate(
-      playerItem.equipped ? "EQ_UNEQUIP" : "EQ_EQUIP",
-    ),
-  )
+  if (item.sub_section === "lootbox") {
+    $("#eq-item-description-equip-button").text(
+      i18nTranslator.translate(
+        "EQ_OPEN",
+      ),
+    )
+  } else {
+    $("#eq-item-description-equip-button").text(
+      i18nTranslator.translate(
+        playerItem.equipped ? "EQ_UNEQUIP" : "EQ_EQUIP",
+      ),
+    )
+  }
 }
 
 const updateEquippedItems = () => {
