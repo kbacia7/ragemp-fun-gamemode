@@ -25,6 +25,7 @@ import { CheckpointFactory } from "./core/Checkpoint/CheckpointFactory"
 import { NotificationSender } from "./core/NotificationSender/NotificationSender"
 import { NotificationSenderFactory } from "./core/NotificationSender/NotificationSenderFactory"
 import { NotificationSenderFromClient } from "./core/NotificationSender/NotificationSenderFromClient"
+import { ObjectFactory } from "./core/ObjectFactory/ObjectFactory"
 import { PlayerHashPasswordFactory } from "./core/PlayerHashPassword/PlayerHashPasswordFactory"
 import { Vector3Factory } from "./core/Vector3Factory/Vector3Factory"
 import { VehicleFactory } from "./core/VehicleFactory/VehicleFactory"
@@ -34,6 +35,7 @@ import { HeavyDMArena } from "./entity/HeavyDMArena"
 import { HideAndSeekArena } from "./entity/HideAndSeekArena"
 import { Item } from "./entity/Item"
 import { Lootbox } from "./entity/Lootbox"
+import { ServerObject } from "./entity/Object"
 import { OneShootArena } from "./entity/OneShootArena"
 import { Player } from "./entity/Player"
 import { PlayerSpawn } from "./entity/PlayerSpawn"
@@ -42,6 +44,7 @@ import { Setting } from "./entity/Setting"
 import { ShopTabData } from "./entity/ShopTabData"
 import { SniperArena } from "./entity/SniperArena"
 import { TeamDeathmatchArena } from "./entity/TeamDeathmatchArena"
+import { Vehicle } from "./entity/Vehicle"
 import { ArenaDataFactory } from "./modules/Arenas/ArenaDataFactory"
 import { ArenaManager } from "./modules/Arenas/ArenaManager"
 import { DeathmatchArenaFactory } from "./modules/Arenas/Arenas/DM/DeathmatchArenaFactory"
@@ -72,6 +75,7 @@ import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
 import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
 import { LootboxManager } from "./modules/LootboxManager/LootboxManager"
+import { ObjectsLoader } from "./modules/ObjectsLoader/ObjectsLoader"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
 import { PlayerEquipManager } from "./modules/PlayerEquipManager/PlayerEquipManager"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
@@ -87,6 +91,7 @@ import { WeaponItemBuyAction } from "./modules/ShopManager/BuyActions/WeaponItem
 import { WeaponOnceSpawnBuyAction } from "./modules/ShopManager/BuyActions/WeaponOnceSpawnBuyAction"
 import { IShopManager } from "./modules/ShopManager/IShopManager"
 import { ShopManager } from "./modules/ShopManager/ShopManager"
+import { VehiclesLoader } from "./modules/VehiclesLoader/VehiclesLoader"
 
 declare const _VERSION_: any
 console.log(`Script version: ${_VERSION_}`)
@@ -270,6 +275,14 @@ const mappedEventsToTypes = {
    race: AutomaticEventType.RACE,
    tdm: AutomaticEventType.TDM,
 }
+const serverObjectPromiseFactory = new PromiseFactory<ServerObject[]>()
+const serverObjectApiManager = new APIManager<ServerObject>(serverObjectPromiseFactory, promiseForApiPosts, apiSetting)
+const objectFactory = new ObjectFactory()
+const objectsLoader = new ObjectsLoader(serverObjectApiManager, objectFactory, vector3Factory)
+
+const vehiclePromiseFactory = new PromiseFactory<Vehicle[]>()
+const vehicleApiManager = new APIManager<Vehicle>(vehiclePromiseFactory, promiseForApiPosts, apiSetting)
+const vehicleLoader = new VehiclesLoader(vehicleApiManager, vehicleFactory, vector3Factory)
 
 const automaticEventManager = new AutomaticEventManager(
    settingApiManager, notificationSenderFactory,
