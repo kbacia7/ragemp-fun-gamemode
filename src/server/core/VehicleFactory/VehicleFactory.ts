@@ -16,11 +16,7 @@ export class VehicleFactory implements IVehicleFactory {
             alpha, color, dimension, engine, heading, locked, numberPlate,
         })
         if (color) {
-            // tslint:disable-next-line: no-bitwise
-            const firstColorDec = (color[0][0] << 16) + (color[0][1] << 8) + (color[0][2])
-            // tslint:disable-next-line: no-bitwise
-            const secondColorDec = (color[1][0] << 16) + (color[1][1] << 8) + (color[1][2])
-            v.setColor(firstColorDec, secondColorDec)
+            v.setColorRGB(color[0][0], color[0][1], color[0][2], color[0][0], color[0][1], color[0][2])
             return v
         }
     }
