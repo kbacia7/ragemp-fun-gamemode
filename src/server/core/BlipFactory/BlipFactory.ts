@@ -13,11 +13,16 @@ export class BlipFactory implements IBlipFactory {
         rotation: number,
         dimension: number,
     ) {
-        return mp.blips.new(
+        const blip = mp.blips.new(
             sprite, position, {
                 alpha, color, dimension, drawDistance, name,
                 rotation, scale, shortRange,
             },
         )
+        if (color) {
+            console.log(color)
+            blip.color = color
+        }
+        return blip
     }
 }

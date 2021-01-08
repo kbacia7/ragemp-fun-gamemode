@@ -17,6 +17,7 @@ import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
 import { IncomingMessage } from "http"
 import _ from "lodash"
 import {  Settings } from "luxon"
+import random from "random"
 import config from "./config.json"
 import { APIManager } from "./core/API/APIManager"
 import { IAPISetting } from "./core/API/IAPISetting"
@@ -83,6 +84,7 @@ import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
 import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
+import { PlayersBlips } from "./modules/PlayersBlips/PlayersBlips"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
 import { SkinItemBuyAction } from "./modules/ShopManager/BuyActions/SkinItemBuyAction"
 import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
@@ -289,6 +291,7 @@ const automaticEventManager = new AutomaticEventManager(
    ["tdm", "hideandseek", "race", "derby"],
    playerDataFactory, automaticEventDataFactory, mappedEventsToTypes, mappedEventsToFactories,
 )
+const playersBlips = new PlayersBlips(blipFactory, vector3Factory)
 commandExecutor.addCommands(allCommands)
 
 mp.events.add("debug", (player: PlayerMp, text: string) => {
