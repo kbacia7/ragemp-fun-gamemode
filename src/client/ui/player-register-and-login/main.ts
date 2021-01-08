@@ -113,25 +113,6 @@ $(document).ready(() => {
             }
         }
     })
-
-    $("#playAsGuestButton").on("click", () => {
-        $(".is-invalid").removeClass("is-invalid")
-        $("#alertLoginModalWhenLoginIsEmptyAndPlayAsGuest").addClass("d-none")
-        $("#alertLoginModalWhenLoginIsInvalid").addClass("d-none")
-        $("#alertLoginModalWhenLoginIsTakenAndPlayAsGuest").addClass("d-none")
-        const login: string = $("#inputLoginModalLogin").val().toString().trim()
-        if (login.length <= 0) {
-            $("#inputLoginModalLogin").addClass("is-invalid")
-            $("#alertLoginModalWhenLoginIsEmptyAndPlayAsGuest").removeClass("d-none")
-        } else {
-            if (loginValidator.validate(login)) {
-                mp.trigger(PlayerRegisterAndLoginModuleEvent.TRY_PLAY_AS_GUEST, login)
-            } else {
-                $("#alertLoginModalWhenLoginIsInvalid").addClass("d-none")
-                $("#inputLoginModalLogin").addClass("is-invalid")
-            }
-        }
-    })
 })
 
 const _global: any = (window || global) as any
@@ -157,11 +138,6 @@ _global.loginIncorrectData = () => {
     $("#inputLoginModalLogin").addClass("is-invalid")
     $("#inputLoginModalPassword").addClass("is-invalid")
     $("#loginButton").attr("disabled", "false")
-}
-
-_global.loginIsTakenForGuest = () => {
-    $("#alertLoginModalWhenLoginIsTakenAndPlayAsGuest").removeClass("d-none")
-    $("#inputLoginModalLogin").addClass("is-invalid")
 }
 
 _global.removeModal = () => {

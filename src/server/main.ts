@@ -81,7 +81,6 @@ import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
 import { PlayerEquipManager } from "./modules/PlayerEquipManager/PlayerEquipManager"
 import { PlayerLoader } from "./modules/PlayerLoader/PlayerLoader"
 import { PlayerLogin } from "./modules/PlayerRegister/PlayerLogin"
-import { PlayerPlayAsGuest } from "./modules/PlayerRegister/PlayerPlayAsGuest"
 import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayersBlips } from "./modules/PlayersBlips/PlayersBlips"
@@ -149,9 +148,6 @@ const playerRegister: PlayerRegister = new PlayerRegister(
 )
 const playerLogin: PlayerLogin = new PlayerLogin(
    playerApiManager, playerLoginValidatorFactory, playerHashPasswordFactory,
-)
-const playerPlayAsGuest: PlayerPlayAsGuest = new PlayerPlayAsGuest(
-   playerApiManager, playerLoginValidatorFactory,
 )
 const playerSave: PlayerSave = new PlayerSave(
    playerApiManager, playerDataFactory,

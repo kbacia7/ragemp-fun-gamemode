@@ -196,62 +196,6 @@ describe("APIManager", () => {
             })
         })
 
-        it("should allow play as guest (login not taken) and return code 200", () => {
-            const apiSetting: IAPISetting = {
-                host: 'localhost',
-                port: 8000
-            }
-            const promiseFactory = new PromiseFactory<Player[]>()
-            const promiseFactoryForPosts = new PromiseFactory<IncomingMessage>()
-            const apiManager = new APIManager<Player>(promiseFactory, promiseFactoryForPosts, apiSetting)
-            const data = {
-                login: (random.int(0, 100000) + luxon.DateTime.local().toMillis()).toString() + '00a'
-            }
-            return apiManager.send(APIRequests.PLAY_AS_GUEST, data).then((res: IncomingMessage) => {
-                assert.equal(res.statusCode, 200)
-                let response = ""
-                res.on('data', (chunk) => {
-                    response += chunk
-                })
-                res.on("end", () => {
-                    assert.equal(parseInt(response), PlayerPlayAsGuestResponses.ALL_OK)
-                })
-            })
-        })
-
-        it("shouldn't allow play as guest (login taken) and return code 200", () => {
-            const apiSetting: IAPISetting = {
-                host: 'localhost',
-                port: 8000
-            }
-            const promiseFactory = new PromiseFactory<Player[]>()
-            const promiseFactoryForPosts = new PromiseFactory<IncomingMessage>()
-            const apiManager = new APIManager<Player>(promiseFactory, promiseFactoryForPosts, apiSetting)
-            const fakeLogin = (random.int(0, 100000) + luxon.DateTime.local().toMillis()).toString() + '00'
-            const dataForNewAcc = {
-                login: fakeLogin,
-                password: "bbb",
-                email:(random.int(0, 100000) + luxon.DateTime.local().toMillis()).toString() + 'email'
-            }
-            return apiManager.send(APIRequests.PLAYER_REGISTER, dataForNewAcc).then((res: IncomingMessage) => {
-            const data = {
-                login: fakeLogin
-            }
-            return apiManager.send(APIRequests.PLAY_AS_GUEST, data).then((resFromPlayAsGuest: IncomingMessage) => {
-                assert.equal(resFromPlayAsGuest.statusCode, 200)
-                let response = ""
-                resFromPlayAsGuest.on('data', (chunk) => {
-                    response += chunk
-                })
-                resFromPlayAsGuest.on("end", () => {
-                    assert.equal(parseInt(response), PlayerPlayAsGuestResponses.LOGIN_TAKEN)
-                })
-            })
-            })
-
-            
-        })
-
         it("should create new player, login him and return code 422 (due to empty login)", () => {
             const apiSetting: IAPISetting = {
                 host: 'localhost',

@@ -39,12 +39,6 @@ export class PlayerRegisterAndLoginModule extends Module {
             },
         )
 
-        mp.events.add(PlayerRegisterAndLoginModuleEvent.TRY_PLAY_AS_GUEST,
-            (login: string) => {
-                mp.events.callRemote(PlayerRegisterEvent.PLAY_AS_GUEST, login)
-            },
-        )
-
         mp.events.add(PlayerRegisterEvent.EMAIL_TAKEN, () => {
             if (this._currentWindow) {
                 this._currentWindow.execute(`emailIsTaken()`)
@@ -54,12 +48,6 @@ export class PlayerRegisterAndLoginModule extends Module {
         mp.events.add(PlayerRegisterEvent.LOGIN_TAKEN, () => {
             if (this._currentWindow) {
                 this._currentWindow.execute(`loginIsTaken()`)
-            }
-        })
-
-        mp.events.add(PlayerRegisterEvent.LOGIN_TAKEN_FOR_GUEST, () => {
-            if (this._currentWindow) {
-                this._currentWindow.execute(`loginIsTakenForGuest()`)
             }
         })
 
@@ -102,27 +90,6 @@ export class PlayerRegisterAndLoginModule extends Module {
                 mp.gui.cursor.show(false, false)
                 this.destroyUI()
             }
-
-        })
-
-        mp.events.add(PlayerRegisterEvent.PLAY_AS_GUEST_SUCCESS, () => {
-            const notificationData: INotificationData = {
-                extraParams: [],
-                label: "PLAY_AS_GUEST",
-                timeout: NotificationTimeout.LONG,
-                type: NotificationType.WARNING,
-            }
-
-            mp.events.callRemote(NotificationEvent.CALL_FROM_CLIENT,
-                JSON.stringify(notificationData),
-            )
-
-            if (this._currentWindow) {
-                this._currentWindow.execute(`removeModal()`)
-                mp.gui.cursor.show(false, false)
-                this.destroyUI()
-            }
-
         })
 
         mp.events.add(PlayerRegisterEvent.LOGIN_INCORRECT_DATA, () => {
@@ -132,7 +99,6 @@ export class PlayerRegisterAndLoginModule extends Module {
         })
 
         mp.events.add(PlayerRegisterEvent.DISPLAY_GUI, () => {
-            mp.gui.cursor.show(true, true)
             this.loadUI()
         })
 
@@ -141,11 +107,13 @@ export class PlayerRegisterAndLoginModule extends Module {
     public loadUI() {
         return this._promiseFactory.create((resolve) => {
             super.loadUI().then((loaded) => {
+                mp.events.call(ActionsMenuModuleEvents.DISABLE_MENU)
+                mp.events.call(ChatModuleEvent.DISABLE_CHAT)
+                setTimeout(() => {
+                    mp.gui.cursor.show(true, true)
+                }, 2000)
                 resolve(loaded)
             })
-            mp.events.call(ActionsMenuModuleEvents.DISABLE_MENU)
-            mp.events.call(ChatModuleEvent.DISABLE_CHAT)
-
         })
 
     }
