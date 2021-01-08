@@ -20,7 +20,6 @@ export class BlipFactory implements IBlipFactory {
             },
         )
         if (color) {
-            console.log(color)
             blip.color = color
         }
         return blip

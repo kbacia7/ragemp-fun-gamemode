@@ -34,7 +34,6 @@ export class PlayersBlips {
                     allBlips[j].destroy()
                 }
                 allBlips = allBlips.slice(0, mp.players.length)
-                console.log("and destroy?")
             }
         }, 1000)
 
