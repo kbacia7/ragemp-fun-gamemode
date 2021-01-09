@@ -5,6 +5,7 @@ import { PlayerDataStatus } from "core/PlayerDataProps/PlayerDataStatus"
 import random from "random"
 import { APIRequests } from "server/core/API/APIRequests"
 import { IAPIManager } from "server/core/API/IAPIManager"
+import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
 import { Dimension } from "server/core/Dimension/Dimension"
 import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { PlayerItem } from "server/entity/PlayerItem"
@@ -32,6 +33,7 @@ export class PlayerSpawnManager {
         mp.events.add(PlayerSpawnManagerEvents.FORCE_RESPAWN, (playerMp: PlayerMp) => {
             const playerData = playerDataFactory.create().load(playerMp)
             playerMp.removeAllWeapons()
+
             const spawnId = random.int(0, this._spawns.length - 1)
             playerMp.dimension = Dimension.NORMAL
             playerMp.spawn(

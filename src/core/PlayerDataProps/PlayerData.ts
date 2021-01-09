@@ -1,4 +1,6 @@
+import { throws } from "assert"
 import { Item } from "server/entity/Item"
+import { Level } from "server/entity/Level"
 import { PlayerItem } from "server/entity/PlayerItem"
 import { Rank } from "server/entity/Rank"
 import { ArenaType } from "server/modules/Arenas/ArenaType"
@@ -47,6 +49,16 @@ export class PlayerData implements IPlayerData {
         return this._money
     }
 
+    private _level: Level
+    public get level() {
+        return this._level
+    }
+
+    private _exp: number
+    public get exp() {
+        return this._exp
+    }
+
     private _diamonds: number
     public get diamonds() {
         return this._diamonds
@@ -60,6 +72,16 @@ export class PlayerData implements IPlayerData {
     private _ping: number
     public get ping() {
         return this._ping
+    }
+
+    private _startPlayTime: number
+    public get startPlayTime() {
+        return this._startPlayTime
+    }
+
+    private _onlineTime: number
+    public get onlineTime() {
+        return this._onlineTime
     }
 
     private _name: string
@@ -103,12 +125,16 @@ export class PlayerData implements IPlayerData {
         this._databaseId = 0
         this._deaths = 0
         this._status = PlayerDataStatus.ACTIVE
-        this._ping = player.ping
+        this._ping = 0
         this._name = player.name
         this._isLogged = false
         this._playAsGuest = false
         this._savedOnEvents = []
         this._money = 0
+        this._level = null
+        this._exp = 0
+        this._onlineTime = 0
+        this._startPlayTime = 0
         this._items = []
         this._diamonds = 0
         this._onEvent = AutomaticEventType.NOTHING
@@ -130,6 +156,10 @@ export class PlayerData implements IPlayerData {
         player.setVariable(PlayerDataProps.NAMECOLOR, this._nameColor)
         player.setVariable(PlayerDataProps.ID, this._id)
         player.setVariable(PlayerDataProps.MONEY, this._money)
+        player.setVariable(PlayerDataProps.LEVEL, this._level)
+        player.setVariable(PlayerDataProps.EXP, this._exp)
+        player.setVariable(PlayerDataProps.ONLINE_TIME, this._onlineTime)
+        player.setVariable(PlayerDataProps.START_PLAY_TIME, this._startPlayTime)
         player.setVariable(PlayerDataProps.ITEMS, this._items)
         player.setVariable(PlayerDataProps.DIAMONDS, this._diamonds)
         player.setVariable(PlayerDataProps.DATABASE_ID, this._databaseId)
@@ -147,11 +177,15 @@ export class PlayerData implements IPlayerData {
         this._kills = player.getVariable(PlayerDataProps.KILLS)
         this._deaths = player.getVariable(PlayerDataProps.DEATHS)
         this._status = player.getVariable(PlayerDataProps.STATUS)
-        this._ping = player.ping
+        this._ping = player.getVariable(PlayerDataProps.PING)
         this._name = player.getVariable(PlayerDataProps.NAME)
         this._isLogged = player.getVariable(PlayerDataProps.ISLOGGED)
         this._diamonds = player.getVariable(PlayerDataProps.DIAMONDS)
         this._money = player.getVariable(PlayerDataProps.MONEY)
+        this._level = player.getVariable(PlayerDataProps.LEVEL)
+        this._exp = player.getVariable(PlayerDataProps.EXP)
+        this._startPlayTime = player.getVariable(PlayerDataProps.START_PLAY_TIME)
+        this._onlineTime = player.getVariable(PlayerDataProps.ONLINE_TIME)
         this._playAsGuest = player.getVariable(PlayerDataProps.PLAY_AS_GUEST)
         this._nameColor = player.getVariable(PlayerDataProps.NAMECOLOR)
         this._onEvent = player.getVariable(PlayerDataProps.ON_EVENT)
@@ -172,6 +206,10 @@ export class PlayerData implements IPlayerData {
         obj[PlayerDataProps.PING] = this._ping
         obj[PlayerDataProps.NAME] = this._name
         obj[PlayerDataProps.MONEY] = this._money
+        obj[PlayerDataProps.LEVEL] = this._level
+        obj[PlayerDataProps.EXP] = this._exp
+        obj[PlayerDataProps.START_PLAY_TIME] = this._startPlayTime
+        obj[PlayerDataProps.ONLINE_TIME] = this._onlineTime
         obj[PlayerDataProps.DIAMONDS] = this._diamonds
         obj[PlayerDataProps.ID] = this._id
         obj[PlayerDataProps.ISLOGGED] = this._isLogged

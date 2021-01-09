@@ -22,5 +22,5 @@ export enum APIRequests {
     BUY_ITEM = "/buy/",
     LOAD_OBJECTS = "/objects/load/",
     LOAD_VEHICLES = "/vehicles/load/",
-
+    LEVELS = "/levels/",
 }

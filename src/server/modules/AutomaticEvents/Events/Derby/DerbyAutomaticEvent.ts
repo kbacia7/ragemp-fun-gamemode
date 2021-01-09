@@ -204,6 +204,8 @@ export class DerbyAutomaticEvent extends AutomaticEvent {
                     )
                 }
             })
+            playerMp.setVariable(PlayerDataProps.EXP, playerData.exp + randomExp)
+            playerMp.setVariable(PlayerDataProps.MONEY, playerData.money + randomMoney)
         } else {
             this._notificationSender.send(
                 playerMp, "DERBY_EVENT_LOOSE", NotificationType.INFO, NotificationTimeout.LONG,

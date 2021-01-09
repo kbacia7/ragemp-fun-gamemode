@@ -4,6 +4,7 @@ import { InternationalizationSettings } from "core/i18n/InternationalizationSett
 /*tslint:disable:ordered-imports*/
 import $ from "jquery"
 import "bootstrap"
+import * as luxon from "luxon"
 import { FileSystemRequest } from "core/FileRequest/FileSystemRequest"
 import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
@@ -28,23 +29,23 @@ _global.loadPlayers = (playersDataInJson: string) => {
         const thID: HTMLElement = $("<th>").get()[0]
         const tdName: HTMLElement = $("<td>").get()[0]
         const tdRank: HTMLElement = $("<td>").get()[0]
-        const tdKills: HTMLElement = $("<td>").get()[0]
-        const tdDeaths: HTMLElement = $("<td>").get()[0]
+        const tdLevel: HTMLElement = $("<td>").get()[0]
+        const tdOnline: HTMLElement = $("<td>").get()[0]
         const tdPing: HTMLElement = $("<td>").get()[0]
         const tdStatus: HTMLElement = $("<td>").get()[0]
         thID.innerText = playerData.id.toString()
         tdName.innerText = playerData.name
         tdName.style.color = playerData.nameColor
         tdRank.innerText =  playerData.rankName
-        tdKills.innerText = playerData.kills.toString()
-        tdDeaths.innerText = playerData.deaths.toString()
+        tdLevel.innerText = playerData.level.level.toString()
+        tdOnline.innerText = luxon.Duration.fromMillis(playerData.onlineTime).toFormat("hh:mm")
         tdPing.innerText = playerData.ping.toString()
         tdStatus.innerText = i18nTranslator.translate("TABLE_PLAYER_STATUS_" + playerData.status)
         trRow.appendChild(thID)
         trRow.appendChild(tdName)
         trRow.appendChild(tdRank)
-        trRow.appendChild(tdKills)
-        trRow.appendChild(tdDeaths)
+        trRow.appendChild(tdLevel)
+        trRow.appendChild(tdOnline)
         trRow.appendChild(tdPing)
         trRow.appendChild(tdStatus)
         $("tbody").get()[0].appendChild(trRow)

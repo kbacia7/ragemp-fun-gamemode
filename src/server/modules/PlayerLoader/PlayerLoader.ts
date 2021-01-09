@@ -2,12 +2,17 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 import { PlayerDataProps } from "core/PlayerDataProps/PlayerDataProps"
 import { PlayerRegisterEvent } from "core/PlayerRegister/PlayerRegisterEvent"
+import * as luxon from "luxon"
+import random from "random"
+
 import { IAPIManager } from "server/core/API/IAPIManager"
+import { IBlipFactory } from "server/core/BlipFactory/IBlipFactory"
+import { IVector3Factory } from "server/core/Vector3Factory/IVector3Factory"
 import { Player } from "server/entity/Player"
 import { PlayerSpawnManagerEvents } from "../PlayerSpawnManager/PlayerSpawnManagerEvents"
 
 export class PlayerLoader {
-    constructor(apiManager: IAPIManager<Player>, playerDataFactory: IPlayerDataFactory) {
+        constructor(apiManager: IAPIManager<Player>, playerDataFactory: IPlayerDataFactory) {
         mp.events.add("playerJoin", (player: PlayerMp) => {
             playerDataFactory.create().initialize(player)
             player.call(PlayerRegisterEvent.DISPLAY_GUI)
@@ -22,13 +27,11 @@ export class PlayerLoader {
                 playerMp.setVariable(PlayerDataProps.MONEY, data.money)
                 playerMp.setVariable(PlayerDataProps.DIAMONDS, data.diamonds)
                 playerMp.setVariable(PlayerDataProps.ITEMS, data.player_items)
+                playerMp.setVariable(PlayerDataProps.START_PLAY_TIME, luxon.DateTime.local().toMillis())
+                playerMp.setVariable(PlayerDataProps.ONLINE_TIME, 0)
+                playerMp.setVariable(PlayerDataProps.LEVEL, data.level)
+                playerMp.setVariable(PlayerDataProps.EXP, data.exp)
                 playerMp.setVariable(PlayerDataProps.DATABASE_ID, data.id)
-            } else {
-                playerMp.setVariable(PlayerDataProps.PLAY_AS_GUEST, true)
-                playerMp.setVariable(PlayerDataProps.RANK_NAME, "Gość")
-                playerMp.setVariable(PlayerDataProps.MONEY, 0)
-                playerMp.setVariable(PlayerDataProps.DIAMONDS, 0)
-                playerMp.setVariable(PlayerDataProps.DATABASE_ID, 0)
             }
             playerMp.setVariable(PlayerDataProps.NAME, login)
             playerMp.setVariable(PlayerDataProps.ISLOGGED, true)

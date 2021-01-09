@@ -17,4 +17,8 @@ export enum PlayerDataProps {
     DATABASE_ID = "databaseId",
     DIAMONDS = "diamonds",
     MONEY = "money",
+    LEVEL = "level",
+    EXP = "exp",
+    START_PLAY_TIME = "startPlayTime",
+    ONLINE_TIME = "onlineTime",
 }

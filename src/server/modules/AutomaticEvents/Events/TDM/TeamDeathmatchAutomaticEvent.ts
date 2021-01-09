@@ -216,12 +216,15 @@ export class TeamDeathmatchAutomaticEvent extends AutomaticEvent {
         if (winners) {
             const automaticEventData: IAutomaticEventData = this._automaticEventData
             this._allPlayersInTeams[winners].forEach((p: PlayerMp) => {
+                const playerData: IPlayerData = this._playerDataFactory.create().load(p)
                 const randomMoney: number = random.int(automaticEventData.minMoney, automaticEventData.maxMoney)
                 const randomExp: number = random.int(automaticEventData.minExp, automaticEventData.maxExp)
                 this._notificationSender.send(
                     p, "TDM_EVENT_YOUR_TEAM_WIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
                     [randomMoney.toString(), randomExp.toString()],
                 )
+                p.setVariable(PlayerDataProps.EXP, playerData.exp + randomExp)
+                p.setVariable(PlayerDataProps.MONEY, playerData.money + randomMoney)
             })
         }
         mp.events.call(

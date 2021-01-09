@@ -10,6 +10,7 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import "./style.less"
 import { ActionsMenu } from "server/core/ActionsMenu/ActionsMenu"
 import { ActionsMenuModuleEvents } from "client/modules/ActionsMenuModule/ActionsMenuModuleEvents"
+import * as luxon from "luxon"
 
 $(document).ready(() => {
     const promiseFactory = new PromiseFactory<string>()
@@ -31,11 +32,13 @@ _global.loadPlayerData = (playerDataInJson: string) => {
     }
     $("#player-profile-username").css("color", playerData.nameColor)
     $("#player-profile-rank").text(playerData.rankName)
-    $("#player-profile-level").text("1")
+    $("#player-profile-level").text(playerData.level.level)
+    $("#player-profile-exp").text(`${playerData.exp}/${playerData.level.required_exp || "-"}`)
     $("#player-profile-money").text(`${playerData.money}$`)
     $("#player-profile-diamonds").text(playerData.diamonds.toString())
-    $("#player-profile-online-time").text("00:00")
+    $("#player-profile-online-time").text(
+        luxon.Duration.fromMillis(playerData.onlineTime).toFormat("hh:mm"),
+    )
     $("#player-profile-kills").text(playerData.kills.toString())
-    $("#player-profile-deaths").text(playerData.deaths.toString())
     $("#player-profile-ping").text(playerData.ping.toString())
 }

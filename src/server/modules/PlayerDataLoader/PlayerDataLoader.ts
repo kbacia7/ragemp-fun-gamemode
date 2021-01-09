@@ -4,6 +4,7 @@ import { IPlayerDataFactory } from "core/PlayerDataProps/IPlayerDataFactory"
 
 export class PlayerDataLoader {
     constructor(playerDataFactory: IPlayerDataFactory) {
+        const playersIntervals = {}
         mp.events.add(PlayerDataLoaderEvents.GET_PLAYER_DATA, (player: PlayerMp) => {
             const playerData: IPlayerData =  playerDataFactory.create().load(player)
             player.call(PlayerDataLoaderEvents.PROVIDE_PLAYER_DATA, [JSON.stringify(playerData)])

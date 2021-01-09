@@ -1,4 +1,5 @@
 import { Item } from "server/entity/Item"
+import { Level } from "server/entity/Level"
 import { PlayerItem } from "server/entity/PlayerItem"
 import { Rank } from "server/entity/Rank"
 import { ArenaType } from "server/modules/Arenas/ArenaType"
@@ -14,7 +15,11 @@ export interface IPlayerData {
     deaths: number,
     diamonds: number,
     money: number,
+    level: Level,
+    exp: number,
     status: PlayerDataStatus,
+    startPlayTime: number,
+    onlineTime: number,
     ping: number,
     name: string,
     isLogged: boolean,

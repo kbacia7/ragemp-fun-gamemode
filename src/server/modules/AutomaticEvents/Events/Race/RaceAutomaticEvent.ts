@@ -259,6 +259,7 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                 playerMp, "RACE_EVENT_YOU_WIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
                 [(4 - this._winners).toString(), randomMoney.toString(), randomExp.toString()],
             )
+
             this._players.forEach((playerMpForNotification: PlayerMp) => {
                 if (playerMpForNotification.id !== playerMp.id) {
                     this._notificationSender.send(
@@ -267,6 +268,8 @@ export class RaceAutomaticEvent extends AutomaticEvent {
                     )
                 }
             })
+            playerMp.setVariable(PlayerDataProps.EXP, playerData.exp + randomExp)
+            playerMp.setVariable(PlayerDataProps.MONEY, playerData.money + randomMoney)
             this._winners--
         } else {
             this._notificationSender.send(

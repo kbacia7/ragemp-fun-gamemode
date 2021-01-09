@@ -187,6 +187,7 @@ describe("APIManager", () => {
                         })
                         res.on("end", () => {
                             const p: Player = JSON.parse(responseInJson)
+                            console.log(p)
                             assert.equal(p.deaths, 0)
                             assert.notEqual(p.rank.name, "")
                         })

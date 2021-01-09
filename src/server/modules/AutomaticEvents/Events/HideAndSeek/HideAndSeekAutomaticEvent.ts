@@ -190,6 +190,8 @@ export class HideAndSeekAutomaticEvent extends AutomaticEvent {
                 winner, "HIDE_AND_SEEK_EVENT_YOU_WIN", NotificationType.SUCCESS, NotificationTimeout.LONG,
                 [randomMoney.toString(), randomExp.toString()],
             )
+            winner.setVariable(PlayerDataProps.EXP, playerData.exp + randomExp)
+            winner.setVariable(PlayerDataProps.MONEY, playerData.money + randomMoney)
             mp.events.call(
                 AutomaticEventManagerEvents.EVENT_END, this.automaticEventData.name, playerData.name,
             )

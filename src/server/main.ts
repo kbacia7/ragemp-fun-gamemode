@@ -16,7 +16,7 @@ import { PromiseFactory } from "core/PromiseFactory/PromiseFactory"
 import { RegExpFactory } from "core/RegExpFactory/RegExpFactory"
 import { IncomingMessage } from "http"
 import _ from "lodash"
-import {  Settings } from "luxon"
+import * as luxon from "luxon"
 import random from "random"
 import config from "./config.json"
 import { APIManager } from "./core/API/APIManager"
@@ -35,6 +35,7 @@ import { DMArena } from "./entity/DMArena"
 import { HeavyDMArena } from "./entity/HeavyDMArena"
 import { HideAndSeekArena } from "./entity/HideAndSeekArena"
 import { Item } from "./entity/Item"
+import { Level } from "./entity/Level"
 import { Lootbox } from "./entity/Lootbox"
 import { ServerObject } from "./entity/Object"
 import { OneShootArena } from "./entity/OneShootArena"
@@ -85,6 +86,7 @@ import { PlayerRegister } from "./modules/PlayerRegister/PlayerRegister"
 import { PlayerSave } from "./modules/PlayerSave/PlayerSave"
 import { PlayersBlips } from "./modules/PlayersBlips/PlayersBlips"
 import { PlayerSpawnManager } from "./modules/PlayerSpawnManager/PlayerSpawnManager"
+import { PlayersSync } from "./modules/PlayersSync/PlayersSync"
 import { SkinItemBuyAction } from "./modules/ShopManager/BuyActions/SkinItemBuyAction"
 import { SkinOnceChangeBuyAction } from "./modules/ShopManager/BuyActions/SkinOnceChangeBuyAction"
 import { VehicleSpawnBuyAction } from "./modules/ShopManager/BuyActions/VehicleSpawnBuyAction"
@@ -288,6 +290,10 @@ const automaticEventManager = new AutomaticEventManager(
    playerDataFactory, automaticEventDataFactory, mappedEventsToTypes, mappedEventsToFactories,
 )
 const playersBlips = new PlayersBlips(blipFactory, vector3Factory)
+
+const levelPromiseFactory = new PromiseFactory<Level[]>()
+const levelApiManager = new APIManager<Level>(levelPromiseFactory, promiseForApiPosts, apiSetting)
+const playersSync = new PlayersSync(levelApiManager, playerDataFactory)
 commandExecutor.addCommands(allCommands)
 
 mp.events.add("debug", (player: PlayerMp, text: string) => {

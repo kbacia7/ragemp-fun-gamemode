@@ -12,10 +12,14 @@ export class PlayerSave {
     constructor(apiManager: IAPIManager<Player>, playerDataFactory: IPlayerDataFactory) {
         mp.events.add("playerQuit", (player: PlayerMp) => {
             const playerData: IPlayerData = playerDataFactory.create().load(player)
-            if (playerData.isLogged && !playerData.playAsGuest) {
+            if (playerData.isLogged) {
                 apiManager.send(APIRequests.PLAYER_SAVE, {
                     deaths: playerData.deaths,
+                    exp: playerData.exp,
+                    id: playerData.databaseId,
                     kills: playerData.kills,
+                    level_id: playerData.level.level,
+                    money: playerData.money,
                 })
             }
             if (playerData.status === PlayerDataStatus.ON_EVENT) {
