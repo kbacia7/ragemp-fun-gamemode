@@ -1,5 +1,6 @@
 import { IActivePlayersLoader } from "client/core/ActivePlayersLoader/IActivePlayersLoader"
 import { Keys } from "client/core/KeyboardManager/Keys"
+import { Console } from "console"
 import { CommandListenerEvent } from "core/CommandListener/CommandListenerEvent"
 import { NotificationEvent } from "core/Notification/NotificationEvent"
 import { NotificationTimeout } from "core/Notification/NotificationTimeout"
@@ -7,6 +8,9 @@ import { NotificationType } from "core/Notification/NotificationType"
 import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import { IPromiseFactory } from "core/PromiseFactory/IPromiseFactory"
 import { ActionsMenu } from "server/core/ActionsMenu/ActionsMenu"
+import { Teleport } from "server/entity/Teleport"
+import { TeleportsLoader } from "server/modules/TeleportsLoader/TeleportsLoader"
+import { TeleportsLoaderEvents } from "server/modules/TeleportsLoader/TeleportsLoaderEvents"
 import { IActivePlayersTableModuleFactory } from "../ActivePlayersTableModule/IActivePlayersTableModuleFactory"
 import { Module } from "../Module"
 import { ActionsMenuModuleEvents } from "./ActionsMenuModuleEvents"
@@ -20,6 +24,10 @@ export class ActionsMenuModule extends Module {
         this._name = "actions-menu"
         mp.events.add(ActionsMenuModuleEvents.TRIGGER_EVENT, (eventName: string) => {
             mp.events.callRemote(ActionsMenu.PREFIX + eventName)
+        })
+
+        mp.events.add(ActionsMenuModuleEvents.LOAD_TELEPORTS, (teleportsAsJson: string) => {
+            this._loadTeleports(teleportsAsJson)
         })
 
         mp.events.add(ActionsMenuModuleEvents.ENABLE_MENU, () => {
@@ -43,6 +51,7 @@ export class ActionsMenuModule extends Module {
                     this._currentWindow.execute(
                         `setListPosition(${mp.gui.cursor.position[0]}, ${mp.gui.cursor.position[1]})`,
                     )
+                    mp.events.callRemote(TeleportsLoaderEvents.PROVIDE_TELEPORTS)
                     resolve(loaded)
                 })
             }
@@ -58,5 +67,11 @@ export class ActionsMenuModule extends Module {
             })
             }
         })
+    }
+
+    private _loadTeleports(teleportsAsJson: string) {
+        this._currentWindow.execute(
+            `addTeleports('${teleportsAsJson}')`,
+        )
     }
 }

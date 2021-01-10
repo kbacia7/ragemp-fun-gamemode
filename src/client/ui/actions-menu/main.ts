@@ -10,6 +10,7 @@ import { IPlayerData } from "core/PlayerDataProps/IPlayerData"
 import "./style.less"
 import { ActionsMenu } from "server/core/ActionsMenu/ActionsMenu"
 import { ActionsMenuModuleEvents } from "client/modules/ActionsMenuModule/ActionsMenuModuleEvents"
+import { Teleport } from "server/entity/Teleport"
 declare const _VERSION_: any
 
 $(document).ready(() => {
@@ -32,7 +33,7 @@ $(document).ready(() => {
             $(this).removeClass("open")
         },
     )
-    $(".dropdown-item").on("click", (ev) => {
+    $(document).on("click", ".dropdown-item", (ev) => {
         const triggerEvent: string = ev.target.getAttribute("data-actions-menu-event")
         if (triggerEvent && triggerEvent.length > 0) {
             mp.trigger(ActionsMenuModuleEvents.TRIGGER_EVENT, triggerEvent)
@@ -46,4 +47,17 @@ _global.setListPosition = (x, y) => {
     $("#actionsMenu").css({top: y})
     $("#actionsMenu").css({left: x})
     $("#actionsMenu").removeClass("hide")
+}
+
+_global.addTeleports = (teleportsAsString: string) => {
+    const teleports: Teleport[] = JSON.parse(teleportsAsString)
+    const exampleTeleportEl = $("#example-teleport-el")
+    teleports.forEach((teleport: Teleport) => {
+        const newTeleportEl = exampleTeleportEl.clone()
+        const correctItem = newTeleportEl.find(".dropdown-item")
+        correctItem.text(teleport.display_name)
+        correctItem.attr("data-actions-menu-event", `TELEPORT_${teleport.alias}`)
+        correctItem.removeClass("d-none")
+        correctItem.appendTo("#teleports")
+    })
 }

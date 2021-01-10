@@ -46,6 +46,7 @@ import { Setting } from "./entity/Setting"
 import { ShopTabData } from "./entity/ShopTabData"
 import { SniperArena } from "./entity/SniperArena"
 import { TeamDeathmatchArena } from "./entity/TeamDeathmatchArena"
+import { Teleport } from "./entity/Teleport"
 import { Vehicle } from "./entity/Vehicle"
 import { ArenaDataFactory } from "./modules/Arenas/ArenaDataFactory"
 import { ArenaManager } from "./modules/Arenas/ArenaManager"
@@ -76,6 +77,7 @@ import { ICommand } from "./modules/Commands/ICommand"
 import { PlayersCommand } from "./modules/Commands/PlayersCommand/PlayersCommand"
 import { SetCommand } from "./modules/Commands/SetCommand/SetCommand"
 import { ShopCommand } from "./modules/Commands/ShopCommand/ShopCommand"
+import { TeleportCommandFactory } from "./modules/Commands/TeleportsCommand/TeleportCommandFactory"
 import { LootboxManager } from "./modules/LootboxManager/LootboxManager"
 import { ObjectsLoader } from "./modules/ObjectsLoader/ObjectsLoader"
 import { PlayerDataLoader } from "./modules/PlayerDataLoader/PlayerDataLoader"
@@ -94,6 +96,7 @@ import { WeaponItemBuyAction } from "./modules/ShopManager/BuyActions/WeaponItem
 import { WeaponOnceSpawnBuyAction } from "./modules/ShopManager/BuyActions/WeaponOnceSpawnBuyAction"
 import { IShopManager } from "./modules/ShopManager/IShopManager"
 import { ShopManager } from "./modules/ShopManager/ShopManager"
+import { TeleportsLoader } from "./modules/TeleportsLoader/TeleportsLoader"
 import { VehiclesLoader } from "./modules/VehiclesLoader/VehiclesLoader"
 
 declare const _VERSION_: any
@@ -296,6 +299,14 @@ const levelApiManager = new APIManager<Level>(levelPromiseFactory, promiseForApi
 const playersSync = new PlayersSync(levelApiManager, playerDataFactory)
 commandExecutor.addCommands(allCommands)
 
+const commandPromiseFactory = new PromiseFactory<ICommand[]>()
+const teleportsPromiseFactory = new PromiseFactory<Teleport[]>()
+const teleportsApiManager = new APIManager<Teleport>(teleportsPromiseFactory, promiseForApiPosts, apiSetting)
+const teleportsCommandFactory = new TeleportCommandFactory(vector3Factory)
+const teleportsLoader = new TeleportsLoader(teleportsApiManager, teleportsCommandFactory, commandPromiseFactory)
+teleportsLoader.createTeleportsCommands().then((teleportsCmds: ICommand[]) => {
+   commandExecutor.addCommands(teleportsCmds)
+})
 mp.events.add("debug", (player: PlayerMp, text: string) => {
    console.log(text)
 })

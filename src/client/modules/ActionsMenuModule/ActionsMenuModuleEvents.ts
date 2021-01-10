@@ -3,4 +3,5 @@ export enum ActionsMenuModuleEvents {
     DISABLE_MENU = "actions-menu-disable",
     ENABLE_MENU = "actions-menu-enable",
     HIDE_MENU = "actions-menu-hide",
+    LOAD_TELEPORTS = "actions-menu-load-teleports",
 }

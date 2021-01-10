@@ -23,4 +23,5 @@ export enum APIRequests {
     LOAD_OBJECTS = "/objects/load/",
     LOAD_VEHICLES = "/vehicles/load/",
     LEVELS = "/levels/",
+    LOAD_TELEPORTS = "/teleports/load/",
 }
